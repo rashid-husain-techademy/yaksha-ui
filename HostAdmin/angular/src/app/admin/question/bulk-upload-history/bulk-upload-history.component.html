@@ -1,0 +1,138 @@
+<div class="bulk">
+    <div class="d-flex justify-content-between align-items-center m-b-20">
+        <h4 class="page-title m-0">{{constants.bulkUploadHistory}}</h4>
+    </div>
+    <form [formGroup]="bulkForm">
+        <div class="card">
+            <div class="card-body d-flex align-items-center">
+                <i class="fas fa-filter text-info m-r-20"></i>
+                <div class="form-group m-r-20" *ngIf="this.userRole === userRoles[1]">
+                    <label class="font-weight-bold m-0">{{constants.selectTenant}}</label>
+                    <ng-multiselect-dropdown formControlName="tenantName" (onSelect)="getTenant('tenantName',$event)"
+                        (onDeSelect)="onDeSelectTenant()" [placeholder]="constants.selectTenant"
+                        [settings]="singleDropdownSettings" [data]="tenantDetailsList">
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group m-r-15">
+                    <label class="font-weight-bold m-0">{{constants.selectUserName}}</label>
+                    <ng-multiselect-dropdown formControlName="emailAddress"
+                        (onSelect)="getUserName('emailAddress',$event)" (onDeSelect)="onDeSelectEmail()"
+                        [placeholder]="constants.selectUserName" [settings]="singleDropdownSettings"
+                        [data]="userEmailList">
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="p-10 d-flex">
+                    <div class="form-group">
+                        <label for="" class="font-weight-bold">{{constants.startDate}}</label>
+                        <div class="input-group">
+                            <input class="form-control" [maxDate]="currentDate" placeholder="yyyy-mm-dd" name="dp1"
+                                formControlName="startDate" ngbDatepicker #d3="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary no-shadow" (click)="d3.toggle()" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-10 d-flex">
+                    <div class="form-group m-r-5">
+                        <label for="" class="font-weight-bold">{{constants.endDate}}</label>
+                        <div class="input-group">
+                            <input class="form-control" [maxDate]="currentDate" placeholder="yyyy-mm-dd" name="dp2"
+                                formControlName="endDate" ngbDatepicker #d4="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary no-shadow" (click)="d4.toggle()" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-info m-t-10 m-r-10" (click)="search($event)">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="btn btn-secondary m-t-10" (click)="reset()" type="button">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div>
+            <label id="uploads" class="font-weight-bold m-t-20">{{constants.noOfUploads}}</label>
+            <span class="m-l-10 m-r-30">{{totalCount}}</span>
+            <label class="font-weight-bold m-t-20">{{constants.noOfTotalQuestions}}</label>
+            <span class="m-l-10 m-r-30">{{totalQuestions}}</span>
+            <label class="font-weight-bold m-t-20">{{constants.noOfTotalMcq}}</label>
+            <span class="m-l-10 m-r-30">{{totalMcqCount}}</span>
+            <label class="font-weight-bold m-t-20">{{constants.noOfTotalStackQuestions}}</label>
+            <span class="m-l-10 m-r-30">{{totalStackQuestionCount}}</span>
+            <label class="font-weight-bold m-t-20">{{constants.noOfTotalCodebasedQuestions}}</label>
+            <span class="m-l-10 m-r-30">{{totalCodingQuestionCount}}</span>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped border">
+
+                <thead>
+                    <tr>
+                        <th class="font-weight-bold">{{constants.fileName}}</th>
+                        <th class="font-weight-bold">{{constants.userName}}</th>
+                        <th class="font-weight-bold">{{constants.noOfCategories}}</th>
+                        <th class="font-weight-bold">{{constants.noOfSkills}}</th>
+                        <th class="font-weight-bold">{{constants.noOfQuestions}}</th>
+                        <th class="font-weight-bold">{{constants.uploadedDateAndTimeUTC}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="!totalCount">
+                        <td colspan="6" class="text-center">
+                            <p>{{constants.noBulkUploadHistoryFound}}</p>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let detail of bulkUploadDetails">
+                        <td>
+                            {{detail.fileName}}
+                        </td>
+                        <td>
+                            {{detail.userName}}
+                        </td>
+                        <td>
+                            {{detail.categoryCount}}
+                        </td>
+                        <td>
+                            {{detail.skillCount}}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center" *ngIf="detail.mcqCount">
+                                <span class="m-r-5">{{constants.mcqType}}: </span>
+                                <strong> {{detail.mcqCount}}</strong>
+                            </div>
+                            <div class="d-flex align-items-center" *ngIf="detail.codingCount">
+                                <span class="m-r-5">{{constants.codingType}}: </span>
+                                <strong> {{detail.codingCount}}</strong>
+                            </div>
+                            <div class="d-flex align-items-center" *ngIf="detail.stackCount">
+                                <span class="m-r-5">{{constants.stackType}}: </span>
+                                <strong> {{detail.stackCount}}</strong>
+                            </div>
+                            <div class="d-flex align-items-center" *ngIf="detail.cloudCount">
+                                <span class="m-r-5">{{constants.cloudType}}: </span>
+                                <strong> {{detail.cloudCount}}</strong>
+                            </div>
+                        </td>
+                        <td>
+                            {{detail.uploadedDateTime}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between p-2">
+                <ngb-pagination [collectionSize]="totalCount" [(page)]="pageIndex" [pageSize]="pageSize"
+                    (pageChange)="changeBulkUploadResultPage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                    [boundaryLinks]="true">
+                </ngb-pagination>
+            </div>
+        </div>
+    </div>
+</div>

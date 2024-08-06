@@ -1,0 +1,31 @@
+.multi-select {
+    min-width: 25%;
+    max-width: 35%;
+}
+
+.create-adaptive-assessment-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 170px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.create-adaptive-assessment-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 75px;
+    top: 6px;
+    font-weight: bolder;
+}
+
+.hackathon {
+    position: relative;
+    top: 35px;
+}
+
+.p-t-0 {
+    padding-top: 0;
+}
+
+.w-100 {
+    width: 100%;
+}

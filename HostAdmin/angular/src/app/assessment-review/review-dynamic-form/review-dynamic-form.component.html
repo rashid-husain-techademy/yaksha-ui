@@ -1,0 +1,4 @@
+<form [formGroup]="form">
+    <ng-container appReviewDynamicField [field]="fields" [group]="form" (questionRemove)="onQuestionRemove($event)">
+    </ng-container>
+</form>

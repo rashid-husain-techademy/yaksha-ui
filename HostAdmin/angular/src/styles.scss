@@ -1,0 +1,324 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css?family=Muli:100,300,400,600,700');
+
+.text-align-center {
+  text-align: center;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+//-------------------  Wheebox Styles--------------------
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+#chatHeaderColor {
+
+  z-index: 3;
+  background-color: #466072;
+  color: #fff;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px 8px 0px 0px;
+}
+
+#chatHeader {
+
+  z-index: 3;
+  background-color: #30A63E !important;
+  color: #fff;
+  padding: 6px;
+  font-size: 14px;
+  padding-right: 13px;
+}
+
+#chat-area {
+  overflow: auto;
+  border: 1px solid #666;
+  padding: 0px;
+  background: #f5f5f5;
+  height: 152px;
+}
+
+#chat-area span {
+  color: white;
+  background: #333;
+  padding: 4px 8px;
+  font-size: 12px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 8px;
+  margin: 0 5px 0 0;
+}
+
+
+
+#msg {
+  width: 250px;
+  border: 1px solid #999;
+  font: 12px "Lucida Grande", Sans-Serif;
+  z-index: 9;
+  background: #f5f5f5;
+}
+
+#msg::placeholder {
+  color: #5bbe74;
+  opacity: 1;
+  margin-left: 8px;
+}
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .footerchat {
+    position: fixed;
+    height: auto;
+    bottom: 46px;
+    float: right;
+    z-index: 100;
+    right: 250px;
+    margin-bottom: 0px;
+    width: 35%;
+    border-bottom: 0px solid gray;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .footerchat {
+    position: fixed;
+    height: auto;
+    bottom: 46px;
+    float: right;
+    z-index: 100;
+    right: 250px;
+    margin-bottom: 0px;
+    width: 35%;
+    border-bottom: 0px solid gray;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .footerchat {
+    position: fixed;
+    height: auto;
+    bottom: 46px;
+    float: right;
+    z-index: 100;
+    right: 250px;
+    margin-bottom: 0px;
+    width: 35%;
+    border-bottom: 0px solid gray;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .footerchat {
+    position: fixed;
+    height: auto;
+    bottom: 12px;
+    float: right;
+    z-index: 100;
+    left: 10px;
+    margin-bottom: 4px;
+    width: 250px;
+    border-bottom: 0px solid gray;
+  }
+}
+
+.media-controls,
+.volume-control {
+  margin-top: 0px;
+  position: absolute;
+  margin-left: 0px;
+  z-index: 100;
+  opacity: 0;
+}
+
+.media-box video {
+  width: 250px;
+  vertical-align: top;
+  object-fit: fill;
+  border-radius: 5px 20px 5px;
+}
+
+.media-box audio {
+  height: 5em;
+}
+
+
+
+.icon {
+  background: #32bea6;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon .camera-icon {
+  background: #626262;
+  height: 38px;
+  width: 42px;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon .camera-icon .camera-circle {
+  width: 12px;
+  height: 12px;
+  border: 5px solid #FFF;
+  border-radius: 50%;
+}
+
+.icon .camera-icon .camera-btn {
+  width: 10px;
+  height: 10px;
+  background: #FFF;
+  border-radius: 50%;
+  position: absolute;
+  right: 3px;
+  top: 5px;
+
+}
+
+.icon-3 .camera-icon:after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  background: #626262;
+  width: 25px;
+  height: 10px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+}
+
+#streaming-camera-circle {
+  position: fixed;
+  bottom: 10px;
+  right: 30px;
+  background: #2682ac;
+  width: auto;
+  height: auto;
+  border-radius: 50%;
+  color: white;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0px 3px 16px 0px rgba(0, 0, 0, 0.6), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  z-index: 100;
+}
+
+.streaming-box {
+  display: none;
+  background: #efefef;
+  position: fixed;
+  right: 30px;
+  bottom: 50px;
+  width: 280px;
+  /*  max-width: 85vw;
+  max-height:100vh; */
+  border-radius: 5px;
+  /*   box-shadow: 0px 5px 35px 9px #464a92; */
+  /*   box-shadow: 0px 5px 35px 9px #ccc; */
+  z-index: 100;
+}
+
+.streaming-box-toggle {
+  float: right;
+  margin-right: 15px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.streaming-box-header {
+  background: #2682ac;
+  height: 25px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  padding-top: 5px;
+  z-index: 100;
+}
+
+.streaming-box-body {
+  position: relative;
+  height: 170px;
+  height: auto;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.streaming-box-body:after {
+  content: "";
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTAgOCkiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS4yNSIgY3g9IjE3NiIgY3k9IjEyIiByPSI0Ii8+PHBhdGggZD0iTTIwLjUuNWwyMyAxMW0tMjkgODRsLTMuNzkgMTAuMzc3TTI3LjAzNyAxMzEuNGw1Ljg5OCAyLjIwMy0zLjQ2IDUuOTQ3IDYuMDcyIDIuMzkyLTMuOTMzIDUuNzU4bTEyOC43MzMgMzUuMzdsLjY5My05LjMxNiAxMC4yOTIuMDUyLjQxNi05LjIyMiA5LjI3NC4zMzJNLjUgNDguNXM2LjEzMSA2LjQxMyA2Ljg0NyAxNC44MDVjLjcxNSA4LjM5My0yLjUyIDE0LjgwNi0yLjUyIDE0LjgwNk0xMjQuNTU1IDkwcy03LjQ0NCAwLTEzLjY3IDYuMTkyYy02LjIyNyA2LjE5Mi00LjgzOCAxMi4wMTItNC44MzggMTIuMDEybTIuMjQgNjguNjI2cy00LjAyNi05LjAyNS0xOC4xNDUtOS4wMjUtMTguMTQ1IDUuNy0xOC4xNDUgNS43IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS4yNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTg1LjcxNiAzNi4xNDZsNS4yNDMtOS41MjFoMTEuMDkzbDUuNDE2IDkuNTIxLTUuNDEgOS4xODVIOTAuOTUzbC01LjIzNy05LjE4NXptNjMuOTA5IDE1LjQ3OWgxMC43NXYxMC43NWgtMTAuNzV6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS4yNSIvPjxjaXJjbGUgZmlsbD0iIzAwMCIgY3g9IjcxLjUiIGN5PSI3LjUiIHI9IjEuNSIvPjxjaXJjbGUgZmlsbD0iIzAwMCIgY3g9IjE3MC41IiBjeT0iOTUuNSIgcj0iMS41Ii8+PGNpcmNsZSBmaWxsPSIjMDAwIiBjeD0iODEuNSIgY3k9IjEzNC41IiByPSIxLjUiLz48Y2lyY2xlIGZpbGw9IiMwMDAiIGN4PSIxMy41IiBjeT0iMjMuNSIgcj0iMS41Ii8+PHBhdGggZmlsbD0iIzAwMCIgZD0iTTkzIDcxaDN2M2gtM3ptMzMgODRoM3YzaC0zem0tODUgMThoM3YzaC0zeiIvPjxwYXRoIGQ9Ik0zOS4zODQgNTEuMTIybDUuNzU4LTQuNDU0IDYuNDUzIDQuMjA1LTIuMjk0IDcuMzYzaC03Ljc5bC0yLjEyNy03LjExNHpNMTMwLjE5NSA0LjAzbDEzLjgzIDUuMDYyLTEwLjA5IDcuMDQ4LTMuNzQtMTIuMTF6bS04MyA5NWwxNC44MyA1LjQyOS0xMC44MiA3LjU1Ny00LjAxLTEyLjk4N3pNNS4yMTMgMTYxLjQ5NWwxMS4zMjggMjAuODk3TDIuMjY1IDE4MGwyLjk0OC0xOC41MDV6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS4yNSIvPjxwYXRoIGQ9Ik0xNDkuMDUgMTI3LjQ2OHMtLjUxIDIuMTgzLjk5NSAzLjM2NmMxLjU2IDEuMjI2IDguNjQyLTEuODk1IDMuOTY3LTcuNzg1LTIuMzY3LTIuNDc3LTYuNS0zLjIyNi05LjMzIDAtNS4yMDggNS45MzYgMCAxNy41MSAxMS42MSAxMy43MyAxMi40NTgtNi4yNTcgNS42MzMtMjEuNjU2LTUuMDczLTIyLjY1NC02LjYwMi0uNjA2LTE0LjA0MyAxLjc1Ni0xNi4xNTcgMTAuMjY4LTEuNzE4IDYuOTIgMS41ODQgMTcuMzg3IDEyLjQ1IDIwLjQ3NiAxMC44NjYgMy4wOSAxOS4zMzEtNC4zMSAxOS4zMzEtNC4zMSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjEuMjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvZz48L3N2Zz4=');
+  opacity: 0.1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+}
+
+.streaming-logs {
+  padding: 15px;
+  height: 250px;
+  overflow: auto;
+}
+
+@media only screen and (max-width: 500px) {
+  .streaming-logs {
+    height: 40vh;
+  }
+}
+
+.noti_bubble {
+  position: absolute;
+  /* This breaks the div from the normal HTML document. */
+  top: -6px;
+  right: 12px;
+  padding: 4px 6px 4px 6px;
+  background-color: red;
+  /* you could use a background image if you'd like as well */
+  color: white;
+  font-weight: bold;
+  font-size: 0.55em;
+  background: red;
+  /* The following is CSS3, but isn't crucial for this technique to work. */
+  /* Keep in mind that if a browser doesn't support CSS3, it's fine! They just won't have rounded borders and won't have a box shadow effect. */
+  /* You can always use a background image to produce the same effect if you want to, and you can use both together so browsers without CSS3 still have the rounded/shadow look. */
+  border-radius: 30px;
+  box-shadow: 1px 1px 1px gray;
+}
+
+.toggle-desc .mat-expansion-panel-body {
+  padding: 0 0 !important;
+}
+
+.indentaion img {
+  max-width: 100% !important;
+}
+
+.apexcharts-canvas {
+  text-align: center !important;
+  margin: 0 auto !important;
+}

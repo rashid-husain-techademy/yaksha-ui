@@ -1,0 +1,299 @@
+<div class="card">
+    <form [formGroup]="campaignForm" *ngIf="campaignForm" novalidate autocomplete="off" class="invitation-form">
+        <div class="modal-header">
+            <h4 class="modal-title">
+                {{showPublicLink ? constants.scheduledDrive :constants.scheduleDrive}}
+            </h4>
+        </div>
+        <div class="modal-body">
+            <h5 class="assessment-label">{{scheduleAssessmentDto?.assessmentName}}</h5>
+            <!-- <h6>{{constants.category}}: {{scheduleAssessmentDto?.categoryName}}</h6> -->
+            <div *ngIf="!showPublicLink">
+                <div class="m-b-20" *ngIf="userRole === userRoles[1] && tenantList.length">
+                    <div class="form-group m-l-20 w-30">
+                        <label for="" class="font-weight-bold">
+                            {{constants.tenant}} <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" value="{{tenantList[0]?.name}}" disabled>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap m-b-20 schedule-info">
+                    <div class="d-flex flex-wrap col-md-12">
+                        <div class="d-flex col-md-6 p-10">
+                            <div class="form-group m-r-20 w-100">
+                                <label for="" class="font-weight-bold">
+                                    {{constants.attempts}} <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" formControlName="attempts">
+                                <small class="form-text text-danger" *ngIf="!isFormValid('attempts')">
+                                    {{constants.pleaseEnterTheAtempts}}
+                                </small>
+                                <small class="form-text text-danger"
+                                    *ngIf="campaignForm.controls['attempts'].hasError('max')">
+                                    {{constants.maxAttemptsShouldBeTen}}
+                                </small>
+                                <small class="form-text text-danger"
+                                    *ngIf="campaignForm.controls['attempts'].hasError('pattern')">
+                                    {{constants.pleaseEnterTheValidNumber}}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="d-flex col-md-6 p-10">
+                            <div class="form-group m-r-20 w-100">
+                                <label for="" class="font-weight-bold">
+                                    {{constants.duration}} <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" placeholder="In minutes" class="form-control"
+                                    formControlName="duration">
+                                <small class="form-text text-danger" *ngIf="!isFormValid('duration')">
+                                    {{constants.pleaseEnterTheDuration}}
+                                </small>
+                                <small class="form-text text-danger"
+                                    *ngIf="campaignForm.get('duration').hasError('pattern')">
+                                    {{constants.pleaseProvideValidDuration}}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap col-md-12 p-0">
+                        <div class="p-10 d-flex col-md-6">
+                            <div class="form-group m-r-20 w-100">
+                                <label for="" class="font-weight-bold">
+                                    {{constants.startDate}}<label class="text-danger">*</label>
+                                </label>
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp1"
+                                        formControlName="startDate" ngbDatepicker #d3="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary no-shadow" (click)="d3.toggle()"
+                                            type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group w-100">
+                                <label for="" class="font-weight-bold">
+                                    {{constants.startTime}} <span *ngIf="this.campaignForm.get('startDate').value"
+                                        class="text-danger">*</span>
+                                </label>
+                                <div class="input-group mt-1">
+                                    <div class="w-100">
+                                        <input class="form-control" type="time" value="00:00:00" id="example-time-input"
+                                            formControlName="startTime">
+                                        <small class="form-text text-danger error-text"
+                                            *ngIf="!isFormValid('startTime')">
+                                            {{constants.pleaseEnterTheStartTime}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-10 d-flex col-md-6">
+                            <div class="form-group m-r-20 w-100">
+                                <label for="" class="font-weight-bold">
+                                    {{constants.linkValidityEndDate}} <label class="text-danger">*</label>
+                                </label>
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp2"
+                                        formControlName="endDate" ngbDatepicker #d4="ngbDatepicker"
+                                        (ngModelChange)="onEndDateChange()">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary no-shadow" (click)="d4.toggle()"
+                                            type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group w-100">
+                                <label for="" class="font-weight-bold">
+                                    {{constants.endTime}} <span *ngIf="this.campaignForm.get('endDate').value"
+                                        class="text-danger">*</span>
+                                </label>
+                                <div class="input-group mt-1">
+                                    <div class="w-100">
+                                        <input class="form-control" type="time" value="23:59:00" id="example-time-input"
+                                            formControlName="endTime">
+                                        <small class="form-text text-danger error-text" *ngIf="!isFormValid('endTime')">
+                                            {{constants.pleaseEnterTheEndTime}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-10 col-md-3">
+                            <label for="" class="font-weight-bold">
+                                {{constants.testPurpose}} <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" formControlName="testPurpose">
+                            <small class="form-text text-danger" *ngIf="!isFormValid('testPurpose')">
+                                {{constants.pleaseEnterTheTestPurpose}}
+                            </small>
+                            <small class="form-text text-danger"
+                                *ngIf="campaignForm.controls['testPurpose'].hasError('pattern')">
+                                {{constants.pleaseEnterValidValue}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-10 text-center">
+                    <h5 class="font-weight-bold m-0">
+                        {{constants.scheduleType}}
+                    </h5>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex align-items-center m-r-40"
+                        *ngIf="(isSuperAdmin || isTenantAdmin || scheduleConfigOptions === null || scheduleConfigOptions.PublicSchedule ) && !isCloudBased">
+                        <input class="m-0" type="radio" name="scheduleType" id="inlineRadio1"
+                            value={{constants.publicURL}} formControlName="scheduleType" (click)="changeSchedule();"
+                            [attr.disabled]="isCollaborativeAssessment ? '' : null">
+                        <label class="font-weight-bold m-0 p-l-10" for="inlineRadio1">{{constants.publicURL}}</label>
+                    </div>
+                    <div *ngIf="isSuperAdmin || isTenantAdmin || scheduleConfigOptions === null || scheduleConfigOptions.InviteSchedule"
+                        class="d-flex align-items-center m-r-40">
+                        <input class="m-0" type="radio" name="scheduleType" id="inlineRadio2"
+                            value={{constants.inviteCandidates}} formControlName="scheduleType"
+                            (click)="changeSchedule();">
+                        <label class="font-weight-bold m-0 p-l-10"
+                            for="inlineRadio2">{{constants.inviteCandidates}}</label>
+                    </div>
+                </div>
+                <div class="p-10"
+                    *ngIf="(isSuperAdmin || isTenantAdmin || scheduleConfigOptions === null || scheduleConfigOptions.PublicSchedule) && campaignForm.get('scheduleType').value === constants.publicURL">
+                    <label for="" class="font-weight-bold">
+                        {{constants.domains}}
+                        ({{constants.seperatedByComma}})
+                    </label>
+                    <input type="text" class="form-control" formControlName="domain">
+                </div>
+                <div class="p-10"
+                    *ngIf="(isSuperAdmin || isTenantAdmin || scheduleConfigOptions === null || scheduleConfigOptions.InviteSchedule) && !hideScheduleCreation && campaignForm.get('scheduleType').value === constants.inviteCandidates">
+                    <div class="m-b-10" *ngIf="!isCloudBased">
+                        <label class="font-weight-bold">{{constants.candidatesEmails}}</label>
+                        <input type="text" class="form-control" formControlName="candidateEmails">
+                    </div>
+                    <div>
+                        <label for="fileUpload" appDragDrop (onFileDropped)="onFileChange($event)"
+                            class="border d-flex flex-column file-upload justify-content-center align-items-center p-20 h-120">
+                            <input type="file" id="fileUpload" hidden #fileInput
+                                (change)="onFileChange($event.target.files)" accept=".xls,.xlsx">
+                            {{constants.dragAndDropFile}}
+                        </label>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <small class="text-muted m-r-40">{{constants.onlyExcelFilesAreSupported}}</small>
+                                <a [href]="sampleTemplate">
+                                    <small><i class="fa fa-download m-r-10"></i>{{constants.sampleTemplate}}</small>
+                                </a>
+                            </div>
+                            <div *ngIf="file">
+                                <span class="label label-rounded label-primary">
+                                    {{fileName}}
+                                    <span aria-hidden="true" class="pointer m-l-10"
+                                        (click)="removeSelectedFile()">&times;</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="m-t-20" *ngIf="showErrors">
+                            <h5>{{constants.errors}}</h5>
+                            <div *ngIf="errorMessage.length > errorLength">
+                                <h5>#{{constants.errorCountReachedMaximum}}</h5>
+                            </div>
+                            <ul>
+                                <li *ngFor="let error of errorMessage">{{error}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="(isSuperAdmin || isTenantAdmin || scheduleConfigOptions === null || scheduleConfigOptions.CustomField) 
+                && (campaignForm.get('scheduleType').value === constants.publicURL)">
+                    <div class="p-10 text-center pt-30">
+                        <h5 class="font-weight-bold m-0">
+                            Custom Field
+                        </h5>
+                    </div>
+                    <div class="d-flex justify-content-center col-md-12 p-0">
+                        <div class="p-10 col-md-6">
+                            <label for="customLabel1" class="font-weight-bold">{{constants.customLabel1}}</label>
+                            <input type="text" class="form-control" id="customLabel1" formControlName="customLabel1"
+                                placeholder="Custom Field">
+                            <input *ngIf="campaignForm.get('customLabel1').value.toString().trim().length>0"
+                                class="m-r-10" type="checkbox" id="isCustomField1Mandatory"
+                                formControlName="isCustomField1Mandatory">
+                            <label *ngIf="campaignForm.get('customLabel1').value.toString().trim().length>0"
+                                for="isCustomField1Mandatory"
+                                class="m-0 font-weight-bold">{{constants.isMandatory}}</label>
+                            <small class="form-text text-danger" *ngIf="isCustomFieldRegularExpresson('customLabel1')">
+                                {{constants.pleaseEnterValidValue}}
+                            </small>
+                        </div>
+                        <div class="p-10 col-md-6">
+                            <label for="customLabel2" class="font-weight-bold">{{constants.customLabel2}}</label>
+                            <input type="text" class="form-control" id="customLabel2" formControlName="customLabel2"
+                                placeholder="Custom Field">
+                            <input *ngIf="campaignForm.get('customLabel2').value.toString().trim().length>0"
+                                class="m-r-10" type="checkbox" id="isCustomField2Mandatory"
+                                formControlName="isCustomField2Mandatory">
+                            <label *ngIf="campaignForm.get('customLabel2').value.toString().trim().length>0"
+                                for="isCustomField2Mandatory"
+                                class="m-0 font-weight-bold">{{constants.isMandatory}}</label>
+                            <small class="form-text text-danger" *ngIf="isCustomFieldRegularExpresson('customLabel2')">
+                                {{constants.pleaseEnterValidValue}}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center col-md-12 p-0">
+                        <div class="p-10 col-md-6">
+                            <label for="customLabel3" class="font-weight-bold">{{constants.customLabel3}}</label>
+                            <input type="text" class="form-control" id="customLabel3" formControlName="customLabel3"
+                                placeholder="Custom Field">
+                            <input *ngIf="campaignForm.get('customLabel3').value.toString().trim().length>0"
+                                class="m-r-10" type="checkbox" id="isCustomField3Mandatory"
+                                formControlName="isCustomField3Mandatory">
+                            <label *ngIf="campaignForm.get('customLabel3').value.toString().trim().length>0"
+                                for="isCustomField3Mandatory"
+                                class="m-0 font-weight-bold">{{constants.isMandatory}}</label>
+                            <small class="form-text text-danger" *ngIf="isCustomFieldRegularExpresson('customLabel3')">
+                                {{constants.pleaseEnterValidValue}}
+                            </small>
+                        </div>
+                        <div class="p-10 col-md-6">
+                            <label for="customLabel4" class="font-weight-bold">{{constants.customLabel4}}</label>
+                            <input type="text" class="form-control" id="customLabel2" formControlName="customLabel4"
+                                placeholder="Custom Field">
+                            <input *ngIf="campaignForm.get('customLabel4').value.toString().trim().length>0"
+                                class="m-r-10" type="checkbox" id="isCustomField4Mandatory"
+                                formControlName="isCustomField4Mandatory">
+                            <label *ngIf="campaignForm.get('customLabel4').value.toString().trim().length>0"
+                                for="isCustomField4Mandatory"
+                                class="m-0 font-weight-bold">{{constants.isMandatory}}</label>
+                            <small class="form-text text-danger" *ngIf="isCustomFieldRegularExpresson('customLabel4')">
+                                {{constants.pleaseEnterValidValue}}
+                            </small>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+            <div class="m-b-20 test-link" *ngIf="showPublicLink">
+                <label class="font-weight-bold">{{constants.publicTestLinkURL}}</label>
+                <input type="text" class="form-control p-r-40" formControlName="scheduleLink">
+                <i class="far fa-copy text-info" (click)="copyInputMessage()" [ngbTooltip]="constants.copyLink"></i>
+            </div>
+        </div>
+        <div class="modal-footer" *ngIf="!showPublicLink && !hideScheduleCreation">
+            <button type="button" class="btn btn-outline-secondary" (click)="close()">{{constants.cancel}}</button>
+            <button type="button" class="btn btn-info" (click)="save()" [disabled]="isSubmitted">
+                {{constants.schedule}}
+            </button>
+        </div>
+        <div class="modal-footer" *ngIf="showPublicLink || hideScheduleCreation">
+            <button type="button" class="btn btn-outline-secondary" (click)="close()">{{constants.close}}</button>
+            <button type="button" class="btn btn-info" (click)="UpdateScheduledAssessment()"
+                *ngIf="scheduleCampaignPageInputData?.isUpdate">
+                {{constants.update}}
+            </button>
+        </div>
+    </form>
+</div>

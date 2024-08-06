@@ -1,0 +1,76 @@
+.input-group-append button {
+    border-top-left-radius   : 2px !important;
+    border-bottom-left-radius: 2px !important;
+}
+
+.cB {
+    display: none;
+}
+
+.cB-outer-div {
+    display      : inline-block;
+    position     : relative;
+    width        : 50px;
+    height       : 15px;
+    background   : #cccccc;
+    border-radius: 20px;
+}
+
+.cB-inner-div {
+    display      : inline-block;
+    position     : absolute;
+    width        : 25px;
+    height       : 25px;
+    background   : #1f79ec;
+    border-radius: 50%;
+    top          : -5px;
+    box-shadow   : 2px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+/***Adding tranisitons***/
+.cB-inner-div {
+    transform: translateX(-25px);
+}
+
+.cB-outer-div,
+.cB-inner-div {
+    transition: 0.3s all cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+input[type="checkbox"].cB:checked+.cB-outer-div {
+    background: #cccccc;
+}
+
+input[type="checkbox"].cB:checked+.cB-outer-div .cB-inner-div {
+    background: #1f79ec;
+    transform : translateX(0px);
+    box-shadow: -2px 0px 4px 0px rgba(0, 0, 0, 0.2);
+}
+.table td {
+    vertical-align: middle !important;
+}
+
+.bulk ::ng-deep .multiselect-dropdown {
+    position    : relative;
+    width       : 225px;
+    font-size   : inherit;
+    font-family : inherit;
+}
+
+#uploads{
+    margin-left: 30px !important;
+}
+
+.bulk ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space  : nowrap;
+    max-width    : 130px !important;
+    text-overflow: ellipsis;
+    overflow     : hidden;
+}
+
+.bulk ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position   : absolute;
+    right      : 41px;
+    top        : 6px;
+    font-weight: bolder;
+}

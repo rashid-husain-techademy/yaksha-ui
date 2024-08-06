@@ -1,0 +1,18 @@
+{
+  "remoteServiceBaseUrl": "https://iamserver-s1.azurewebsites.net",
+  "appBaseUrl": "https://yaksha-uatt-ui.azurewebsites.net",
+  "localeMappings": [
+    {
+      "from": "pt-BR",
+      "to": "pt"
+    },
+    {
+      "from": "zh-CN",
+      "to": "zh"
+    },
+    {
+      "from": "he-IL",
+      "to": "he"
+    }
+  ]
+}

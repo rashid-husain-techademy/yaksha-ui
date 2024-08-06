@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{constants.assignCatalog}}</h4>
+    <span class="cursor-pointer" aria-hidden="true" aria-label="Close" (click)="closeBtnClick()">&times;</span>
+</div>
+<div class="modal-body">
+    <div class="m-b-20">
+        <div class="d-flex flex-wrap justify-content-start m-b-20">
+            <div class="w-100 m-b-10">
+                <label for="" class="font-weight-bold">{{constants.chooseFile}} <span class="text-danger">*
+                        {{constants.makeSureUsersAvailable}}</span></label>
+                <label for="fileUpload" appDragDrop (fileDropped)="onFileChange($event)"
+                    class="border d-flex flex-column file-upload justify-content-center align-items-center p-20 h-120">
+                    <input type="file" id="fileUpload" hidden #fileInput (change)="onFileChange($event.target.files)"
+                        accept=".xls,.xlsx">
+                    {{constants.dragAndDropFile}}
+                </label>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted m-r-40">{{constants.onlyExcelFilesAreSupported}}</small>
+                    <a [href]="sampleTemplate">
+                        <small><i class="fa fa-download m-r-10"></i>{{constants.sampleTemplate}}</small>
+                    </a>
+                </div>
+                <div *ngIf="file">
+                    <span class="label label-rounded label-primary">
+                        {{fileName}}
+                        <span aria-hidden="true" class="pointer m-l-10" (click)="removeSelectedFile()">&times;</span>
+                    </span>
+                </div>
+                <div class="m-t-20" *ngIf="showErrors">
+                    <h5>{{constants.errors}}</h5>
+                    <div *ngIf="errorMessage.length > errorLength">
+                        <h5>#{{constants.errorCountReachedMaximum}}</h5>
+                    </div>
+                    <ul>
+                        <li *ngFor="let error of errorMessage">{{error}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeBtnClick()">{{constants.cancel}}</button>
+    <button type="button" [disabled]="!file" class="btn btn-info" (click)="save()">{{constants.assign}}</button>
+</div>

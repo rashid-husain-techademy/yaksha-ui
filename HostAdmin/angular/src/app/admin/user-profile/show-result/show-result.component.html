@@ -1,0 +1,37 @@
+<div>
+    <h3 class="page-title mb-1">Assessment Result</h3>
+    <div class="d-flex section-navs my-4">
+        <div class="m-r-10" *ngFor="let section of sections">
+            <button type="button" class="text-truncate sections-btn btn btn-sm"
+                [ngClass]="section.assessmentSectionId != selectedSectionId ? 'btn-outline-secondary' : 'btn-outline-info'"
+                (click)="onSelectedSession(section.assessmentSectionId)">
+                {{section.assessmentSectionName}}
+            </button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div *ngFor="let mcq of mcqs ; let i = index">
+                <div class="d-flex">
+                    {{i+1}}. <span [innerHTML]="mcq.question | safeHtml" class="ml-1"></span>
+                </div>
+                <div class="card-body d-flex flex-wrap justify-content-between">
+                    <div class="option-width p-10 line" *ngFor="let choice of mcq.choicesDetails">
+                        <div [ngClass]="{
+                            ' dflex pa-9 bg-correct' : choice.isCorrect,
+                            ' d-flex p-9  bg-wrong ' : choice.isSelected && !choice.isCorrect,
+                            'input-group-text' : !choice.isSelected && !choice.isCorrect
+                        }">
+                            <input type="checkbox" href="javascript:void(0)" class="d-flex p-10 border m-r-10" disabled
+                                [checked]="choice.isSelected">
+                            <div class="option indentaion" [innerHTML]="choice.choice | safeHtml"> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

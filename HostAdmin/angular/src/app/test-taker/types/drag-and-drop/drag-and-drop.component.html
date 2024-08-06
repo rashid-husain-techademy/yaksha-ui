@@ -1,0 +1,14 @@
+<ng-container [formGroup]="group">
+    <div class="card">
+        <div class="card-body">
+            <input type="text" *ngIf="formControlName" [formControlName]="formControlName" hidden>
+            <div [innerHTML]="convertedQuestionText | safeHtml" #inputLabel id="inputLabel" class="indentaion"></div>
+        </div>
+    </div>
+    <h4 class="m-b-20 text-center">{{constants.pleaseDragAndDropTheBelowOptions}}</h4>
+    <div class="card">
+        <div class="card-body">
+            <div class="draggable-choices" #choicesDiv></div>
+        </div>
+    </div>
+</ng-container>

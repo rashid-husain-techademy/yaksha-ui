@@ -1,0 +1,613 @@
+<div *ngIf="assessmentDetail">
+    <div class="card">
+        <div class="crud"
+            *ngIf="assessmentDetail.isOwned && assessmentDetail.assessmentStatus === assessmentStatus.Draft">
+            <button type="button" class="btn btn-outline-secondary btn-rounded"
+                (click)="editAssessment(assessmentDetail.id)"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-outline-danger btn-rounded"
+                (click)="deleteAssessment(assessmentDetail.id)"><i class="fa fa-trash"></i></button>
+        </div>
+        <div class="crud" *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published">
+            <button class="text-info btn" ngbTooltip={{constants.copyAssessmentId}} placement="bottom"
+                (click)="copyLink(assessmentDetail.assessmentIdNumber)">
+                <i class="far fa-copy"></i>
+            </button>
+        </div>
+        <div>
+            <div *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Draft"
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Draft ? 'drafts' : ''"
+                class="ribbon ribbon-top-left">
+                <span>{{constants.draft}}</span>
+            </div>
+            <div *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published"
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Published ? 'published' : ''"
+                class="ribbon ribbon-top-left"><span>{{constants.published}}</span></div>
+            <div *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published && assessmentDetail.hasActiveSchedules"
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Published && assessmentDetail.hasActiveSchedules ? 'scheduled' : ''"
+                class="ribbon ribbon-top-left"><span>{{constants.scheduled}}</span></div>
+        </div>
+        <div class="card-body p-l-40">
+            <h3
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Published ? 'page-title m-r-30 assessment-label' : 'page-title mr-110 assessment-label'">
+                {{assessmentDetail.name}}</h3>
+            <div [ngSwitch]=skillType>
+                <div *ngSwitchCase="'single'">{{categories}} - {{skillName}}</div>
+                <div *ngSwitchCase="'multi'">{{constants.multiSkillAssessment}}</div>
+                <div *ngSwitchDefault>
+                    <h5>{{constants.categories}}</h5>
+                </div>
+            </div>
+            <div class="text-muted m-b-10">{{assessmentDetail.authorName}}</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="border d-inline-flex">
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold text-info m-0">{{assessmentDetail.totalSections}}</h5>
+                        <span class="text-muted">{{constants.totalSections}}</span>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center" *ngIf="assessmentDetail.assessmentType===assessmentType.Adaptive
+                     && skillType=== 'multi'">
+                        <h5 class="font-weight-bold text-info m-0">{{assessmentDetail.totalSkills}}</h5>
+                        <span class="text-muted">{{constants.totalCatgories}}</span>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center" *ngIf="skillType !== 'single'">
+                        <h5 class="font-weight-bold text-info m-0">{{assessmentDetail.totalSkills}}</h5>
+                        <span class="text-muted">{{constants.totalSkills}}</span>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold text-info m-0">{{assessmentDetail.totalQuestions}}</h5>
+                        <span class="text-muted">{{constants.totalQuestions}}</span>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold text-info m-0">{{assessmentDetail.duration}}</h5>
+                        <span class="text-muted">{{constants.totalDuration}}</span>
+                    </div>
+                </div>
+                <div class="w-50 text-right">
+                    <button class="btn btn-success m-r-20"
+                        *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published"
+                        (click)="schedule()">{{constants.schedule}}</button>
+                    <span
+                        [ngbTooltip]="assessmentDetail.assessmentStatus !== assessmentStatus.Published && !assessmentDetail.totalQuestions ? 'Please add questions to publish' : null">
+                        <button class="btn btn-info m-r-20" *ngIf="assessmentDetail.isOwned"
+                            (click)="updateStatus(assessmentDetail.id)"
+                            [disabled]="assessmentDetail.assessmentStatus !== assessmentStatus.Published && !assessmentDetail.totalQuestions">{{buttonText}}</button>
+                    </span>
+                    <span *ngIf="assessmentDetail.assessmentType !== assessmentType.Adaptive"
+                        [ngbTooltip]="assessmentDetail.totalQuestions <= 0 ? constants.previewToolTip : null">
+                        <button class="btn btn-outline-info" [disabled]="assessmentDetail.totalQuestions <= 0"
+                            (click)="testPreview()">{{constants.preview}}</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body p-0">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                <li [ngbNavItem]="1">
+                    <a ngbNavLink>{{constants.description}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <h5 class="font-weight-bold">{{constants.description}}</h5>
+                            <div>
+                                <span [innerHTML]="assessmentDetail.description"></span>
+                            </div>
+                            <hr>
+                            <h5 class="font-weight-bold">{{constants.instructions}}</h5>
+                            <div>
+                                <span [innerHTML]="assessmentDetail.instructions"></span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                    <a ngbNavLink>{{constants.questions}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <div class="text-right m-b-20"
+                                *ngIf="assessmentDetail.isOwned && assessmentDetail.assessmentStatus === assessmentStatus.Draft">
+                                <button type="button" class="btn btn-outline-success"
+                                    (click)="openAssessmentOperation(constants.addSection)" *ngIf="(!assessmentDetail.assessmentSections.length || !isStackAssessment)&&assessmentDetail.assessmentType!==
+                                    assessmentType.Adaptive">{{constants.addNewSection}}</button>
+                            </div>
+                            <div cdkDropList [cdkDropListData]="assessmentDetail.assessmentSections"
+                                (cdkDropListDropped)="drop($event)">
+                                <div class="section m-b-10 border p-10"
+                                    *ngFor="let section of assessmentDetail.assessmentSections;let i=index"
+                                    [cdkDragData]="section" cdkDrag>
+                                    <div class="d-flex justify-content-between align-items-center m-b-10">
+                                        <h5 class="font-weight-bold m-0 section-name-overflow">{{section.sectionName}}
+                                        </h5>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <div class="m-r-20" *ngIf="skillType === 'multi'">
+                                                <span
+                                                    class="text-muted">{{constants.totalCatgories}}</span>&nbsp;&nbsp;<strong
+                                                    class="text-info">{{section.totalSkills}}</strong>
+                                            </div>
+                                            <div class="m-r-20">
+                                                <span
+                                                    class="text-muted">{{constants.totalSkills}}</span>&nbsp;&nbsp;<strong
+                                                    class="text-info">{{section.totalSkills}}</strong>
+                                            </div>
+                                            <div class="m-r-20">
+                                                <span
+                                                    class="text-muted">{{constants.totalQuestions}}</span>&nbsp;&nbsp;<strong
+                                                    class="text-info">{{section.totalQuestions}}</strong>
+                                            </div>
+                                            <div class="m-r-20">
+                                                <span
+                                                    class="text-muted">{{constants.totalDuration}}</span>&nbsp;&nbsp;<strong
+                                                    class="text-info">{{section.duration}}</strong>
+                                            </div>
+                                            <div
+                                                *ngIf="assessmentDetail.isOwned && assessmentDetail.assessmentStatus === assessmentStatus.Draft">
+                                                <button type="button" class="btn btn-outline-info btn-rounded"
+                                                    (click)="openAssessmentOperation(constants.addSkill, section.id)"
+                                                    *ngIf="!isStackAssessment && assessmentDetail.assessmentType !== assessmentType.Adaptive">
+                                                    {{constants.addNewSkill}}</button>
+                                                <button type="button" class="btn btn-outline-danger btn-rounded"
+                                                    (click)="deleteSection(section.id,section.sectionName)" *ngIf="assessmentDetail.assessmentType!==
+                                                    assessmentType.Adaptive"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped border">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="w-25">{{
+                                                    assessmentDetail.assessmentType === assessmentType.Adaptive ?
+                                                    constants.proficiencyLevel:constants.skill}}</th>
+                                                <th scope="col" class="text-center"> {{constants.mcqType}} </th>
+                                                <th scope="col" class="text-center"> {{constants.codingType}} </th>
+                                                <th scope="col" class="text-center"> {{constants.stackType}} </th>
+                                                <th scope="col" class="text-center">{{constants.duration}}
+                                                </th>
+                                                <th scope="col" class="text-center"
+                                                    *ngIf="assessmentDetail.isOwned 
+                                                    && assessmentDetail.assessmentStatus === assessmentStatus.Draft 
+                                                    && !isStackAssessment && assessmentDetail.assessmentType!== assessmentType.Adaptive">
+                                                    {{constants.actions}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="assessmentDetail.assessmentType !== assessmentType.Adaptive">
+                                            <tr *ngFor="let skill of section.sectionSkills;">
+                                                <td>{{skill.skillName}}</td>
+                                                <td class="text-center"> {{skill.totalMCQQuestions}}</td>
+                                                <td class="text-center"> {{skill.totalCodingQuestions}}</td>
+                                                <td class="text-center"> {{skill.totalStackQuestions}}</td>
+                                                <td class="text-center">{{skill.duration}}</td>
+                                                <td class="text-center"
+                                                    *ngIf="assessmentDetail.isOwned && assessmentDetail.assessmentStatus === assessmentStatus.Draft">
+                                                    <button type="button" class="btn btn-outline-secondary btn-rounded"
+                                                        (click)="openAssessmentOperation(constants.editSkill, section.id, skill.assessmentSectionSkillId)">
+                                                        <i class="fa fa-edit"></i></button>
+                                                    <button type="button" class="btn btn-outline-danger btn-rounded"
+                                                        (click)="deleteSectionSkill(section.id, skill.assessmentSectionSkillId, skill.skillName)">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="assessmentDetail.assessmentType === assessmentType.Adaptive">
+                                            <tr
+                                                *ngFor="let proficiency of section.sectionSkills[0].proficiencyLevelQuestions;">
+                                                <td>{{proficiency.proficiencyLevelId === constants.beginnerId ?
+                                                    constants.beginner :
+                                                    proficiency.proficiencyLevelId === constants.intermediateId ?
+                                                    constants.intermediate :
+                                                    constants.advanced}}</td>
+                                                <td class="text-center"> {{proficiency.totalQuestions}}</td>
+                                                <td class="text-center"> {{proficiency?.totalCodingQuestions || 0}}</td>
+                                                <td class="text-center"> {{proficiency?.totalStackQuestions || 0}}</td>
+                                                <td class="text-center">{{proficiency?.duration || '-'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="text-center m-t-20">
+                                <button type="button" [hidden]="isShow" class="btn btn-outline-success"
+                                    (click)="updateSectionSortOrder()">{{constants.saveChanges}}</button>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="3" (click)="getAssessmentSchedules()">
+                    <a ngbNavLink>{{constants.schedule}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <table class="table table-striped border mt-4 schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold text-center">{{constants.type}}</th>
+                                        <th *ngIf="userRole === userRoles[1]" class="font-weight-bold text-center">
+                                            {{constants.tenantNameLabel}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.testPurpose}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.startDateTime}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.EndDateTime}}</th>
+                                        <!-- TODO <th class="font-weight-bold text-center">{{constants.usages}}</th> -->
+                                        <th class="font-weight-bold text-center">{{constants.isActive}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.scheduleLink}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.actionsField}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.runPlagiarism}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let schedule of schedulesList">
+                                        <td class="text-center">
+                                            <ngb-highlight [result]="schedule.scheduleTarget === scheduleTarget.Private ? 
+                                                schedule.scheduleType === scheduleType.SelfEnrolled ? constants.selfEnrollment 
+                                                : schedule.scheduleType === scheduleType.SelfRegistration ? constants.selfRegistration
+                                                : constants.invitation : constants.publicLink ">
+                                            </ngb-highlight>
+                                        </td>
+                                        <td class="text-center overflow" *ngIf="userRole === userRoles[1]">
+                                            <ngb-highlight [ngbTooltip]="schedule.tenancyName"
+                                                [result]="schedule.tenancyName"></ngb-highlight>
+                                        </td>
+                                        <td class="text-center overflow">
+                                            <ngb-highlight [ngbTooltip]="schedule.testPurpose"
+                                                [result]="schedule.testPurpose" class="overflow test-purpose">
+                                            </ngb-highlight>
+                                        </td>
+                                        <td class="text-center">
+                                            <ngb-highlight [result]="formattedDateTime(schedule.startDateTime)">
+                                            </ngb-highlight>
+                                        </td>
+                                        <td class="text-center">
+                                            <ngb-highlight [result]="formattedDateTime(schedule.endDateTime)">
+                                            </ngb-highlight>
+                                        </td>
+                                        <!-- <td class="text-center">
+                                                <ngb-highlight [result]="schedule.usage"></ngb-highlight>
+                                            </td> -->
+                                        <td>
+                                            <div class="toggle-wrapper">
+                                                <div class="toggle checkcross" (click)="onStatusChange(schedule)">
+                                                    <input type="checkbox" class="custom-check" [id]="schedule.id"
+                                                        [checked]="schedule.isActive">
+                                                    <label for="checkcross" class="toggle-item">
+                                                        <div class="check"></div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="toggle-wrapper" *ngIf="schedule.disableActivation">
+
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0)"
+                                                *ngIf="schedule.scheduleTarget === scheduleTarget.Public || schedule.scheduleType === scheduleType.SelfRegistration"
+                                                [ngbTooltip]="constants.copyScheduleLink"
+                                                (click)="copyLink(schedule.scheduleLink)">
+                                                <i class="far fa-copy"></i></a>
+                                            <span
+                                                *ngIf="schedule.scheduleTarget !== scheduleTarget.Public && schedule.scheduleType !== scheduleType.SelfRegistration">-</span>
+                                        </td>
+                                        <td class="text-center action-container">
+                                            <span class="margin-right"
+                                                *ngIf="schedule.scheduleTarget === scheduleTarget.Private && schedule.scheduleType === scheduleType.Invite">
+                                                <a href="javascript:void(0)" (click)="scheduleInvite(schedule)"
+                                                    [ngbTooltip]="constants.inviteUser">
+                                                    <i class="fas fa-user-plus i-user-icon"></i></a></span>
+                                            <span class="margin-right"
+                                                *ngIf="schedule.scheduleTarget === scheduleTarget.Private && schedule.scheduleType === scheduleType.Invite">
+                                                <a href="javascript:void(0)"
+                                                    (click)="showInvitedCandidates(schedule.id, schedule.tenantId)"
+                                                    [ngbTooltip]="constants.showInvitedCandidates"
+                                                    (click)="openInvitedUsers(content)">
+                                                    <i class="fas fa-envelope i-invited-icon"></i>
+                                                </a>
+                                            </span>
+
+                                            <span class="margin-right" *ngIf="assessmentDetail.assessmentType === assessmentType.Hackathon &&
+                                                schedule.scheduleType === scheduleType.SelfRegistration">
+                                                <a href="javascript:void(0)" (click)="updateTenantLogo(schedule)"
+                                                    [ngbTooltip]="constants.updateTenantLogo">
+                                                    <i class="fas fa-paperclip color-dgray"></i></a></span>
+                                            <span class="margin-right">
+                                                <a href="javascript:void(0)" (click)="cloneSchedule(schedule)"
+                                                    [ngbTooltip]="constants.cloneSchedule">
+                                                    <i class="fas fa-clone color-dgray"></i></a>
+                                            </span>
+                                            <span class="margin-right">
+                                                <a href="javascript:void(0)" *ngIf="schedule.endDateTime"
+                                                    [ngbTooltip]="constants.extendValidity"
+                                                    (click)="viewOrUpdateScheduleDetails(schedule, extendLinkValidity)">
+                                                    <i class="far fa-edit color-dgray"></i></a></span>
+                                            <span class="margin-right">
+                                                <a href="javascript:void(0)" [ngbTooltip]="constants.viewDetails"
+                                                    (click)="viewOrUpdateScheduleDetails(schedule, !extendLinkValidity)">
+                                                    <i class="fas fa-eye color-dgray"></i></a></span>
+                                            <span class="margin-right">
+                                                <a href="javascript:void(0)" (click)="getScheduleStatus(schedule)"
+                                                    [ngbTooltip]="constants.viewScheduleStatus">
+                                                    <i class="far fa-file-alt color-dgray"></i></a></span>
+                                            <span class="margin-right">
+                                                <a type="button" (click)="extendExamTime(schedule)"
+                                                    [ngbTooltip]="constants.extendExamTime">
+                                                    <i class="fas fa-clock color-dgray"></i></a></span>
+                                            <span class="margin-right">
+                                                <a href="javascript:void(0)"
+                                                    (click)="getReportData(schedule.tenantId, schedule.id)"
+                                                    [ngbTooltip]="constants.downloadAssessmentReport">
+                                                    <i class="fas fa fa-arrow-down color-dgray"></i>
+                                                </a></span>
+                                            <span class="margin-right" *ngIf="assessmentDetail.assessmentType === assessmentType.Hackathon &&
+                                             schedule.scheduleType === scheduleType.SelfRegistration">
+                                                <a href="javascript:void(0)"
+                                                    (click)="exportHackathonReport(schedule.tenantId, schedule.id)"
+                                                    [ngbTooltip]="constants.exportRegisteredUsers">
+                                                    <i class="fas fa fa-download color-dgray"></i></a></span>
+                                            <span class="margin-right" *ngIf="schedule.isSlotBookingEnabled">
+                                                <a href="javascript:void(0)" [ngbTooltip]="constants.viewSlots" (click)="getAssessmentSlots(schedule.id)"  (click)="openAssessmentSlots(slotContent)">
+                                                    <i class="fas fa-list-ul color-dgray"></i>
+                                                </a>  
+                                            </span>
+                                            <span class="margin-right"
+                                                *ngIf="checkAssessmentTypeToEnableAttemptIncrease(assessmentDetail.assessmentType,schedule.scheduleType) && !schedule.isSlotBookingEnabled ">
+                                                <a type="button" (click)="extendUserAttempt(schedule)"
+                                                    [ngbTooltip]="constants.increaseUserAttempt">
+                                                    <i class="fas fa fa-user-times color-dgray"></i></a></span>
+                                        </td>
+                                        <td class="text-center action-container">
+                                            <a href="javascript:void(0)" [ngbTooltip]="constants.runPlagiarism"
+                                                (click)="runPlagiarism(schedule.id)"
+                                                *ngIf="schedule.isPlagiarismCompleted === false || schedule.isPlagiarismCompleted === true">
+                                                <i class="fas fa-play color-dgreen"></i></a>
+                                            <p class="fas fa-play" *ngIf="schedule.isPlagiarismCompleted === null"></p>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!scheduleCount">
+                                        <td colspan="8" class="text-center">
+                                            {{constants.noSchedulesFound}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-20 d-flex justify-content-center align-items-center" *ngIf="scheduleCount">
+                                <ngb-pagination [(page)]="schedulePageIndex" [pageSize]="schedulePageSize"
+                                    [collectionSize]="scheduleCount" (pageChange)="loadPage()" [maxSize]="maxSize"
+                                    [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                </ngb-pagination>
+                                <select class="custom-select m-l-20 m-b-20" style="width:  auto;"
+                                    [(ngModel)]="schedulePageSize" (change)="changePageSize()">
+                                    <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">
+                                        {{pageSize}} {{constants.itemsPerPage}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="4" (click)="getRegisteredUsers()"
+                    *ngIf="assessmentDetail.assessmentType === assessmentType.Hackathon">
+                    <a ngbNavLink>{{constants.registeredUsers}} </a>
+                    <ng-template ngbNavContent>
+                        <div class="text-right m-t-20 m-r-20"
+                            *ngIf="registeredUsersResult && registeredUsersResult.totalCount">
+                            <button class="btn btn-info button-margin-top-25" type="button"
+                                (click)="exportHackathonReport(registeredUsersResult.tenantId, registeredUsersResult.scheduleId)">
+                                <i class="fa fa-download"></i>
+                            </button>
+                        </div>
+                        <table class="table table-striped border m-t-20 m-r-20 user-table"
+                            *ngIf="registeredUsersResult || noActiveSchedules">
+                            <thead>
+                                <tr>
+                                    <th class="font-weight-bold">{{constants.registeredOn}}</th>
+                                    <th class="font-weight-bold">{{constants.email}}</th>
+                                    <th class="font-weight-bold">{{constants.username}}</th>
+                                    <th class="font-weight-bold"
+                                        *ngIf="registeredUsersResult && registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length">
+                                        {{registeredUsersResult.customFieldLabels[0]}}</th>
+                                    <th class="font-weight-bold" *ngIf="registeredUsersResult && registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length &&
+                                      registeredUsersResult.customFieldLabels.length > 1">
+                                        {{registeredUsersResult.customFieldLabels[1]}}</th>
+                                    <th class="font-weight-bold" *ngIf="registeredUsersResult && registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length &&
+                                      registeredUsersResult.customFieldLabels.length > 2">
+                                        {{registeredUsersResult.customFieldLabels[2]}}</th>
+                                    <th class="font-weight-bold" *ngIf="registeredUsersResult && registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length &&
+                                      registeredUsersResult.customFieldLabels.length > 3">
+                                        {{registeredUsersResult.customFieldLabels[3]}}</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="registeredUsersResult && registeredUsersResult.totalCount">
+                                <tr *ngFor="let registeredUser of registeredUsersResult.registeredUsers">
+                                    <td>
+                                        {{formattedDateTime(registeredUser.registrationDate)}}
+                                    </td>
+                                    <td>
+                                        {{registeredUser.emailAddress}}
+                                    </td>
+                                    <td>
+                                        {{registeredUser.userName}}
+                                    </td>
+                                    <td
+                                        *ngIf="registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length">
+                                        {{ registeredUser.customFields && registeredUser.customFields.length &&
+                                        registeredUser.customFields[0].fieldValue ?
+                                        registeredUser.customFields[0].fieldValue : '-' }}
+                                    </td>
+                                    <td
+                                        *ngIf="registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length && registeredUsersResult.customFieldLabels.length > 1">
+                                        {{ registeredUser.customFields && registeredUser.customFields.length &&
+                                        registeredUser.customFields[1].fieldValue ?
+                                        registeredUser.customFields[1].fieldValue : '-' }}
+                                    </td>
+                                    <td
+                                        *ngIf="registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length && registeredUsersResult.customFieldLabels.length > 2">
+                                        {{ registeredUser.customFields && registeredUser.customFields.length &&
+                                        registeredUser.customFields[2].fieldValue ?
+                                        registeredUser.customFields[2].fieldValue : '-' }}
+                                    </td>
+                                    <td
+                                        *ngIf="registeredUsersResult.customFieldLabels && registeredUsersResult.customFieldLabels.length && registeredUsersResult.customFieldLabels.length > 3 ">
+                                        {{ registeredUser.customFields && registeredUser.customFields.length &&
+                                        registeredUser.customFields[3].fieldValue ?
+                                        registeredUser.customFields[3].fieldValue : '-' }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div *ngIf="(registeredUsersResult && !registeredUsers.length) || noActiveSchedules"
+                            class="no-data-found">
+                            {{constants.noDataFound}}
+                        </div>
+                        <div class="p-20 d-flex justify-content-center align-items-center"
+                            *ngIf="registeredUsers.length">
+                            <ngb-pagination [(page)]="registeredUserPageIndex" [pageSize]="registeredUserPageSize"
+                                [collectionSize]="registeredUserCount" (pageChange)="changeRegisteredUser()"
+                                [maxSize]="maxRegisteredUserSize" [rotate]="true" [ellipses]="false"
+                                [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select m-l-20 m-b-20" style="width:  auto;"
+                                [(ngModel)]="registeredUserPageSize" (change)="changeRegisteredUserPageSize()">
+                                <option [ngValue]="registeredUserPageSize"
+                                    *ngFor="let registeredUserPageSize of registeredUsersPageSizes">
+                                    {{registeredUserPageSize}} {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="5" (click)="getLeaderBoardDetails()"
+                    *ngIf="assessmentDetail.assessmentType === assessmentType.Hackathon">
+                    <a ngbNavLink>{{constants.LeaderBoard}} <small class="live m-b-10"></small></a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+
+                            <input type="text" class="form-control w-25 d-inline-block"
+                                placeholder="Search candidate By name" [(ngModel)]="searchString"
+                                (change)="search($event)">
+                            <button class="btn btn-info m-l-15" (click)="search()" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-secondary m-l-5" type="button" (click)="reset()">
+                                <i class="fas fa-undo"></i>
+                            </button>
+
+                            <table class="table table-striped border m-t-20">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold">{{constants.rank}}</th>
+                                        <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                        <th class="font-weight-bold">{{constants.duration}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.points}}</th>
+                                        <th class="font-weight-bold text-right">{{constants.actionsField}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                    <tr *ngFor="let leaderBoardDetail of hackathonLeaderBoard.leaderBoardDetails">
+                                        <td>
+                                            {{leaderBoardDetail.rank}}
+                                        </td>
+                                        <td class="overflow">
+                                            {{leaderBoardDetail.firstName}} {{leaderBoardDetail.lastName}}
+                                        </td>
+                                        <td>
+                                            {{leaderBoardDetail.convertedDuration}}
+                                        </td>
+                                        <td class="text-center">
+                                            {{leaderBoardDetail.score}}
+                                        </td>
+                                        <td class="text-right">
+                                            <a href="javascript:void(0)"
+                                                (click)="viewProfile(leaderBoardDetail.userId, hackathonLeaderBoard.tenantId)">
+                                                {{constants.viewProfile}}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length" class="no-data-found">
+                                {{constants.noDataFound}}
+                            </div>
+                            <div class="p-20 d-flex justify-content-center align-items-center"
+                                *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                <ngb-pagination [(page)]="leaderBoardPageIndex" [pageSize]="leaderBoardPageSize"
+                                    [collectionSize]="leaderBoardCount" (pageChange)="changeLeaderBoard()"
+                                    [maxSize]="maxLeaderBoardSize" [rotate]="true" [ellipses]="false"
+                                    [boundaryLinks]="true">
+                                </ngb-pagination>
+                                <select class="custom-select m-l-20 m-b-20" style="width:  auto;"
+                                    [(ngModel)]="leaderBoardPageSize" (change)="changeLeaderBoardPageSize()">
+                                    <option [ngValue]="leaderBoardpageSize"
+                                        *ngFor="let leaderBoardpageSize of leaderBoardpageSizes">
+                                        {{leaderBoardpageSize}} {{constants.itemsPerPage}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+            </ul>
+            <div [ngbNavOutlet]="nav"></div>
+            <ng-template #content let-modal >
+                    <div class="modal-header">		
+                        <h4>{{constants.InvitedCandidates}}</h4>	
+                        <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                            (click)="modal.dismiss('Cross click')">&times;</span>
+                    </div>	
+                    <div class="modal-body user-invite-modal">
+                        <p *ngFor="let user of invitedUsers">
+                            {{user}}
+                        </p>
+                    </div>	
+                    <div class="modal-footer">		
+                        <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">{{constants.close}}  
+                        </button>	
+                    </div>
+            </ng-template> 
+            <ng-template #slotContent let-modal >
+                    <div class="modal-header">		
+                        <h4>{{constants.slots}}</h4>	
+                        <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                            (click)="modal.dismiss('Cross click')">&times;</span>
+                    </div>	
+                    <div class="modal-body user-invite-modal">
+                        <table class="table table-striped border">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        {{constants.slotStartDateAndTime}}
+                                    </th>
+                                    <th class="text-center">
+                                    {{constants.maximumCandidates}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let slot of slotData">
+                                    <td>
+                                       {{slot.slotStartDateTime | date: 'dd-MM-yyyy HH:mm'}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{slot.slotThreshold}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                           
+                        </table>
+                    </div>	
+                    <div class="modal-footer">		
+                        <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">{{constants.close}}  
+                        </button>	
+                    </div>
+            </ng-template> 
+            <ng-template #content let-modal>
+                <div class="modal-header">
+                    <h4>{{constants.InvitedCandidates}}</h4>
+                    <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')">&times;</span>
+                </div>
+                <div class="modal-body user-invite-modal">
+                    <p *ngFor="let user of invitedUsers">
+                        {{user}}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        (click)="modal.close('Close click')">{{constants.close}}
+                    </button>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

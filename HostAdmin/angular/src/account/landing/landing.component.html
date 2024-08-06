@@ -1,0 +1,21 @@
+<div *ngIf="!isCustomThemeEnabled" class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+    style="background:url(assets/images/background/login-register.jpg) no-repeat; background-size: cover;">
+    <div class="auth-box m-3 m-md-0">
+        <app-login [fields]="isCustomThemeEnabled" [isDisableCaptcha]="isDisableCaptcha"></app-login>
+    </div>
+</div>
+
+<div *ngIf="isCustomThemeEnabled">
+    <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+        style="width: 75%; position: absolute; display: block; background: url(assets/images/background/Yaksha-login-page-graphic.jpg) no-repeat; background-size: cover;">
+    </div>
+    <div style="width: 25%; float: right; height: 100%; padding: 20px; " class="auth-box m-3 m-md-0">
+        <div class="p-10">
+            <img src="assets/images/NSEIT-DeX-logo.png" alt="Logo" class="width-200 ml-15-per">
+        </div>
+        <div class="p-10">
+            <h4>LOGIN TO YOUR ACCOUNT</h4>
+        </div>
+        <app-login [fields]="isCustomThemeEnabled"></app-login>
+    </div>
+</div>

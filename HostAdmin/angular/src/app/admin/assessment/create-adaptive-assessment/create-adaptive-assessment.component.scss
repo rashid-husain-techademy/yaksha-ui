@@ -1,0 +1,79 @@
+::ng-deep .multiselect-dropdown {
+    .dropdown-btn {
+        .selected-item {
+            color: #fff;
+            background-color: #009efb !important;
+            border-color: #009efb !important;
+            max-width: fit-content !important;
+            margin-bottom: 5px;
+        }
+
+        .selected-item a {
+            color: #ffffff !important;
+        }
+    }
+}
+
+::ng-deep .mat-step-header .mat-step-icon-selected {
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    color: black;
+}
+
+::ng-deep .mat-step-header .mat-step-label-selected {
+    font-weight: bold;
+}
+
+::ng-deep .mat-step-icon.mat-step-icon-state-edit .mat-step-icon-content {
+    display: none;
+}
+
+::ng-deep .mat-stepper-horizontal-line {
+    border-color: #ccc;
+}
+
+.levels {
+    position: relative;
+
+    small {
+        position: relative;
+        top: -10px;
+    }
+
+    .add-del-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1;
+    }
+}
+
+.field-required {
+    color: rgb(225, 16, 16) !important
+}
+
+.cateogry-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 170px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.cateogry-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 75px;
+    top: 6px;
+    font-weight: bolder;
+}
+
+.mt-35 {
+    margin-top: 35px;
+}
+
+.d-content {
+    display: contents;
+}
+
+.align-category-field {
+    padding-bottom: 10px;
+    width: 40%;
+}

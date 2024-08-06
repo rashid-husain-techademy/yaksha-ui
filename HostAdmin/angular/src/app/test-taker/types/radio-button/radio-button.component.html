@@ -1,0 +1,21 @@
+<ng-container [formGroup]="group">
+    <div class="card">
+        <div class="card-body indentaion" [innerHTML]="questionText | safeHtml">
+        </div>
+    </div>
+    <h4 class="m-b-20 text-center">{{constants.options}}</h4>
+    <div class="card">
+        <div class="card-body d-flex flex-wrap justify-content-between">
+            <input type="text" *ngIf="formControlName" [formControlName]="formControlName" hidden>
+            <div class="d-flex choices-container w-100">
+                <div class="w-50 p-10 line" *ngFor="let choice of choicesToggled">
+                    <a href="javascript:void(0)" class="d-flex p-10 border"
+                        [class]="(choice.isSelected) ? 'bg-cyan text-white' : ''" (click)="toggleChoiceSelection(choice)">
+                        <h6 class="m-b-0">{{choice.choice}}</h6>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</ng-container>

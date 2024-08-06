@@ -1,0 +1,79 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{fileUploadData.title}}</h5>
+    <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">{{constants.upload}}</span>
+            </div>
+            <div class="custom-file" *ngIf="fileUploadData.uploadType===uploadType.FileUpload">
+                <input type="file" class="custom-file-input" multiple #fileInput (change)="onFileChange($event)"
+                    [accept]="fileUploadData.fileUploadAccept">
+                <label class="custom-file-label">{{constants.chooseFile}}</label>
+            </div>
+            <div class="custom-file" *ngIf="fileUploadData.uploadType===uploadType.ImageUpload">
+                <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png" #image
+                    (change)="imageChange($event)">
+                <label class="custom-file-label">Choose Image</label>
+            </div>
+        </div>
+
+        <div class="support-text">
+            <span class="text-muted">{{fileUploadData.supportedTypesMessage}}</span>
+        </div>
+
+        <div class="clearfix m-t-10">
+            <div class="float-left" *ngIf="(files && fileUploadData.uploadType === uploadType.FileUpload)
+             || (selectedImage && fileUploadData.subUploadType === fileUploadType.TenantLogo)">
+                <div class="file-list">
+                    <span class="label label-rounded label-secondary" *ngFor="let file of files">
+                        {{truncate(file.name)}}
+                        <span aria-hidden="true" class="pointer remove-button"
+                            (click)="removeSelectedFile(file)">&times;</span>
+                    </span>
+                </div>
+            </div>
+            <div class="icon-text-primary float-right pointer"
+                *ngIf="fileUploadData.uploadType===uploadType.FileUpload && fileUploadData.subUploadType !== fileUploadType.SubjectiveQuestion">
+                <a [href]="fileUploadData.sampleTemplatePath"><span class="label"><i class="fa fa-download"></i>
+                        {{constants.sampleTemplate}}
+                    </span></a>
+            </div>
+
+            <div *ngIf="fileUploadData.uploadType===uploadType.ImageUpload && uploadedImage">
+                <img *ngIf="fileUploadData.existingImageUrl" [src]="fileUploadData.existingImageUrl"
+                    class="profilepicture">
+                <img *ngIf="!fileUploadData.existingImageUrl && fileUploadData.subUploadType === fileUploadType.User"
+                    src="../../assets/images/profile.png" class="profilepicture">
+            </div>
+
+            <image-cropper *ngIf="fileUploadData.subUploadType !== fileUploadType.TenantLogo"
+                [imageChangedEvent]="imageChangedEvent" [alignImage]="'left'"
+                [style.display]="showCropper ? null : 'none'" format="png" (imageCropped)="imageCropped($event)"
+                (imageLoaded)="imageLoaded()">
+            </image-cropper>
+        </div>
+
+        <div class="text-right m-t-30">
+            <button type="button" class="btn btn-secondary m-r-10"
+                (click)="closeBtnClick()">{{constants.close}}</button>
+            <button type="submit" class="btn btn-info" [disabled]="isDisableUpload"
+                (click)="fileUploadData.uploadType===uploadType.ImageUpload? onPictureUpload() :onUpload()">{{constants.upload}}</button>
+        </div>
+
+        <div class="error-list" *ngIf="showErrors">
+            <h5>{{constants.errors}} </h5>
+            <div *ngIf="errorMessage.length > errorLength">
+                <h5>#{{constants.errorCountReachedMaximum}}</h5>
+            </div>
+            <ul>
+                <li *ngFor="let error of errorMessage">{{error}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

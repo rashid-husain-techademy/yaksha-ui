@@ -1,0 +1,70 @@
+<ng-container [formGroup]="group">
+    <div class="card">
+        <div class="card-body indentaion" [innerHTML]="questionText | safeHtml">
+        </div>
+    </div>
+    <h4 class="m-b-20 text-center" *ngIf="isTextAreaQuestion === true">{{constants.answer}}</h4>
+    <div class="card" *ngIf="isTextAreaQuestion === true">
+        <div class="card-body d-flex flex-wrap justify-content-between">
+            <input type="text" *ngIf="formControlName" [formControlName]="formControlName" hidden>
+            <quill-editor class="ql-editor strong" id="quillEditor" #quillEditor [styles]="{height: '100px'}"
+                (keyup)="answerChange();" [(ngModel)]="chosenAnswer" [ngModelOptions]="{standalone: true}"
+                [modules]="quillConfig"></quill-editor>
+        </div>
+    </div>
+    <div class="card" *ngIf="isTextAreaQuestion === false && isFileUploaded === true && selectedFiles.length==1">
+        <div class="card-body d-flex flex-wrap justify-content-center container"
+            *ngFor="let selectedFile of selectedFiles">
+            <div>{{constants.selectedFileIs}}<strong
+                    class="filename-message">{{truncate(selectedFile.fileName)}}</strong>
+                <br>
+                {{constants.doYouWantToChangeTheFileThenClickOnBelowOptions}}
+            </div>
+        </div>
+    </div>
+    <div class="card" *ngIf="isTextAreaQuestion === false && isFileUploaded === true  && selectedFiles.length>1">
+        <div>{{constants.selectedFilesAre}}
+            <div class="card-body d-flex flex-wrap justify-content-center container"
+                *ngFor="let selectedFile of selectedFiles">
+                <strong class="filename-message">{{truncate(selectedFile.fileName)}}</strong>
+                <span aria-hidden="true" class="pointer" (click)="removeSelectedFile(selectedFile)">&times;</span>
+            </div>
+            <br>
+            {{constants.doYouWantToChangeTheFileThenClickOnBelowOptions}}
+        </div>
+    </div>
+    <div *ngIf="QRInvalidated && selectedFiles.length==0">
+        <strong class="filename-message" style="text-align: center;">QR Invalid, please try once again</strong>
+    </div>
+    <div class="card" *ngIf="isTextAreaQuestion === false">
+        <div class="card-body d-flex flex-wrap justify-content-center align-items-center container">
+            <button type="button" class="btn btn-info" (click)="updateSubjectiveQuestionStatus(true, qrModal)">
+                {{isFileUploaded ? constants.reUploadAnswerFromMobile : constants.uploadAnswerFromMobile}}
+            </button>
+            <button type="button" class="btn btn-info" (click)="openUpload()">
+                {{isFileUploaded ? constants.reUploadAnswerFromThisDevice : constants.uploadAnswerFromThisDevice}}
+            </button>
+        </div>
+    </div>
+</ng-container>
+
+<!-- QR template -->
+
+<ng-template #qrModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{constants.scanThisQRcodeToUploadFromMobile}}</h5>
+        <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <ngx-qrcode [elementType]="elementType" [value]="qrLink" cssClass="qrcodeclass"
+            [errorCorrectionLevel]="correctionLevel">
+        </ngx-qrcode>
+        <p class="text-center">{{constants.QRValidTill}}{{timeLeft}}{{constants.seconds}}</p>
+    </div>
+    <div class="p-10">
+        <p>{{constants.doNotCloseThisPopupItWillAutomaticallyGetsClosedOnceYouHaveSuccessfullyUploadedYourAnswerFromMobile}}
+        </p>
+    </div>
+</ng-template>

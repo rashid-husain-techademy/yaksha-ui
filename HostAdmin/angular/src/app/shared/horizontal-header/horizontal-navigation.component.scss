@@ -1,0 +1,71 @@
+.dark-logo,
+.light-logo {
+    max-width: 115px;
+
+    @media screen and (min-width:1024px) {
+        margin-left: 10px;
+    }
+
+    &.custom-logo {
+        max-width: 200px;
+
+        @media screen and (min-width:1024px) {
+            margin-left: 10px;
+        }
+    }
+
+}
+
+
+.navprofilepicture {
+    background: #ededed;
+    padding: 2px;
+}
+
+.profilepicture {
+    background: #ededed;
+    padding: 5px;
+}
+
+.navbar-brand {
+    cursor: pointer;
+}
+
+.logo-size {
+    height: 45px;
+}
+
+.search-bar {
+    display: block;
+    width: 400px;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #4f5467;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    padding-right: 50px;
+}
+
+.search-btn {
+    margin-left: -48px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    opacity: 0.9;
+}
+
+.search-btn:focus,
+.search-btn:focus:active,
+.search-btn:hover {
+    box-shadow: none;
+    border: transparent;
+}
+
+.search-btn:hover {
+    opacity: 1;
+}

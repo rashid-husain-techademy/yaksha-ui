@@ -1,0 +1,45 @@
+.light-logo {
+    max-width: 64px;
+}
+
+.topbar {
+    background-color: #272b34;
+}
+
+.file-upload {
+    margin-top: 30px;
+    cursor: pointer;
+    background-color: #f7f7f7 !important;
+}
+
+.label-secondary {
+    background-color: #727B84 !important;
+}
+
+.filename-message {
+    word-break: break-word;
+}
+
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style for each file item */
+.label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #717172;
+    font-size: 14px;
+}
+
+/* Style for the remove button */
+.label .remove-button {
+    margin-left: 8px;
+    cursor: pointer;
+    color: #ffffff;
+}

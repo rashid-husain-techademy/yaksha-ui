@@ -1,0 +1,43 @@
+.w-70 {
+    width: 70% !important;
+}
+.w-30 {
+    width: 30% !important;
+}
+.img-50 {
+    max-width: 75px;
+}
+
+.results {
+    cursor: move;
+}
+
+.custom-image {
+    width: 50%;
+}
+
+.custom-imagesize {
+    width: 72px;
+}
+
+.m-t-3 {
+    margin-top: -3px;
+}
+
+.field-required {
+    margin-bottom: 0;
+}
+
+.createqbcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space  : nowrap;
+    max-width    : 230px !important;
+    text-overflow: ellipsis;
+    overflow     : hidden;
+}
+
+.createqbcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position   : absolute;
+    right      : 41px;
+    top        : 6px;
+    font-weight: bolder;
+}

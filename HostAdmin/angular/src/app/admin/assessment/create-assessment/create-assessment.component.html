@@ -1,0 +1,80 @@
+<div class="d-flex m-b-20">
+    <h3 class="page-title m-0" *ngIf="!isEdit">{{constants.createAssessment}}</h3>
+    <h3 class="page-title m-0" *ngIf="isEdit">{{constants.editAssessment}}</h3>
+</div>
+<form [formGroup]="createAssessmentForm">
+    <div class="card m-b-20 create-assessment-custom">
+        <div class="card-body d-flex">
+            <div class="w-25 m-r-20 multi-select">
+                <label for="" class="font-weight-bold">{{constants.selectCategory}} <span
+                        class="text-danger">*</span></label>
+                <ng-multiselect-dropdown [data]="isEdit ? assessment.categories : categories"
+                    [placeholder]="constants.selectCategory" [settings]="dropdownSettings" formControlName="categories"
+                    [disabled]="isCategoryDisabled">
+                </ng-multiselect-dropdown>
+                <small class="form-text text-danger"
+                    *ngIf="isFormSubmitTriggered && createAssessmentForm.get('categories').hasError('required')">
+                    {{createAssessmentFormValidationMessages.categoryId.required}}
+                </small>
+            </div>
+
+            <div class="w-50 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.assessmentTitle}} <span
+                        class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Assessment Title" formControlName="name"
+                    maxlength="500">
+                <small class="form-text text-danger"
+                    *ngIf="isFormSubmitTriggered && createAssessmentForm.get('name').hasError('required')">
+                    {{createAssessmentFormValidationMessages.name.required}}
+                </small>
+            </div>
+
+            <div class="w-25 hackathon">
+                <input type="checkbox" id="customCheck" [(ngModel)]="isHackathon" [ngModelOptions]="{standalone: true}"
+                    class="mr-2" [disabled]="isEdit">
+                <label for="customCheck" class="font-weight-bold"> {{constants.isHackathon}}</label>
+            </div>
+        </div>
+        <div class="card-body d-flex p-t-0">
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.totalQuestionsCount}}</label>
+                <input type="number" formControlName="totalQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.totalQuestionsCount">
+            </div>
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.beginnerQuestionsCount}}</label>
+                <input type="number" formControlName="beginnerQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.beginnerQuestionsCount">
+            </div>
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.intermediateQuestionsCount}}</label>
+                <input type="number" formControlName="intermediateQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.intermediateQuestionsCount">
+            </div>
+            <div class="w-25">
+                <label for="" class="font-weight-bold">{{constants.advancedQuestionsCount}}</label>
+                <input type="number" formControlName="advancedQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.advancedQuestionsCount">
+            </div>
+        </div>
+    </div>
+    <div class="card m-b-20">
+        <div class="card-body">
+            <label for="" class="font-weight-bold">{{constants.description}}</label>
+            <quill-editor [styles]="{height: '200px'}" formControlName="description"
+                placeholder="{{constants.enterTheDescriptionHere}}"></quill-editor>
+        </div>
+    </div>
+    <div class="card m-b-20">
+        <div class="card-body">
+            <label for="" class="font-weight-bold">{{constants.instructions}}</label>
+            <quill-editor [styles]="{height: '200px'}" formControlName="instructions"
+                placeholder="{{constants.enterTheInstructionsHere}}"></quill-editor>
+        </div>
+    </div>
+    <div class="text-center m-b-20">
+        <button type="button" class="btn btn-secondary m-r-20" (click)="cancel()">{{constants.cancel}}</button>
+        <button type="button" class="btn btn-info" (click)="saveAssessment(createAssessmentForm.value)">{{isEdit ?
+            constants.update : constants.save}}</button>
+    </div>
+</form>

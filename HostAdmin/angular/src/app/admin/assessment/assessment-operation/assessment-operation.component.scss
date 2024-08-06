@@ -1,0 +1,62 @@
+.section-title,
+.search-results {
+    background-color: #f7f7f7;
+}
+
+.q-type {
+    width: 15%;
+}
+
+.q-skill {
+    width: 20%;
+}
+
+.margin-top {
+    margin-top: 25px
+}
+
+.mt-35 {
+    margin-top: 35px
+}
+
+.name {
+    white-space: pre-wrap;
+}
+
+@media screen and (min-width:1024px) {
+
+    ::ng-deep .modal-lg,
+    .modal-xl {
+        max-width: calc(100vw - 10%) !important;
+    }
+}
+
+.category-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 125px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 70px;
+}
+
+.category-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 60px;
+    top: 5px;
+    font-weight: bolder;
+}
+
+option:disabled {
+    background-color: #cacdd1;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.identation {
+    white-space: pre-wrap;
+   ::ng-deep p{
+            margin-bottom: 0px !important;
+        }
+}

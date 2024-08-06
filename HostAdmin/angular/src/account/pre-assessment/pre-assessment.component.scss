@@ -1,0 +1,594 @@
+#pre-assessment {
+    background: #eef5f9;
+   
+    
+    .w-65 {
+        width: 65%;
+        max-width: 65%;
+    }
+
+    .w-35 {
+        width: 35%;
+        max-width: 35%;
+    }
+
+    .note {
+        color: #fff;
+    }
+
+    header {
+        background: #004c80;
+
+        .assessment-registration-section {
+            
+            @media screen and (max-width:767px) {
+                display: flex;
+                flex-direction: column-reverse;
+
+                .assessment-details-section {
+                    width: 100%;
+                    max-width: 100%;
+                    order: 2;
+                    margin-top: 10px;
+                }
+
+                .registration-section {
+                    width: 100%;
+                    max-width: 100%;
+                    order: 1;
+                }
+                @media only screen and (max-width:767px) {
+                    .registration-section{
+                        margin-bottom: 15px;
+                    }
+                }
+            }
+        }
+
+        .logo {
+            img {
+                max-width: 115px !important;
+                height: 45px;
+            }
+        }
+
+        .keywords {
+            margin-bottom: 50px;
+
+            .d-flex {
+                margin-top: 0;
+                background: #195d8e;
+                font-size: 0.8em;
+                color: #ffffff;
+            }
+        }
+
+        .marks {
+            margin-bottom: 50px;
+            width: 90%;
+            position: relative;
+            height: 10px;
+            background-color: #a4c7df;
+
+            &::before {
+                content: '0';
+                font-size: 0.8em;
+                position: absolute;
+                left: -2px;
+                top: -17px;
+                color: #a4c7df;
+
+                @media screen and(max-width:800px) {
+                    left: -13px;
+                    top: -5px;
+                }
+            }
+
+            &::after {
+                content: '100%';
+                font-size: 0.8em;
+                position: absolute;
+                top: -19px;
+                right: 0;
+                color: #a4c7df;
+
+                @media screen and(max-width:800px) {
+                    right: -34px;
+                    top: -5px;
+                }
+            }
+
+            .cut-off {
+                position: relative;
+                height: 10px;
+                background-color: rgb(22, 163, 22);
+
+                .border-right {
+                    font-size: 0.8em;
+                    color: #a4c7df;
+                    position: absolute;
+                    bottom: -13px;
+                    right: 0;
+                    padding-right: 5px;
+                    transform: translateY(-50%);
+                    height: 28px;
+                    border-color: #a4c7df !important;
+
+                    &::after {
+                        content: '-CutOff';
+                        position: absolute;
+                        white-space: nowrap;
+                        top: 0;
+                        right: -49px;
+                        color: #a4c7df;
+                    }
+                }
+            }
+        }
+
+        .marks {
+            margin-bottom: 50px;
+            width: 90%;
+            position: relative;
+            height: 10px;
+            background-color: #a4c7df;
+
+            &::before {
+                content: '0';
+                font-size: 0.8em;
+                position: absolute;
+                left: -2px;
+                top: -17px;
+                color: #a4c7df;
+
+                @media screen and(max-width:800px) {
+                    left: -13px;
+                    top: -5px;
+                }
+            }
+
+            &::after {
+                content: '100%';
+                font-size: 0.8em;
+                position: absolute;
+                top: 8px;
+                right: 0;
+                color: #a4c7df;
+
+                @media screen and(max-width:800px) {
+                    right: -34px;
+                    top: -5px;
+                }
+            }
+
+            .cut-off {
+                position: relative;
+                height: 10px;
+                background-color: rgb(22, 163, 22);;
+
+                .border-right {
+                    font-size: 0.8em;
+                    color: #a4c7df;
+                    position: absolute;
+                    bottom: -13px;
+                    right: 0;
+                    padding-right: 5px;
+                    transform: translateY(-50%);
+                    height: 28px;
+                    border-color: #a4c7df !important;
+
+                    &::after {
+                        content: '-CutOff';
+                        position: absolute;
+                        white-space: nowrap;
+                        top: 0;
+                        right: -49px;
+                        color: #a4c7df;
+                    }
+                }
+            }
+        }
+
+        .section-score {
+            margin-bottom: 50px;
+            width: 90%;
+            position: relative;
+            height: 10px;
+            background-color: #a4c7df;
+
+            .cut-off {
+                position: relative;
+                height: 10px;
+                background-color: rgb(0, 153, 255);
+                border-right: 1px solid white;
+                font-size: 0.8em;
+                color: #a4c7df;
+
+                .section-name,
+                .total-questions {
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    width: 100%;
+                    padding: 0 10px;
+                    text-align: center;
+                }
+
+                .section-name {
+                    top: -20px;
+                }
+
+                .total-questions {
+                    bottom: -20px;
+                }
+            }
+        }
+
+        .card {
+            @media screen and (max-width:405px) {
+                .card-header {
+                    padding: 0.75rem 0.5rem;
+                }
+            }
+
+            .card-body {
+                padding: 8px;
+            }
+
+            .w-50 {
+                padding: 0 5px;
+            }
+        }
+    }
+   
+}
+
+.instruction::ng-deep p {
+    margin-bottom: 0.2rem !important;
+}
+
+.font-size-14 {
+    font-size: 14px;
+    color: red;
+}
+
+.mt-25 {
+    margin-top: 25px !important;
+}
+
+@media screen and (min-width:1024px) {
+    ::ng-deep .modal-md {
+        max-width: calc(100vw - 35%) !important;
+    }
+}
+
+.proctoring-settings {
+    background-color: #e9ecef;
+}
+
+::ng-deep .modal-dialog-scrollable .modal-content {
+    max-height: calc(100vh - 1rem);
+
+    @media screen and (max-width:767px) {
+        overflow-y: scroll !important;
+    }
+}
+
+::ng-deep .modal-dialog-scrollable .modal-body {
+    max-height: 70vh;
+}
+
+::ng-deep img {
+    max-width: 100%;
+    height: auto;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.custom-tenant {
+    .assessment-label.text-tenant {
+        color: #efb41c !important;
+    }
+
+    header .keywords .d-flex.tenant-box.tenant {
+        margin-top: 0;
+        background: #808285 !important;
+        font-size: 0.8em;
+        color: #ffffff;
+    }
+
+    header {
+        background: #414143 !important;
+    }
+
+    header .marks .cut-off.tenant {
+        position: relative;
+        height: 10px;
+        background-color: #efb41c !important;
+    }
+
+    header .section-score .cut-off.prog.tenant {
+        position: relative;
+        height: 10px;
+        background-color: #a7a9ac !important;
+    }
+
+    .btn-info.tenant {
+        color: #fff;
+        background-color: #a7a9ac !important;
+        border-color: #a7a9ac !important;
+    }
+
+    .width-200 {
+        width: 200px;
+    }
+
+    .ml-15-per {
+        margin-left: 10% !important;
+    }
+
+    .p-10 {
+        padding: 10px;
+    }
+
+    .g-recaptcha {
+        transform: scale(0.77);
+        transform-origin: 0 0;
+    }
+}
+
+.captcha-container {
+    @media screen and (max-width:982px) {
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+}
+
+.link-validity-container {
+    margin-left: 10px;
+    word-break: break-word;
+}
+
+::ng-deep .modal-open .modal {
+    @media screen and (max-width:767px) {
+        width: 100vw;
+    }
+}
+
+.footer-container {
+    @media screen and(max-width:650px) {
+        margin-left: 60px;
+    }
+}
+
+.assessment-description {
+    width: 50%;
+
+    @media screen and (max-width:764px) {
+        width: 100%;
+
+        .card-body {
+            margin-left: 43px;
+        }
+    }
+}
+
+.assessment-leaderboard {
+    width: 50%;
+
+    @media screen and (max-width:764px) {
+        width: 100%;
+        .skill{
+            overflow-x: scroll;
+        }
+    }
+}
+
+.abinbev-theme{
+    background:  url('/assets/images/background/ABInBev-PreAssessment-2.jpg') no-repeat;
+     height: 100%;
+     .w-65 {
+         width: 65%;
+         max-width: 65%;
+     }
+ 
+     .w-35 {
+         width: 35%;
+         max-width: 35%;
+     }
+ 
+     .note {
+         color: #fff;
+     }
+ 
+     header {
+        
+         .assessment-registration-section {
+            
+             @media screen and (max-width:767px) {
+                 display: flex;
+                 flex-direction: column;
+ 
+                 .assessment-details-section {
+                     width: 100%;
+                     max-width: 100%;
+                     order: 2;
+                     margin-top: 10px;
+                 }
+ 
+                 .registration-section {
+                     width: 100%;
+                     max-width: 100%;
+                     order: 1;
+                 }
+                 @media only screen and (max-width:767px) {
+                    .registration-section{
+                        margin-bottom: 15px;
+                    }
+                }
+             }
+         }
+ 
+         .logo {
+             img {
+                 max-width: 115px !important;
+                 height: 45px;
+             }
+         }
+ 
+         .keywords {
+             margin-bottom: 50px;
+ 
+             .d-flex {
+                 margin-top: 0;
+                 background: #FFA500;
+                 font-size: 0.8em;
+                 color: #000000;
+             }
+         }
+ 
+         .marks {
+             margin-bottom: 50px;
+             width: 90%;
+             position: relative;
+             height: 10px;
+             background-color: #ffcc99;
+ 
+             &::before {
+                 content: '0';
+                 font-size: 0.8em;
+                 position: absolute;
+                 left: -2px;
+                 top: -17px;
+                 color: #000000;
+ 
+                 @media screen and(max-width:800px) {
+                     left: -13px;
+                     top: -5px;
+                 }
+             }
+ 
+             &::after {
+                 content: '100%';
+                 font-size: 0.8em;
+                 position: absolute;
+                 top: -17px;
+                 right: 0;
+                 color: #000000;
+ 
+                 @media screen and(max-width:800px) {
+                     right: -34px;
+                     top: -5px;
+                 }
+             }
+ 
+             .cut-off {
+                 position: relative;
+                 height: 10px;
+                 background-color: rgb(255, 165, 0);
+ 
+                 .border-right {
+                     font-size: 0.8em;
+                     color: #000000;
+                     position: absolute;
+                     bottom: -13px;
+                     right: 0;
+                     padding-right: 5px;
+                     transform: translateY(-50%);
+                     height: 28px;
+                     border-color: #ffcc99 !important;
+ 
+                     &::after {
+                         content: '-CutOff';
+                         position: absolute;
+                         white-space: nowrap;
+                         top: 0;
+                         right: -49px;
+                         color: #000000;
+                     }
+                 }
+             }
+         }
+ 
+         .section-score {
+             margin-bottom: 50px;
+             width: 90%;
+             position: relative;
+             height: 10px;
+             background-color: #ffcc99;
+ 
+             .cut-off {
+                 position: relative;
+                 height: 10px;
+                 background-color: rgb(255, 165, 0);
+                 border-right: 1px solid white;
+                 font-size: 0.8em;
+                 color: #000000;
+ 
+                 .section-name,
+                 .total-questions {
+                     position: absolute;
+                     left: 50%;
+                     transform: translateX(-50%);
+                     white-space: nowrap;
+                     text-overflow: ellipsis;
+                     overflow: hidden;
+                     width: 100%;
+                     padding: 0 10px;
+                     text-align: center;
+                 }
+ 
+                 .section-name {
+                     top: -20px;
+                 }
+ 
+                 .total-questions {
+                     bottom: -20px;
+                 }
+             }
+         }
+ 
+         .card {
+             @media screen and (max-width:405px) {
+                 .card-header {
+                     padding: 0.75rem 0.5rem;
+                 }
+             }
+ 
+             .card-body {
+                 padding: 8px;
+             }
+ 
+             .w-50 {
+                 padding: 0 5px;
+             }
+         }
+     }
+     .btn-info.tenant {
+         color: #000000;
+         background-color: #FFA500 !important;
+         border-color: #FFA500 !important;
+     }
+     .text-black{
+        color: #000000;
+     }
+ }
+ @media only screen and(max-width:767px) {
+    .requirement-details{
+        display: none !important;
+    }
+    .start-btn{
+        width: 100%;
+    }
+ }
+ @media only screen and(min-width:768px) {
+    .requirement-details-mobile{
+        display: none !important;
+    }
+    
+ }

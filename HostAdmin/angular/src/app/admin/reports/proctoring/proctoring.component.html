@@ -1,0 +1,53 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-0"><span class="lstick"></span>{{constants.proctoringReport}} - {{fullName}}
+                </h4>
+            </div>
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th>{{constants.assessmentName}}</th>
+                        <th>{{constants.attemptCount}}</th>
+                        <th>{{constants.proctorTool}}</th>
+                        <th>{{constants.actions}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let assessmentDetail of assessmentDetails">
+                        <td>
+                            <ngb-highlight [result]="assessmentDetail.assessmentName"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="assessmentDetail.attemptNumber"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight
+                                [result]="assessmentDetail.proctorType === proctorType.Aeye ? constants.aeye : constants.wheebox"></ngb-highlight>
+                        </td>
+                        <td>
+                            <span class="mr-10 text-info pointer" (click)="getProctoringReport(assessmentDetail)">
+                                {{constants.viewProctoringReport}}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!assessmentDetails?.length" class="result pt-4 pb-4">
+                <p>{{constants.noDataFound}}</p>
+            </div>
+
+            <div class="d-flex justify-content-between p-2" *ngIf="assessmentDetails?.length">
+                <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize"
+                    [collectionSize]="userAssessmentDetails?.totalCount" (pageChange)="loadPage()" [maxSize]="maxSize"
+                    [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                </ngb-pagination>
+                <select class="custom-select" style="width: auto" (change)="changePageSize()" [(ngModel)]="pageSize">
+                    <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                        {{constants.itemsPerPage}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

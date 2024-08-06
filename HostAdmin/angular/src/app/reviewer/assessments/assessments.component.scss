@@ -1,0 +1,29 @@
+#reviewer {
+    a.active {
+        background-color: #009efb !important;
+        color: #fff;
+    }
+
+    .assessments {
+        margin: 0 -10px;
+
+        .card {
+            width: calc(50% - 20px);
+
+            h4 {
+                cursor: pointer;
+            }
+
+        }
+    }
+
+    .quick-info {
+        .card {
+            min-width: 32%;
+        }
+    }
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}

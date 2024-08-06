@@ -1,0 +1,87 @@
+<form [formGroup]="inviteUserForm" novalidate autocomplete="off" class="invitation-form">
+    <div class="modal-header">
+        <h4 class="modal-title">{{constants.inviteCandidates}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="clearAll()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="!isCampaign">
+        <h5 class="assessment-label">{{updateSchedule.assessmentName}}</h5>
+        <h6>{{constants.category}}: {{updateSchedule.categoryName}}</h6>
+        <div class="m-b-10 border-top p-t-20">
+            <label class="font-weight-bold">{{constants.candidatesEmails}}</label>
+            <input *ngIf='!updateSchedule.isCloud' type="text" class="form-control" formControlName="candidateEmails">
+        </div>
+        <div>
+            <label for="fileUpload" appDragDrop (fileDropped)="onFileChange($event)"
+                class="border d-flex flex-column file-upload justify-content-center align-items-center p-20 h-120">
+                <input type="file" id="fileUpload" hidden #fileInput (change)="onFileChange($event.target.files)"
+                    accept=".xls,.xlsx">
+                {{constants.dragAndDropFile}}
+            </label>
+            <div class="d-flex justify-content-between">
+                <small class="text-muted m-r-40">{{constants.onlyExcelFilesAreSupported}}</small>
+                <a [href]="sampleTemplate">
+                    <small><i class="fa fa-download m-r-10"></i>{{constants.sampleTemplate}}</small>
+                </a>
+            </div>
+            <div *ngIf="file">
+                <span class="label label-rounded label-primary">
+                    {{fileName}}
+                    <span aria-hidden="true" class="pointer m-l-10" (click)="removeSelectedFile()">&times;</span>
+                </span>
+            </div>
+            <div class="m-t-20" *ngIf="showErrors">
+                <h5>{{constants.errors}}</h5>
+                <div *ngIf="errorMessage.length > errorLength">
+                    <h5>#{{constants.errorCountReachedMaximum}}</h5>
+                </div>
+                <ul>
+                    <li *ngFor="let error of errorMessage">{{error}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body" *ngIf="isCampaign">
+        <h5 class="assessment-label">{{updateCampaignSchedule.campaignName}}</h5>
+        <div class="m-b-10 border-top p-t-20" *ngIf='!updateCampaignSchedule.hasCloudBasedAssessment'>
+            <label class="font-weight-bold">{{constants.candidatesEmails}}</label>
+            <input type="text" class="form-control"
+                formControlName="candidateEmails">
+        </div>
+        <div>
+            <label for="fileUpload" appDragDrop (fileDropped)="onFileChange($event)"
+                class="border d-flex flex-column file-upload justify-content-center align-items-center p-20 h-120">
+                <input type="file" id="fileUpload" hidden #fileInput (change)="onFileChange($event.target.files)"
+                    accept=".xls,.xlsx">
+                {{constants.dragAndDropFile}}
+            </label>
+            <div class="d-flex justify-content-between">
+                <small class="text-muted m-r-40">{{constants.onlyExcelFilesAreSupported}}</small>
+                <a [href]="sampleTemplate">
+                    <small><i class="fa fa-download m-r-10"></i>{{constants.sampleTemplate}}</small>
+                </a>
+            </div>
+            <div *ngIf="file">
+                <span class="label label-rounded label-primary">
+                    {{fileName}}
+                    <span aria-hidden="true" class="pointer m-l-10" (click)="removeSelectedFile()">&times;</span>
+                </span>
+            </div>
+            <div class="m-t-20" *ngIf="showErrors">
+                <h5>{{constants.errors}}</h5>
+                <div *ngIf="errorMessage.length > errorLength">
+                    <h5>#{{constants.errorCountReachedMaximum}}</h5>
+                </div>
+                <ul>
+                    <li *ngFor="let error of errorMessage">{{error}}</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="clearAll()">{{constants.cancel}}</button>
+        <button type="button" class="btn btn-info" (click)="inviteUsers()">{{constants.invite}}</button>
+    </div>
+</form>

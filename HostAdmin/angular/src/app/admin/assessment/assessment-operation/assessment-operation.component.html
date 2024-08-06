@@ -1,0 +1,435 @@
+<div *ngIf="isShowModal" appDisableCopy appDisableRightClick appDisableSelect appDisableDrag>
+    <div class="modal-header align-items-center">
+        <h4 class="modal-title m-r-20">{{headerTitle}} <span *ngIf="!isSuperAdmin" class="text-danger">*</span></h4>
+        <div *ngIf="!isSuperAdmin" class="d-flex align-items-center">
+            <div class="m-r-40">
+                <input type="radio" id="inlineRadio1" [(ngModel)]="questionBank" [disabled]="isEdit"
+                    value={{constants.yakshaQuestions}} (change)="setQuestionBankScope(constants.yakshaQuestions)">
+                <label class="form-check-label m-l-10" for="inlineRadio1">{{constants.yakshaQuestions}}</label>
+            </div>
+            <div class="m-r-40">
+                <input type="radio" id="inlineRadio2" [(ngModel)]="questionBank" [disabled]="isEdit"
+                    value={{constants.myQuestions}} (change)="setQuestionBankScope(constants.myQuestions)">
+                <label class="form-check-label m-l-10" for="inlineRadio2">{{constants.myQuestions}}</label>
+            </div>
+        </div>
+        <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="createSectionSkillForm" novalidate autocomplete="off">
+        <div class="modal-body">
+            <h5 class="assessment-label">{{assessmentData.assessmentName}}</h5>
+            <h6>{{assessmentData.categories}}</h6>
+        </div>
+        <div class="section-title p-20" *ngIf="action === constants.addSection">
+            <label class="font-weight-bold">{{constants.SectionName}} <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="sectionName" (keyup)="checkSectionExist($event)">
+            <small class="form-text text-danger" *ngIf="isSectionExist">{{constants.sectionNameAlreadyExists}}
+            </small>
+            <small class="form-text text-danger" *ngIf="!isFormValid('sectionName')">
+                {{constants.pleaseEnterTheSectionName}}
+            </small>
+        </div>
+        <div class="d-flex flex-wrap p-20 border-bottom category-custom">
+            <div class="q-skill m-r-20 m-b-10">
+                <label class="font-weight-bold">{{constants.selectSkill}} <span class="text-danger">*</span></label>
+                <ng-multiselect-dropdown (onSelect)="onSkillSelect($event)" (onDeSelect)="skillDeselect($event)"
+                    [data]="isEdit ? skillName : skills" [placeholder]="constants.selectSkill"
+                    [settings]="singleDropdownSettings" formControlName="skillId" [disabled]="isSkillDisabled" (onDropDownClose)="onDropdownClose($event)">
+                </ng-multiselect-dropdown>
+                <div class="text-danger"
+                    *ngIf="isSubmitted && createSectionSkillForm.get('skillId').hasError('required')">
+                    {{sectionSkillFormValidationMessages.skillId.required}}
+                </div>
+            </div>
+            <div class="q-skill m-r-20 m-b-10">
+                <label class="font-weight-bold">{{constants.selectSubSkill}}</label>
+                <ng-multiselect-dropdown (onSelect)="onSubSkillSelect($event)" (onDeSelect)="subSkillDeSelect($event)"
+                    [data]="subSkills" [settings]="singleDropdownSettings" formControlName="subSkillId"
+                    [disabled]="isSubSkillDisabled" (onDropDownClose)="subSkillDropdownClose($event)">
+                </ng-multiselect-dropdown>
+            </div>
+            <div class="q-skill m-r-20 m-b-10">
+                <label class="font-weight-bold">{{constants.selectSubSkill2}}</label>
+                <ng-multiselect-dropdown [data]="subSubSkills" (onSelect)="subSubSkillSelect()"
+                    (onDeSelect)="onSubSubSkillDeSelect($event)" [settings]="singleDropdownSettings"
+                    formControlName="subSubSkillId" [disabled]="isSubSubSkillDisabled">
+                </ng-multiselect-dropdown>
+            </div>
+            <div class="q-type m-r-20 m-b-10">
+                <label class="font-weight-bold">{{constants.questionType}} <span class="text-danger">*</span></label>
+                <select class="custom-select" formControlName="questionTypeId" (change)="onQuestionTypeChange()">
+                    <option *ngFor="let questionType of questionTypes" [value]="questionType.id"
+                        [disabled]="(questionType.id !== constants.mcqTypeId && isAdminQuestionReviewer)">
+                        {{questionType.name}}
+                    </option>
+                </select>
+                <div class="text-danger"
+                    *ngIf="isSubmitted && createSectionSkillForm.get('questionTypeId').hasError('required')">
+                    {{sectionSkillFormValidationMessages.questionTypeId.required}}
+                </div>
+            </div>
+            <div class="q-type m-r-20 m-b-10"
+                *ngIf="+this.createSectionSkillForm.get('questionTypeId').value === constants.codingTypeId">
+                <label class="font-weight-bold">{{constants.programmingLanguage}} <span
+                        class="text-danger">*</span></label>
+                <ng-multiselect-dropdown [settings]="dropdownSettings"
+                    [data]="isEdit && selectedCodingLanguages.length ? selectedCodingLanguages : codingLanguages"
+                    [placeholder]="constants.selectLanguages" formControlName="programmingLanguageId"
+                    (onSelect)="onLanguageChange(true)" (onSelectAll)="onLanguageChange(true)"
+                    (onDeSelectAll)="onLanguageChange(false)" (onDeSelect)="onItemDeSelect()">
+                </ng-multiselect-dropdown>
+                <div class="text-danger"
+                    *ngIf="isSubmitted && createSectionSkillForm.get('programmingLanguageId').hasError('required')">
+                    {{sectionSkillFormValidationMessages.programmingLanguageId.required}}
+                </div>
+            </div>
+            <div
+                [ngClass]="+this.createSectionSkillForm.get('questionTypeId').value === constants.codingTypeId ? 'q-skill m-r-20 m-t-10' : 'q-type m-r-20 m-b-10'">
+                <label class="font-weight-bold">{{constants.proficiencyLevel}}</label>
+                <select class="custom-select" formControlName="proficiencyLevelId">
+                    <option selected [value]=0>{{constants.all}}</option>
+                    <option *ngFor="let proficiencyLevel of proficiencyLevels" [value]="proficiencyLevel.id">
+                        {{proficiencyLevel.name}}
+                    </option>
+                </select>
+            </div>
+            <div class="q-skill m-r-20 m-t-10">
+                <label for="" class="font-weight-bold">{{constants.searchByQuestionText}}</label>
+                <input type="text" class="form-control" formControlName="searchString" name="searchString">
+            </div>
+            <div class="q-skill m-r-20 m-t-10">
+                <label for="" class="font-weight-bold">{{constants.searchBySKU}}</label>
+                <input type="text" class="form-control" formControlName="searchBySKU" name="searchBySKU">
+            </div>
+            <div class="q-skill m-r-20 m-t-10">
+                <label for="" class="font-weight-bold">{{constants.searchByCourseName}}</label>
+                <input type="text" class="form-control" formControlName="courseName" name="courseName">
+            </div>
+            <div class="q-skill m-r-20 m-t-10">
+                <label for="" class="font-weight-bold">{{constants.searchByModuleName}} <span
+                        *ngIf="this.createSectionSkillForm.get('courseName').value" class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="moduleName" name="moduleName">
+                <small class="form-text text-danger" *ngIf="!isFormValid('moduleName')">
+                    {{constants.pleaseEnterTheModuleName}}
+                </small>
+            </div>
+            <div class="m-l-20">
+                <button type="button" class="btn btn-info mt-35" [disabled]="!enableSearch" (click)="getQuestions()">
+                    {{constants.search}}
+                </button>
+            </div>
+        </div>
+
+        <div class="search-results p-20 align-items-center m-b-20"
+            *ngIf="!isViewSelected && questionResult.totalCount" formArrayName="count">
+            <h5 class="m-b-0 w-25">{{constants.searchResults}} <strong>{{questionResult.totalCount}}</strong>
+                <h6 *ngIf="subjectiveQuestionsCount==1" style="font-style: italic; font-size:11px">(Results Contains
+                    {{subjectiveQuestionsCount}} Subjective
+                    Question)</h6>
+                <h6 *ngIf="subjectiveQuestionsCount>1" style="font-style: italic; font-size: 11px;">(Results Contains
+                    {{subjectiveQuestionsCount}} Subjective
+                    Questions)</h6>
+            </h5>
+            
+            <!-- Select Automatically -->
+           
+                <div  *ngIf="!isViewSelected && !selectManually && !isStack" >
+                    <div class="d-flex">
+                        <div class="border-left p-l-20 m-r-20">
+                            <button type="button" class="btn btn-outline-info"
+                                (click)="toggleManualSelection()">{{constants.selectManually}}</button>
+                        </div>
+                        <div class="border-left p-l-20" *ngIf="!isViewSelected && countMap.size">
+                            <button type="button" class="btn btn-outline-info"
+                                (click)="toggleViewSelected()">{{constants.viewSelected}}</button>
+                        </div>
+                    </div>
+                    <div *ngFor="let question of questionCountResponse.questionData; let i = index">
+                        <div [formGroupName]="i">
+                            <h3 *ngIf="question.skillName">{{constants.skillName}} : {{question.skillName}}</h3>
+                            <h3 *ngIf="question.subSkillName">{{constants.subSkillName}} : {{question.subSkillName}}</h3>
+                            <h3 *ngIf="question.subSkill2Name">{{constants.subSkill2}} : {{question.subSkill2Name}}</h3>
+                            <div class="d-flex flex-wrap align-items-end">
+                                <div class="m-r-20 q-type">
+                                    <label class="font-weight-bold">{{constants.beginner}}
+                                        <strong>({{question.proficiencyCount.beginnerQuestionCount}})</strong>
+                                    </label>
+                                    <input type="number" min="0" max={{question.proficiencyCount.beginnerQuestionCount}} class="form-control btn-w-80" placeholder=""
+                                        formControlName="beginnerCount">
+                                </div>
+                                <div class="m-r-20 q-type">
+                                    <label class="font-weight-bold">{{constants.intermediate}}
+                                        <strong>({{question.proficiencyCount.intermediateQuestionCount}})</strong>
+                                    </label>
+                                    <input type="number" min="0" max={{question.proficiencyCount.intermediateQuestionCount}} class="form-control btn-w-80" placeholder=""
+                                        formControlName="intermediateCount">
+                                </div>
+                                <div class="m-r-20 q-type">
+                                    <label class="font-weight-bold">{{constants.advanced}}
+                                        <strong>({{question.proficiencyCount.advancedQuestionCount}})</strong>
+                                    </label>
+                                    <input type="number" min="0" max={{question.proficiencyCount.advancedQuestionCount}} class="form-control btn-w-80" placeholder=""
+                                        formControlName="advancedCount">
+                                </div>
+                                <div class="m-r-20">
+                                    <button type="button" class="btn btn-outline-success"
+                                        (click)="addAutomaticConfig(i)">{{constants.add}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>      
+                </div>
+
+
+            <!-- Select Manually -->
+            <div class="d-flex align-items-center" *ngIf="!isViewSelected && selectManually">
+                <button type="button" class="btn btn-outline-info" (click)="toggleManualSelection()"
+                    *ngIf="!isStack">{{constants.selectAutomatically}}
+                </button>
+                <div class="border-left p-l-20" *ngIf="!isViewSelected && skillMetadata.length">
+                    <button type="button" class="btn btn-outline-info"
+                        (click)="toggleViewSelected()">{{constants.viewSelected}}</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-results p-20 d-flex align-items-center justify-content-center m-b-20"
+            *ngIf="isSubmitted && !isViewSelected && !questionResult.totalCount && !isSearchFilterChanged">
+            <div>{{constants.noQuestionsFound}}</div>
+            <div class="border-left p-l-20 m-l-20" *ngIf="skillMetadata.length">
+                <button type="button" class="btn btn-outline-info"
+                    (click)="toggleViewSelected()">{{constants.viewSelected}}</button>
+            </div>
+        </div>
+
+        <div class="search-results p-20 d-flex align-items-center justify-content-center m-b-20"
+            *ngIf="!isViewSelected && !questionResult.totalCount && skillMetadata.length && isSearchFilterChanged">
+            <div class="p-l-20 m-l-20">
+                <button type="button" class="btn btn-outline-info"
+                    (click)="toggleViewSelected()">{{constants.viewSelected}}</button>
+            </div>
+        </div>
+
+        <div class="actions p-l-20 p-r-20" *ngIf="!isViewSelected && questionResult.totalCount && selectManually">
+            <button type="button" class="btn btn-outline-success m-r-20"
+                (click)="addManualQuestions()">{{constants.add}}</button>
+        </div>
+
+
+        <div class="p-20" *ngIf="!isViewSelected && questionResult.totalCount && selectManually">
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox" *ngIf="!isStack">
+                                    <input type="checkbox" [(checked)]="selectAllQuestion" class="custom-control-input"
+                                        id="customCheck1" [disabled]="isAdminQuestionReviewer"
+                                        (click)="selectAllQuestions($event)">
+                                    <label class="custom-control-label" for="customCheck1"></label>
+                                </div>
+                            </div>
+                        </th>
+                        <th>{{constants.questionSKU}}</th>
+                        <th>{{constants.questions}}</th>
+                        <th>{{constants.skillDetails}}</th>
+                        <th>{{constants.proficiency}}</th>
+                        <th>{{constants.actions}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let question of questionResult.questions">
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" [(checked)]="question.isChecked" class="custom-control-input"
+                                        id="customCheck1" (click)="searchCheckedEvent($event,question)"
+                                        [disabled]="isAdminQuestionReviewer && question.isSelected">
+                                    <label class="custom-control-label" for="customCheck1"></label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {{question.questionIdNumber}}
+                        </td>
+                        <td (click)="viewQuestion(question.questionText,question.choices,question.questiontypeId)"
+                            class="cursor-pointer name">
+                            <p class="m-b-0 identation" [innerHTML]="truncate(question.questionText)"></p>
+                        </td>
+                        <td>
+                            <span *ngIf="question.skillName">{{constants.skillName}} : {{question.skillName}}</span>
+                            <br>
+                            <span *ngIf="question.subSkillName">{{constants.subSkillName}} : {{question.subSkillName}}</span>
+                            <br>
+                            <span *ngIf="question.subSkill2Name">{{constants.subSkill2}} : {{question.subSkill2Name}}</span>
+                        </td>
+                        <td>
+                            {{question.proficiency.name}}
+                        </td>
+                        <td>
+                            <i class="fa fa-chart-pie pointer m-l-15"
+                                (click)="openQuestionPerformanceDashboard(question.questionId)"
+                                [ngbTooltip]="constants.viewQuestionPerformance"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center m-t-10">
+                <ngb-pagination [collectionSize]="questionResult.totalCount" [(page)]="searchResultPageIndex"
+                    [pageSize]="searchResultPageSize" (pageChange)="changeSearchResultPage()" [maxSize]="maxSize"
+                    [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                </ngb-pagination>
+            </div>
+        </div>
+    </form>
+
+    <!-- Update -->
+    <div class="search-results p-20 d-flex align-items-center" *ngIf="isViewSelected">
+        <h5 class="m-b-0 m-r-20">{{constants.selectedQuestions}}
+            <strong>({{createSectionSkill.totalQuestions}})</strong>
+        </h5>
+        <button type="button" class="btn btn-outline-info m-r-20" *ngIf="questionResult.totalCount"
+            (click)="toggleViewSelected()">
+            {{constants.viewSearchResults}}
+        </button>
+        <button type="button" *ngIf="!createSectionSkillForm.invalid" [disabled]="isSaveDisabled"
+            (click)="saveSkillQuestions()" class="btn btn-info">{{ isEdit
+            ?
+            constants.update : constants.save}}
+        </button>
+    </div>
+
+    <div class="p-20" *ngIf="isViewSelected && skillMetadata.length">
+        <div class="border m-b-20">
+            <div class="d-flex align-items-center p-10" *ngFor="let automatedConfig of automatedConfigs">
+                <h5 class="m-r-40">{{automatedConfig.typeName}}</h5>
+                <div class="m-r-20">
+                    <label class="font-weight-bold">{{constants.beginner}}</label>
+                    <input type="text" class="form-control btn-w-80" disabled [ngModel]="automatedConfig.beginnerCount">
+                </div>
+                <div class="m-r-20">
+                    <label class="font-weight-bold">{{constants.intermediate}}</label>
+                    <input type="text" class="form-control btn-w-80" disabled
+                        [ngModel]="automatedConfig.intermediateCount">
+                </div>
+                <div class="m-r-20">
+                    <label class="font-weight-bold">{{constants.advanced}}</label>
+                    <input type="text" class="form-control btn-w-80" disabled [ngModel]="automatedConfig.advancedCount">
+                </div>
+                <div class="margin-top">
+                    <button type="button" class="btn btn-outline-danger"
+                        (click)="deleteAutomaticConfig(automatedConfig.parentQuestionTypeId)">
+                        {{constants.delete}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-20" *ngIf="isViewSelected || countMap.size">
+        <div class="border m-b-20" *ngIf="(action === constants.addSection || action === constants.addSkill) && isViewSelected">
+            <div class="p-10" *ngFor="let automatedConfig of countMap | keyvalue; let i = index">
+                <h5 class="m-r-40">{{automatedConfig.typeName}}</h5>
+                <div class="d-flex flex-column me-2">
+                    <h4 *ngIf="automatedConfig.value.skillName">{{constants.skillName}} : {{automatedConfig.value.skillName}}</h4>
+                    <h4 *ngIf="automatedConfig.value.subSkillName">{{constants.subSkillName}} : {{automatedConfig.value.subSkillName}}</h4>
+                    <h4 *ngIf="automatedConfig.value.subSkill2Name">{{constants.subSkill2}} : {{automatedConfig.value.subSkill2Name}}</h4>
+                </div>
+               <div class="d-flex align-items-center">
+                <div class="m-r-20">
+                    <label class="font-weight-bold">{{constants.beginner}}</label>
+                    <input type="text" class="form-control btn-w-80" disabled [ngModel]="automatedConfig.value.beginnerCount">
+                </div>
+                <div class="m-r-20">
+                    <label class="font-weight-bold">{{constants.intermediate}}</label>
+                    <input type="text" class="form-control btn-w-80" disabled
+                        [ngModel]="automatedConfig.value.intermediateCount">
+                </div>
+                <div class="m-r-20">
+                    <label class="font-weight-bold">{{constants.advanced}}</label>
+                    <input type="text" class="form-control btn-w-80" disabled [ngModel]="automatedConfig.value.advancedCount">
+                </div>
+                <div class="margin-top">
+                    <button type="button" class="btn btn-outline-danger"
+                        (click)="deleteAutoConfig(i)">
+                        {{constants.delete}}
+                    </button>
+                </div>
+               </div>
+                
+            </div>
+        </div>
+        
+        <span *ngIf="manuallySelectedQuestions.length">
+            <div>
+                <button type="button" class="btn btn-outline-danger m-r-20" [disabled]="isRemoveDisabled"
+                    (click)="removeSelectedManualQuestions()">
+                    {{constants.remove}}
+                </button>
+            </div>
+            <table class="table table-striped border m-t-20">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox" *ngIf="!isStack">
+                                    <input type="checkbox" [(checked)]="removeAllQuestion" class="custom-control-input"
+                                        id="customCheck1" (click)="removeAllSelectedQuestions($event)"
+                                        [disabled]="isAdminQuestionReviewer">
+                                    <label class="custom-control-label" for="customCheck1"></label>
+                                </div>
+                            </div>
+                        </th>
+                        <th>{{constants.questionSKUId}}</th>
+                        <th>{{constants.questions}}</th>
+                        <th>{{constants.type}}</th>
+                        <th>{{constants.proficiency}}</th>
+                        <th>{{constants.actions}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let selectedQuestion of paginatedSelectedQuestions">
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck2"
+                                        [(checked)]="selectedQuestion.isChecked"
+                                        [disabled]="isAdminQuestionReviewer && selectedQuestion.questionId !== assessmentData.questionId"
+                                        (click)="selectedQuestionsCheckedEvent($event,selectedQuestion)">
+                                    <label class="custom-control-label" for="customCheck2"></label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {{selectedQuestion.questionIdNumber}}
+                        </td>
+                        <td class="cursor-pointer name"
+                            (click)="viewQuestion(selectedQuestion.questionText,selectedQuestion.choices,selectedQuestion.questiontypeId)">
+                            <p class="m-b-0 identation"
+                                [innerHTML]="truncate(selectedQuestion.questionText) | safeHtml"></p>
+                        </td>
+                        <td>
+                            {{selectedQuestion.parentQuestionTypeName}}
+                        </td>
+                        <td>
+                            {{selectedQuestion.proficiency.name}}
+                        </td>
+                        <td>
+                            <i class="icon-user pointer m-r-15"
+                                (click)="openQuestionPerformanceDashboard(selectedQuestion.questionId)"
+                                [ngbTooltip]="constants.viewQuestionPerformance"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="p-20 text-center">
+                <ngb-pagination [collectionSize]="manuallySelectedQuestions.length" [(page)]="selectedQuestionPageIndex"
+                    [pageSize]="selectedQuestionPageSize" (pageChange)="changeSelectedQuestionPage()"
+                    [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                </ngb-pagination>
+            </div>
+        </span>
+    </div>
+</div>

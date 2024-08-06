@@ -1,0 +1,59 @@
+.chart-container {
+    display: block;
+    position: relative;
+    max-height: 382px;
+}
+
+.dashboard {
+    ::ng-deep iframe {
+        min-height: 700px !important;
+        border: none !important;
+        width: 100% !important;
+    }
+}
+
+.pie-chart-container {
+    height: 300px;
+    max-width: 620px;
+    display: block;
+    background: white;
+}
+
+.ud_assessmentemptydiv {
+    position: relative;
+    top: 9px;
+}
+
+.beginner-question {
+    color: #008FFB;
+}
+
+.intermediate-question {
+    color: #00E396;
+}
+
+.advanced-question {
+    color: #FEB019;
+}
+
+.noDataFoundClass {
+    padding-top: 15%;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.noChartFound {
+    padding-top: 80px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.loader-group-dashboard {
+    ::ng-deep iframe {
+        min-height: 1200px !important;
+        border: none !important;
+    }
+}

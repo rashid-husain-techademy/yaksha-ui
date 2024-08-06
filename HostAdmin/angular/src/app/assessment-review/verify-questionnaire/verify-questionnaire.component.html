@@ -1,0 +1,201 @@
+<div id="verify-questions" *ngIf="assessmentDetails && !assessmentDetails.errorMessage" appDisableCopy
+    appDisableRightClick appDisableSelect>
+    <div class="d-flex col-md-12 p-0">
+        <h4 class="page-title col-md-7 p-0 assessment-label">
+            {{ assessmentDetails ? assessmentDetails.assessmentName : '' }}
+        </h4>
+
+    </div>
+    <div class="d-flex">
+        <div class="col-md-12 d-flex justify-content-start p-0">
+            <button class="btn btn-info btn-sm btn-60"
+                (click)="redirectToDashboard(assessmentDetails.tenantAssessmentReviewId , assessmentDetails.assessmentId)">
+                <i class="mdi mdi-view-dashboard"></i>
+            </button>
+            <button type="button" class="btn btn-info btn-sm col-md-3 m-l-15 button-max-width" *ngIf="(userRole?.toLowerCase() === assessmentDetails?.createdUserRole.toLowerCase() || userRole === userRoles[7]) 
+                && (assessmentDetails?.reviewStatus === questionReviewStatus.Pending
+                || assessmentDetails?.reviewStatus === questionReviewStatus.Expired) && userRole !== userRoles[6]"
+                (click)="openAssignReviewModal()">
+                {{constants.extendValidity}}
+            </button>
+            <span class="col-md-4 skill-custom" *ngIf="userRole === userRoles[6]">
+                <ng-multiselect-dropdown [settings]="singleDropdownSettings" (onSelect)="onSkillSelect($event)"
+                    (onDeSelect)="resetSubSkills()" [data]="assessmentSkills" [(ngModel)]="selectedSkill"
+                    [placeholder]="constants.selectSkill">
+                </ng-multiselect-dropdown>
+            </span>
+            <span class="col-md-3 subSkill-custom" *ngIf="userRole === userRoles[6]">
+                <ng-multiselect-dropdown [settings]="singleDropdownSettings" (onSelect)="onSubSkillSelect($event)"
+                    [data]="assessmentSubSkills" [(ngModel)]="selectedSubSkill" (onDeSelect)="onSubSkillDeSelect()"
+                    [placeholder]="constants.selectSubSkill">
+                </ng-multiselect-dropdown>
+            </span>
+            <span class="col-md-3 ml-auto">
+                <select class="custom-select" [(ngModel)]="selectedReviewCommentStatus"
+                    (ngModelChange)="onStatusChange()">
+                    <option value="">{{constants.all}}</option>
+                    <option *ngFor="let reviewStatus of defaultReviewCommentStatus" [value]="reviewStatus">
+                        {{ reviewStatus }}
+                    </option>
+                </select>
+            </span>
+            <button
+                *ngIf="assessmentDetails?.reviewStatus === questionReviewStatus.Pending && this.assessmentDetails.canSignOff && isReviewerLogin"
+                type="button" class="btn btn-info btn-sm"
+                (click)="submitReview(questionReviewStatus.SignedOff)">{{constants.signOff}}
+            </button>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mt-20 m-b-10">
+        <div class="d-flex align-items-center flex-wrap"
+            *ngIf="assessmentSections && assessmentSections.length > 0; else noQuestionIsAvailable">
+            <ng-container *ngFor="let section of assessmentSections">
+                <button type="button" class="text-truncate btn btn-sm" (click)="onSectionChange(section)"
+                    [ngbTooltip]="section.sectionName" *ngIf="section?.questions?.length > 0"
+                    [ngClass]="currentQuestion && section.sectionId === currentQuestion.sectionId ? 'btn-outline-info' : 'btn-outline-secondary'">
+                    {{section.sectionName}}
+                </button>
+            </ng-container>
+        </div>
+        <div *ngIf="!isReviewerLogin">
+            <button type="button" class="btn btn-info btn-sm"
+                *ngIf="assessmentDetails?.reviewStatus === questionReviewStatus.ReviewSubmitted && userRole?.toLowerCase() === assessmentDetails?.createdUserRole.toLowerCase()"
+                (click)="openAssignReviewModal(true)">
+                {{constants.assignReReview}}
+            </button>
+        </div>
+    </div>
+    <ng-template #noQuestionIsAvailable>
+        <h3 class="card align-items-center m-t-20 status">
+            {{constants.noQuestionsFound}}</h3>
+    </ng-template>
+
+    <div class="d-flex align-items-center flex-wrap m-b-20" *ngIf="currentSelectedSectionQuestions">
+        <button type="button" class="btn btn-sm btn-min-width" (click)="setQuestionAndFeedback(question)"
+            [ngClass]="currentQuestion?.serialNumber === question.serialNumber ? 'btn-outline-info ' + question.backgroundColor : 'btn-outline-secondary ' + question.backgroundColor"
+            *ngFor="let question of currentSelectedSectionQuestions">
+            {{question.serialNumber}}
+        </button>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <div class="w-60 p-r-10">
+            <ng-container *ngIf="currentQuestion">
+                <app-review-dynamic-form [fields]="currentQuestion" (questionRemove)="onQuestionRemove($event)">
+                </app-review-dynamic-form>
+            </ng-container>
+            <div *ngIf="currentQuestion?.questionHints.length > 0">
+                <h4 class="m-b-20 text-center">{{constants.hint}}</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div *ngFor="let hint of currentQuestion.questionHints">
+                            <p *ngIf="!helper.isHtml(hint.description)">{{hint.description}}</p>
+                            <p *ngIf="helper.isHtml(hint.description)" [innerHTML]="hint.description" class="name"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-40 p-l-10 review-width" *ngIf="assessmentSections && assessmentSections?.length > 0">
+            <div>
+                <h4 class="m-b-20">{{constants.reviewerFeedback}}</h4>
+                <div class="card">
+                    <div
+                        [ngClass]="currentQuestion?.questionType.name === constants.crosswordpuzzle ? 'card-body review-panel':'card-body'">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-info btn-sm m-r-5"
+                                *ngIf="isReviewerLogin && reviewerStatus && currentQuestion?.isEnableFeedbackOptions"
+                                (click)="saveAndMoveOtherQuestion(constants.next)">
+                                {{constants.submit}}
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm m-r-2"
+                                [disabled]="currentQuestionIndex === 0"
+                                (click)="onPreviousQuestion()">{{constants.prev}}</button>
+                            <button type="button" class="btn btn-info btn-sm"
+                                [disabled]="(currentQuestionIndex + 1) === assessmentQuestions?.length"
+                                (click)="onNextQuestion()">{{constants.next}}</button>
+                        </div>
+                        <div class="d-flex align-items-center"
+                            *ngIf="isReviewerLogin && currentQuestion?.isEnableFeedbackOptions">
+                            <div class="m-r-20">
+                                <input type="radio" name="questionStatus" [value]="reviewerCommentEnum.Accept"
+                                    [(ngModel)]="reviewerStatus" (ngModelChange)="resetFeedback()"
+                                    [disabled]="userRole !== userRoles[6] ||
+                                    (isReviewerLogin && (assessmentDetails?.reviewStatus === questionReviewStatus.SignedOff || assessmentDetails?.reviewStatus === questionReviewStatus.ReviewSubmitted))">
+                                <label class="form-check-label m-l-10">{{constants.accept}}</label>
+                            </div>
+                            <div class="m-r-20">
+                                <input type="radio" name="questionStatus" [value]="reviewerCommentEnum.Reject"
+                                    [(ngModel)]="reviewerStatus" (ngModelChange)="resetFeedback()"
+                                    [disabled]="userRole !== userRoles[6] ||
+                                    (isReviewerLogin && (assessmentDetails?.reviewStatus === questionReviewStatus.SignedOff || assessmentDetails?.reviewStatus === questionReviewStatus.ReviewSubmitted))">
+                                <label class="form-check-label m-l-10">{{constants.reject}}</label>
+                            </div>
+                            <div class="m-r-20">
+                                <input type="radio" name="questionStatus" [value]="reviewerCommentEnum.Suggest"
+                                    [(ngModel)]="reviewerStatus" (ngModelChange)="resetFeedback()"
+                                    [disabled]="(isReviewerLogin &&
+                                    (assessmentDetails?.reviewStatus === questionReviewStatus.SignedOff || assessmentDetails?.reviewStatus === questionReviewStatus.ReviewSubmitted))">
+                                <label class="form-check-label m-l-10">{{constants.suggest}}</label>
+                            </div>
+                        </div>
+                        <textarea class="form-control m-t-20"
+                            *ngIf="currentQuestion?.isEnableFeedbackOptions && (reviewerStatus && reviewerStatus !== reviewerCommentEnum.Accept)"
+                            [(ngModel)]="feedback" [ngModelOptions]="{standalone: true}"
+                            [placeholder]="constants.enterYourFeedback"></textarea>
+
+                        <div *ngFor="let review of currentQuestion?.reviews">
+                            <hr class="m-t-20 m-b-20"><strong>{{review.reviewerName}}:</strong> {{review.comment}}
+                            <strong>{{review.questionReviewStatus === reviewerCommentEnum.Accept ? 'Accepted' :
+                                review.questionReviewStatus === reviewerCommentEnum.Reject ? ' Rejected' :
+                                review.questionReviewStatus === reviewerCommentEnum.Suggest ? '' : ''}}</strong>
+                            <!-- Reply button for admin if reviewer has suggested / rejected -->
+                            <button type="button" class="btn btn-info btn-sm m-l-10" *ngIf="adminQuestionReviewer && (review.questionReviewStatus === reviewerCommentEnum.Suggest 
+                                || review.questionReviewStatus === reviewerCommentEnum.Reject)
+                                && !review.adminReply && !review.enableAdminReply"
+                                (click)="enableAdminReply(review, true)">
+                                {{constants.reply}}
+                            </button>
+                            <div *ngIf="review.enableAdminReply">
+                                <textarea class="form-control m-t-20" [(ngModel)]="feedback"
+                                    [ngModelOptions]="{standalone: true}"
+                                    [placeholder]="constants.enterYourReply"></textarea>
+                                <div class="d-flex justify-content-end m-t-10">
+                                    <button type="button" class="btn btn-secondary btn-sm m-r-2"
+                                        (click)="enableAdminReply(review, false)">
+                                        {{constants.cancel}}
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-sm m-r-5"
+                                        (click)="saveAdminReviewerComments(review)">
+                                        {{constants.submit}}
+                                    </button>
+                                </div>
+                            </div>
+                            <div *ngIf="(review.questionReviewStatus === reviewerCommentEnum.Suggest 
+                            || review.questionReviewStatus === reviewerCommentEnum.Reject) && review.adminReply">
+                                <hr class="m-t-20 m-b-20 m-l-20"><i
+                                    class="fa fa-reply m-r-10"></i><strong>{{review.adminReply.reviewerName}}:</strong>
+                                {{review.adminReply.comment}}
+                            </div>
+                        </div>
+                        <div class="m-t-20" *ngIf="!currentQuestion?.reviews.length &&
+                            (!isReviewerLogin || assessmentDetails?.reviewStatus === questionReviewStatus.SignedOff)">
+                            <p>{{constants.noFeedbackFound}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="assessmentDetails && assessmentDetails.errorMessage">
+    <h4 class="text-center page-title m-r-30">
+        {{assessmentDetails.errorMessage}}
+    </h4>
+</div>
+<div *ngIf="pageError">
+    <h4 class="text-center page-title m-r-30">
+        {{constants.youDontHaveAccessToThisLink}}
+    </h4>
+</div>

@@ -1,0 +1,1045 @@
+<div appDisableCopy appDisableRightClick>
+    <app-upload-question *ngIf="!isEdit"></app-upload-question>
+    <div class="m-b-20">
+        <h4 class="page-title">{{isEdit ? constants.editQuestion : constants.createQuestion}}</h4>
+        <div *ngIf="questionMappedAssessment">
+            <h5 class="page-title field-required">{{constants.questionMappedToAssessment}}</h5>
+        </div>
+    </div>
+    <form [formGroup]="questionForm">
+        <div class="card">
+            <div class="card-body d-flex flex-wrap p-0 m-t-20 m-b-20 m-l-10 m-r-10 category-custom">
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.questionType}} <span
+                            class="text-danger">*</span></label>
+                    <select class="custom-select" formControlName="questionType" (change)="onChange()">
+                        <option value="" disabled selected hidden>{{constants.questionType}}</option>
+                        <option *ngFor="let type of questionTypes" [value]="type.id">
+                            {{type.name}}
+                        </option>
+                    </select>
+                    <small class="field-required" *ngIf="!isFormValid('questionType')">
+                        {{questionsValidationMessages.questionTypeRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.proficiencyLevel}} <span
+                            class="text-danger">*</span></label>
+                    <select class="custom-select" formControlName="proficiency" (change)="getDuration()">
+                        <option value="" disabled selected hidden>{{constants.proficiencyLevel}}</option>
+                        <option *ngFor="let proficiencyLevel of proficiencies" [ngValue]="proficiencyLevel.id">
+                            {{proficiencyLevel.name}}</option>
+                    </select>
+                    <small class="field-required" *ngIf="!isFormValid('proficiency')">
+                        {{questionsValidationMessages.proficiencyRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.duration}} <span class="text-muted">(in
+                            minutes)</span></label>
+                    <input type="number" class="form-control" min="1" placeholder="{{constants.duration}}"
+                        formControlName="duration">
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.score}}</label>
+                    <input type="number" min=1 class="form-control" placeholder="{{constants.score}}"
+                        formControlName="score" type="number">
+                    <small class="field-required" *ngIf="!isFormValid('score')">
+                        {{questionsValidationMessages.scoreRequired}}
+                    </small><br>
+                    <small class="field-required" *ngIf="!isScoreValid()">
+                        {{questionsValidationMessages.validScoreRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.selectCategory}} <span
+                            class="text-danger">*</span></label>
+                    <ng-multiselect-dropdown [data]="categories" [placeholder]="constants.selectCategory"
+                        [settings]="singleDropdownSettings" formControlName="category" [disabled]="isCategoryDisabled">
+                    </ng-multiselect-dropdown>
+                    <small class="field-required" *ngIf="!isFormValid('category')">
+                        {{questionsValidationMessages.categoryRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10" *ngIf="!onReviewerRequest">
+                    <label class="font-weight-bold">{{constants.selectSkill}} <span class="text-danger">*</span></label>
+                    <ng-multiselect-dropdown [data]="skills?.skills" [placeholder]="constants.selectSkill"
+                        [settings]="singleDropdownSettings" formControlName="primarySkill" [disabled]="isSkillDisabled">
+                    </ng-multiselect-dropdown>
+                    <small class="field-required" *ngIf="!isFormValid('primarySkill')">
+                        {{questionsValidationMessages.primarySkillRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10" *ngIf="onReviewerRequest">
+                    <label class="font-weight-bold">{{constants.selectSkill}} <span class="text-danger">*</span></label>
+                    <ng-multiselect-dropdown (onSelect)="getSubSkills()" (onDeSelect)="skillDeselect($event)"
+                        [data]="categorySkills" [placeholder]="constants.selectSkill"
+                        [settings]="singleDropdownSettings" formControlName="primarySkill" [disabled]="isSkillDisabled">
+                    </ng-multiselect-dropdown>
+                    <small class="field-required" *ngIf="!isFormValid('primarySkill')">
+                        {{questionsValidationMessages.primarySkillRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold" for="typeahead-focus">{{constants.selectSubSkill}} <span
+                            class="field-required">*</span></label>
+                    <input id="typeahead-focus1" type="text" class="form-control" [(ngModel)]="subSkill"
+                        [ngbTypeahead]="subSkillSearch" (focus)="subSkillFocus$.next($event.target.value)"
+                        (click)="subSkillClick$.next($event.target.value)" #instance="ngbTypeahead"
+                        formControlName="subSkill" placeholder="{{constants.selectOrType}}" />
+                    <small class="field-required" *ngIf="!isFormValid('subSkill')">
+                        {{questionsValidationMessages.subSkillRequired}}
+                    </small>
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold" for="typeahead-focus">{{constants.selectSubSkill2}}</label>
+                    <input id="typeahead-focus2" type="text" class="form-control" [(ngModel)]="subSkill2"
+                        [ngbTypeahead]="subSkill2Search" (focus)="subSkill2Focus$.next($event.target.value)"
+                        (click)="subSkill2Click$.next($event.target.value)" #instance="ngbTypeahead"
+                        formControlName="subSubSkill" placeholder="{{constants.selectOrType}}" />
+                    <small class="field-required" *ngIf="!isFormValid('subSubSkill')">
+                        {{questionsValidationMessages.subSkillRequired}}
+                    </small>
+                </div>
+
+
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.courseName}}</label>
+                    <input type="text" class="form-control" formControlName="courseName">
+                </div>
+                <div class="w-25 p-10">
+                    <label class="font-weight-bold">{{constants.moduleName}}</label>
+                    <input type="text" class="form-control" formControlName="moduleName">
+                </div>
+                <div class="w-25 p-10" *ngIf="isEdit">
+                    <label class="font-weight-bold">{{constants.questionSKU}}</label>
+                    <input type="text" class="form-control" style="width: 125%;" value={{questionIdNumber}} disabled>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body" *ngIf="sub">
+                <input type="file" id="rubrixUpload" #rubrixInput hidden accept=".xls,.xlsx"
+                    (change)="onRubrixFileChange($event.target.files)">
+                <label class="font-weight-bold">{{constants.uploadRubrixFile}}</label>
+                <label for="rubrixUpload"
+                    class="border d-flex flex-column justify-content-center align-items-center p-20 h-120" appDragDrop
+                    (onFileDropped)="onRubrixFileChange($event)">
+                    <span class="text-muted">{{constants.dragAndDropFile}}</span>
+                </label>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">{{constants.xlsAndxlsxFileareAccepted}}</small>
+                    <div *ngIf="rubrixFile">
+                        <small class="label label-rounded label-primary" [ngbTooltip]="rubrixFile?.name">
+                            <span>{{truncate(rubrixFile?.name)}}</span>
+                            <span aria-hidden="true" class="pointer" (click)="removeRubrix()">
+                                &times;</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MCQ, FIB, SUB, TOF, Stack Question Text -->
+        <div [ngClass]="mcq?'':'d-flex align-items-stretch'">
+            <div [ngClass]="!fib && !tof && !sub && !ots && !sfdd && !dragAndDrop ? 'w-100' : 'w-60 p-r-10'">
+                <div class="card">
+                    <div class="card-body">
+                        <label class="font-weight-bold">{{constants.questionText}}</label>
+                        <quill-editor class="ql-editor strong" [styles]="{height: '315px'}" formControlName="question"
+                            placeholder="{{constants.enterQuestionHere}}" [modules]="quillConfig"> </quill-editor>
+                        <small class="field-required" *ngIf="!isFormValid('question')">
+                            {{questionsValidationMessages.questionRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('question').errors?.whitespace">
+                            {{questionsValidationMessages.questionRequired}}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div [ngClass]="mcq?'w-100':'w-40 p-l-10 p-b-20'"
+                *ngIf="mcq || fib || tof || sub || ots || sfdd || dragAndDrop">
+                <div class="card h-100">
+                    <!-- MCQ -->
+                    <div class="card-body p-0" *ngIf="mcq">
+                        <h4 class="text-center p-20 border-bottom">{{constants.mcq}}</h4>
+                        <small class="form-text text-danger error-message"
+                            *ngIf="isOptionChecked">*{{constants.anyOneOfTheChoiceMustBeMarkedAsCorrectAnswer}}</small>
+                        <small class="form-text text-danger error-message"
+                            *ngIf="isOptionNotEmpty">*{{constants.pleaseFillAnyTwoFieldsInTheOptions}}</small>
+                        <div formGroupName="mcqController" class="p-20">
+                            <label class="font-weight-bold">{{constants.options}}
+                                {{constants.fillAtleastTwochoiceFormarkingItAsAnswer}}</label>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="option1" value="check" formControlName="checkbox1"
+                                            [disabled]="!this.questionForm.get('mcqController.question1').value">
+                                    </div>
+                                </div>
+                                <quill-editor class="ql-editor strong p-0 w-96" [styles]="{height: '130px'}"
+                                    formControlName="question1" placeholder="{{constants.option1}}"
+                                    [modules]="quillConfig"> </quill-editor>
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="option2" value="check" formControlName="checkbox2"
+                                            [disabled]="!this.questionForm.get('mcqController.question2').value">
+                                    </div>
+                                </div>
+                                <quill-editor class="ql-editor strong p-0 w-96" [styles]="{height: '130px'}"
+                                    formControlName="question2" placeholder="{{constants.option2}}"
+                                    [modules]="quillConfig"> </quill-editor>
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="option3" value="check" formControlName="checkbox3"
+                                            [disabled]="!this.questionForm.get('mcqController.question3').value">
+                                    </div>
+                                </div>
+                                <quill-editor class="ql-editor strong p-0 w-96" [styles]="{height: '130px'}"
+                                    formControlName="question3" placeholder="{{constants.option3}}"
+                                    [modules]="quillConfig"> </quill-editor>
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="option4" value="check" formControlName="checkbox4"
+                                            [disabled]="!this.questionForm.get('mcqController.question4').value">
+                                    </div>
+                                </div>
+                                <quill-editor class="ql-editor strong p-0 w-96" [styles]="{height: '130px'}"
+                                    formControlName="question4" placeholder="{{constants.option4}}"
+                                    [modules]="quillConfig"> </quill-editor>
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="option5" value="check" formControlName="checkbox5"
+                                            [disabled]="!this.questionForm.get('mcqController.question5').value">
+                                    </div>
+                                </div>
+                                <quill-editor class="ql-editor strong p-0 w-96" [styles]="{height: '130px'}"
+                                    formControlName="question5" placeholder="{{constants.option5}}"
+                                    [modules]="quillConfig"> </quill-editor>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="option6" value="check" formControlName="checkbox6"
+                                            [disabled]="!this.questionForm.get('mcqController.question6').value">
+                                    </div>
+                                </div>
+                                <quill-editor class="ql-editor strong p-0 w-96" [styles]="{height: '130px'}"
+                                    formControlName="question6" placeholder="{{constants.option6}}"
+                                    [modules]="quillConfig"> </quill-editor>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FIB -->
+                    <div class="card-body p-0" *ngIf="fib || ots || sfdd || dragAndDrop">
+                        <h4 class="text-center p-20 border-bottom" *ngIf="fib">{{constants.fillIntheBlank}}</h4>
+                        <h4 class="text-center p-20 border-bottom" *ngIf="ots">{{constants.orderTheSequence}}</h4>
+                        <h4 class="text-center p-20 border-bottom" *ngIf="sfdd">{{constants.selectFromDropDown}}</h4>
+                        <h4 class="text-center p-20 border-bottom" *ngIf="dragAndDrop">{{constants.dragAndDrop}}</h4>
+                        <small class="form-text text-danger error-message"
+                            *ngIf="isOptionNotEmpty && !ots && !sfdd">*{{constants.pleaseFillAtleastOneFieldInAnswer}}</small>
+                        <small class="form-text text-danger error-message"
+                            *ngIf="isOptionNotEmpty && ots">*{{constants.pleaseFillAtleastTwoFieldInAnswer}}</small>
+                        <small class="form-text text-danger error-message"
+                            *ngIf="isOptionNotEmpty && sfdd">*{{constants.pleaseFillAnyTwoFieldsInTheOptions}}</small>
+                        <div class="p-20" formGroupName="fibController">
+                            <label class="font-weight-bold"
+                                *ngIf="fib || sfdd || dragAndDrop">{{constants.options}}</label>
+                            <label class="font-weight-bold" *ngIf="ots">{{constants.answers}}</label>
+                            <div class="ots-note" *ngIf="ots">{{note}}: {{constants.orderTheSequenceAnswerNote}}</div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text font-weight-bold" id="basic-addon1">1</span>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="{{constants.checkBoxInput}}"
+                                    placeholder="{{constants.answer1}}" formControlName="question1">
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text font-weight-bold" id="basic-addon1">2</span>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="{{constants.checkBoxInput}}"
+                                    placeholder="{{constants.answer2}}" formControlName="question2">
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text font-weight-bold" id="basic-addon1">3</span>
+                                    </div>
+                                </div>
+                                <input type="text" class=" form-control" aria-label="{{constants.checkBoxInput}}"
+                                    placeholder="{{constants.answer3}}" formControlName="question3">
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text font-weight-bold" id="basic-addon1">4</span>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="{{constants.checkBoxInput}}"
+                                    placeholder="{{constants.answer4}}" formControlName="question4">
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text font-weight-bold" id="basic-addon1">5</span>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="{{constants.checkBoxInput}}"
+                                    placeholder="{{constants.answer5}}" formControlName="question5">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text font-weight-bold" id="basic-addon1">6</span>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="{{constants.checkBoxInput}}"
+                                    placeholder="{{constants.answer6}}" formControlName="question6">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOF -->
+                    <div class="card-body p-0" *ngIf="tof">
+                        <h4 class="text-center p-20 border-bottom">{{constants.tof}}</h4>
+                        <div class="p-20">
+                            <label class="font-weight-bold">{{constants.options}}</label>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="radio" id="true" placeholder="{{constants.true}}"
+                                            name="customRadio" [checked]="tofTrue" (change)="checkTof(true)" checked>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" placeholder="{{constants.true}}" readonly>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="radio" id="false" placeholder="{{constants.false}}"
+                                            name="customRadio" [checked]="tofFalse" (change)="checkTof(false)">
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" placeholder="{{constants.false}}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUB -->
+                    <div class="card-body p-0" *ngIf="sub">
+                        <h4 class="text-center p-20 border-bottom">{{constants.subjective}}</h4>
+                        <div class="p-20">
+                            <label class="font-weight-bold">{{constants.options}}</label>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="radio" id="customRadio5" placeholder="{{constants.true}}"
+                                            [checked]="subTextArea" (change)="checkSub(true)" name="customRadio">
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" placeholder="{{constants.textArea}}" readonly>
+                            </div>
+                            <div class="input-group m-b-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="radio" id="customRadio5" placeholder="{{constants.false}}"
+                                            [checked]="subFileUpload" (change)="checkSub(false)" name="customRadio">
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" placeholder="{{constants.fileUpload}}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MTF -->
+        <div class="card" *ngIf="mtf">
+            <div class="card-body p-0">
+                <h4 class="text-center p-20 border-bottom">{{constants.mtf}}</h4>
+                <small class="form-text text-danger match-error-message"
+                    *ngIf="matcherror">*{{constants.pleaseCheckTheQuestionAndAnswerAreFilled}}</small>
+                <small class="form-text text-danger match-error-message"
+                    *ngIf="isOptionNotEmpty">*{{constants.pleaseFillAnyTwoFieldsInTheOptions}}</small>
+                <div formGroupName="mtfController" class="d-flex p-t-20 p-b-20">
+                    <div class="w-50 p-l-20 p-r-10">
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">01</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="question1"
+                                placeholder="{{constants.question1}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">02</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="question2"
+                                placeholder="{{constants.question2}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">03</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="question3"
+                                placeholder="{{constants.question3}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">04</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="question4"
+                                placeholder="{{constants.question4}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">05</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="question5"
+                                placeholder="{{constants.question5}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">06</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="question6"
+                                placeholder="{{constants.question6}}">
+                        </div>
+                    </div>
+                    <div class="w-50 p-l-10 p-r-20">
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">01</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="answer1"
+                                placeholder="{{constants.answer1}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">02</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="answer2"
+                                placeholder="{{constants.answer2}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">03</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="answer3"
+                                placeholder="{{constants.answer3}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">04</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="answer4"
+                                placeholder="{{constants.answer4}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">05</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="answer5"
+                                placeholder="{{constants.answer5}}">
+                        </div>
+                        <div class="input-group m-b-10">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">06</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="answer6"
+                                placeholder="{{constants.answer6}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" *ngIf="puzzle">
+            <h4 class="text-center p-20 border-bottom">{{constants.instructions}}</h4>
+            <ul>
+                <li>{{constants.maximumLimitationWillBeTwentyPerOrientation}}</li>
+                <li>{{constants.duplicationWillNotBeAllowed}}</li>
+                <li>{{constants.subCluesWillNotBeAllowedForAnyParentClue}} </li>
+                <li>{{constants.positionShouldNotRepeatMoreThanTwice}}</li>
+                <li>{{constants.ifPositionIsSameEnsureStartingCharacterOfAnswerMustBeSame}}</li>
+            </ul>
+        </div>
+
+        <div class="card" *ngIf="puzzle">
+            <div formArrayName="crosswordPuzzle" *ngFor="let puzzle of crosswordPuzzle.controls; let i = index"
+                class="d-flex flex-row align-items-start">
+                <div class="card-body d-flex flex-wrap p-0 m-t-20 m-b-20 m-l-10 m-r-10 category-custom border"
+                    [formGroupName]="i">
+                    <div class="w-50 p-10">
+                        <label class="font-weight-bold">{{constants.clue}} {{i+1}}</label><span
+                            class="text-danger">*</span>
+                        <input type="text" class="form-control" placeholder="{{constants.clue}}" formControlName="clue"
+                            (change)="onPuzzleCluesChange(i)">
+                        <small class="field-required"
+                            *ngIf="puzzle.controls.clue.errors?.required && (puzzle.controls.clue.touched || isFormSubmitTriggered) || puzzle.controls.clue.errors?.whitespace  && (puzzle.controls.clue.touched || isFormSubmitTriggered)">
+                            {{questionsValidationMessages.puzzleQuestionRequired}}
+                        </small>
+                    </div>
+                    <div class="w-50 p-10">
+                        <label class="font-weight-bold">{{constants.answer}}</label><span class="text-danger">*</span>
+                        <input type="text" class="form-control" placeholder="{{constants.answer}}"
+                            (change)="onPuzzleAnswerInput($event,i)" formControlName="answer"
+                            [maxlength]="puzzleMaxLimit">
+                        <small class="field-required"
+                            *ngIf="puzzle.controls.answer.errors?.required && (puzzle.controls.answer.touched || isFormSubmitTriggered)">
+                            {{questionsValidationMessages.puzzleAnswerRequired}}
+                        </small>
+                        <small class="field-required"
+                            *ngIf="puzzle.controls.answer.errors?.pattern && (puzzle.controls.answer.touched || isFormSubmitTriggered)">
+                            {{questionsValidationMessages.puzzleAnswerWhiteSpace}}
+                        </small>
+                    </div>
+                    <div class="w-25 p-10">
+                        <label class="font-weight-bold">{{constants.position}}</label><span class="text-danger">*</span>
+                        <input type="number" class="form-control" placeholder="{{constants.position}}"
+                            (keydown)="keyDownEvent($event)" formControlName="position" (input)="onPuzzleCluesChange(i)"
+                            onwheel="event.preventDefault()">
+                        <small class="field-required"
+                            *ngIf="puzzle.controls.position.errors?.required && (puzzle.get('position').touched || isFormSubmitTriggered)">
+                            {{questionsValidationMessages.puzzlePositionRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="puzzle.controls['position'].hasError('min')">
+                            {{constants.minimumValueShouldBeOne}}
+                        </small>
+                        <small class="field-required" *ngIf="puzzle.controls['position'].hasError('max')">
+                            {{questionsValidationMessages.puzzleLimitMessage}}
+                        </small>
+                    </div>
+                    <div class="w-25 p-10">
+                        <label class="font-weight-bold">{{constants.orientation}}</label> <span
+                            class="text-danger">*</span>
+                        <select class="custom-select" formControlName="orientation" (change)="onPuzzleCluesChange(i)">
+                            <option value="" disabled selected hidden>{{constants.orientation}}</option>
+                            <option *ngFor="let type of orientation" [value]="type.name">
+                                {{type.name}}
+                            </option>
+                        </select>
+                        <small class="field-required"
+                            *ngIf="puzzle.controls.orientation.errors?.required && (puzzle.get('orientation').touched || isFormSubmitTriggered)">
+                            {{questionsValidationMessages.puzzleOrientationrRequired}}
+                        </small>
+                    </div>
+                    <div class="w-25 p-10">
+                        <label class="font-weight-bold">{{constants.startingColoumnIndex}}</label><span
+                            class="text-danger">*</span>
+                        <input type="number" class="form-control" placeholder="{{constants.startingColoumnIndex}}"
+                            formControlName="startx" (input)="onPuzzleCluesChange(i)" maxlength="puzzleMaxLimit"
+                            (keydown)="keyDownEvent($event)" onwheel="event.preventDefault()">
+                        <small class="field-required"
+                            *ngIf=" puzzle.controls.startx.errors?.required && (puzzle.get('startx').touched || isFormSubmitTriggered) ">
+                            {{questionsValidationMessages.puzzleStartingColumnIndexRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="puzzle.controls['startx'].hasError('max')">
+                            {{questionsValidationMessages.puzzleLimitMessage}}
+                        </small>
+                        <small class="field-required" *ngIf="puzzle.controls['startx'].hasError('min')">
+                            {{constants.minimumValueShouldBeOne}}
+                        </small>
+                    </div>
+                    <div class="w-25 p-10">
+                        <label class="font-weight-bold">{{ constants.startingRowIndex}}</label><span
+                            class="text-danger">*</span>
+                        <input type="number" class="form-control" placeholder="{{constants.startingRowIndex}}"
+                            formControlName="starty" (input)="onPuzzleCluesChange(i)" maxlength="puzzleMaxLimit"
+                            (keydown)="keyDownEvent($event)" onwheel="event.preventDefault()">
+                        <small class="field-required"
+                            *ngIf="puzzle.controls.starty.errors?.required && (puzzle.get('starty').touched || isFormSubmitTriggered)">
+                            {{questionsValidationMessages.puzzleStartingRowIndexRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="puzzle.controls['starty'].hasError('max')">
+                            {{questionsValidationMessages.puzzleLimitMessage}}
+                        </small>
+                        <small class="field-required" *ngIf="puzzle.controls['starty'].hasError('min')">
+                            {{constants.minimumValueShouldBeOne}}
+                        </small>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-rounded text-danger m-0 pt-26"
+                    *ngIf="crosswordPuzzle.controls.length > 1" (click)="deletePuzzle(i)"> <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <div class="w-25 p-10">
+                <button type="button" class="btn btn-outline-info" [disabled]="!crosswordPuzzle.valid"
+                    (click)="addPuzzleQuestion()">{{constants.addMoreClues}}</button>
+            </div>
+        </div>
+
+        <!-- CODING -->
+        <div>
+            <div class="card questioncustom" *ngIf="coding">
+                <div class="card-body p-0">
+                    <h4 class="text-center p-20 border-bottom">Single File Coding</h4>
+                    <div class="p-20">
+                        <label class="font-weight-bold">{{constants.codingLanguages}}</label>
+                        <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="codingLanguages"
+                            (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)"
+                            [(ngModel)]="choosenCodingLanguages" [ngModelOptions]="{standalone: true}">
+                        </ng-multiselect-dropdown>
+                        <div class="d-flex flex-wrap margin-10" *ngIf="isShown">
+                            <div class="w-50" formArrayName="questionLanguages"
+                                *ngFor="let language of questionLanguages.controls; let i = index">
+                                <div class="p-10" [formGroupName]="i">
+                                    <label class="font-weight-bold">{{constants.selectProgramingLanguages}}</label>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <select class="custom-select m-b-10" formControlName="languageId">
+                                            <option *ngFor="let value of selectedCodingLanguages" [value]="value?.id"
+                                                [hidden]="hideSelectedOption(value)">
+                                                {{value.language}}
+                                            </option>
+                                        </select>
+                                        <button type="button" class="btn btn-rounded text-danger m-0"
+                                            *ngIf="questionLanguages.controls.length > 1"
+                                            (click)="deleteQuestionLanguages(i)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <quill-editor class="ql-editor strong" [styles]="{height: '100px'}"
+                                        formControlName="defaultCode" placeholder="{{constants.enterCodeHere}}"
+                                        [modules]="toolbarConfig"></quill-editor>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-t-20">
+                            <button type="button" class="btn btn-outline-info"
+                                [disabled]="isDisabled(questionLanguages.controls.length)"
+                                (click)="addQuestionLanguages()">{{constants.addSnippet}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" *ngIf="coding">
+                <div class="card-body p-0">
+                    <h4 class="text-center p-20 border-bottom">{{constants.testCases}}</h4>
+                    <div class="p-20">
+                        <table class="table table-striped border m-t-10">
+                            <thead>
+                                <tr>
+                                    <th sortable="Name">{{constants.testCaseName}}</th>
+                                    <ng-container *ngIf="!isHtmlCssSelected && !cloud">
+                                        <th sortable="input">{{constants.input}}</th>
+                                        <th sortable="output">{{constants.output}}</th>
+                                        <th sortable="Csm">{{constants.maximumMemoryPermitted}}</th>
+                                        <th sortable="Status">{{constants.maximumCpuTime}}</th>
+                                    </ng-container>
+                                    <ng-container *ngIf="isHtmlCssSelected">
+                                        <th>{{constants.elementName}}</th>
+                                        <th>{{constants.elementId}}</th>
+                                    </ng-container>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let testCase of testCaseDetails">
+                                    <td>
+                                        <ngb-highlight [result]="testCase.testCaseTitle"></ngb-highlight>
+                                    </td>
+                                    <ng-container *ngIf="!isHtmlCssSelected">
+
+                                        <td class="indentation">
+                                            <ngb-highlight [result]="testCase.standardInput"></ngb-highlight>
+                                        </td>
+
+                                        <td class="indentation">
+                                            <ngb-highlight [result]="testCase.expectedOutput"></ngb-highlight>
+                                        </td>
+                                        <td>
+                                            <ngb-highlight [result]="testCase.maxMemoryPermitted"></ngb-highlight>
+                                        </td>
+                                        <td>
+                                            <ngb-highlight [result]="testCase.maxCpuTime"></ngb-highlight>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container *ngIf="isHtmlCssSelected">
+                                        <td class="indentation">
+                                            <ngb-highlight [result]="testCase.elementName"></ngb-highlight>
+                                        </td>
+                                        <td class="indentation">
+                                            <ngb-highlight [result]="testCase.elementId"></ngb-highlight>
+                                        </td>
+                                    </ng-container>
+                                    <td>
+                                        <a href="javascript:void(0);" class="m-r-20" (click)="editTestCase(testCase)">
+                                            <i class="ti-pencil"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" (click)="deleteTestCase(testCase)">
+                                            <i class="ti-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="testCaseDetails.length == 0" class="result pt-4">
+                                    <h2 class="test-case-h2"><span>{{constants.hereYouCanAddTestCase}}</span> </h2>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row-right">
+                            <button type="button" class="btn btn-outline-info" (click)="openTestCase()"
+                                [disabled]="choosenCodingLanguages.length === 0">{{constants.addTestCase}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud -->
+        <div class="card" *ngIf="cloud">
+            <div class="card-body p-0">
+                <h4 class="text-center p-20 border-bottom">{{constants.testCases}}</h4>
+                <div class="p-20">
+                    <div class="row-right-cloud">
+                        <div class="col-3 input-group m-r-52">
+                            <div class="enable-test-case-input-group-text">
+                                <input type="checkbox" [(ngModel)]="isSortOrderEnabled" id="sortOrder" value="check"
+                                    formControlName="sortOrder">{{constants.enableTestCaseOrder}}<span
+                                    class="info-option" title="{{constants.turnThisOnOrOffBeforeAddingATestCase}}">
+                                    &#9432;</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <table class="table table-striped border m-t-10">
+                        <thead>
+                            <tr>
+                                <th sortable="Name">{{constants.testCaseName}}</th>
+                                <ng-container *ngIf="!isHtmlCssSelected && cloud && !isSortOrderEnabled">
+                                    <th sortable="output">{{constants.output}}</th>
+                                </ng-container>
+                                <ng-container *ngIf="isSortOrderEnabled">
+                                    <th sortable="output">{{constants.output}}</th>
+                                    <th sortable="sortOrder">{{constants.order}}</th>
+                                </ng-container>
+                                <th>{{constants.actions}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let testCase of testCaseDetails;let i = index">
+                                <td>
+                                    <ngb-highlight [result]="testCase.testCaseTitle"></ngb-highlight>
+                                </td>
+                                <ng-container>
+                                    <td class="indentation">
+                                        <ngb-highlight [result]="testCase.expectedOutput"></ngb-highlight>
+                                    </td>
+                                    <td *ngIf="isSortOrderEnabled">
+
+                                        <ngb-highlight [result]="testCase.sortOrder"></ngb-highlight>
+
+
+                                    </td>
+                                </ng-container>
+                                <ng-container *ngIf="isHtmlCssSelected">
+                                    <td class="indentation">
+                                        <ngb-highlight [result]="testCase.elementName"></ngb-highlight>
+                                    </td>
+                                    <td class="indentation">
+                                        <ngb-highlight [result]="testCase.elementId"></ngb-highlight>
+                                    </td>
+                                </ng-container>
+                                <td>
+                                    <a href="javascript:void(0);" class="m-r-20" (click)="editTestCase(testCase)">
+                                        <i class="ti-pencil"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" (click)="deleteTestCase(testCase)">
+                                        <i class="ti-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr *ngIf="testCaseDetails.length == 0" class="result pt-4">
+                                <h2 class="test-case-h2"><span>{{constants.hereYouCanAddTestCase}}</span> </h2>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="add-testcase">
+                        <button type="button" class="add-test-case btn btn-outline-info" (click)="openTestCase()"
+                            [disabled]="choosenCodingLanguages.length === 0 && !cloud">{{constants.addTestCase}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stack -->
+        <div *ngIf="stack">
+            <div class="card">
+                <div class="card-body d-flex flex-wrap justify-content-between">
+                    <div class="custom-action w-50 p-10">
+                        <label class="font-weight-bold">{{constants.codingEnvironment}}<span
+                                class="text-danger">*</span></label>
+                        <ng-multiselect-dropdown [placeholder]="constants.codingEnvironment"
+                            [settings]="stackEnvironmentDropDownSetting" [data]="environmentType"
+                            (onSelect)="onStackCodingEnvironmentChange(environmentType.name)"
+                            formControlName="stackCodingEnvironment" [disabled]="isEnvironmentDisabled">
+                        </ng-multiselect-dropdown>
+                        <small class="field-required" *ngIf="!isFormValid('stackCodingEnvironment')">
+                            {{questionsValidationMessages.stackCodingEnvironmentRequired}}
+                        </small>
+                    </div>
+                    <div class="custom-action w-50 p-10">
+                        <label class="font-weight-bold">{{constants.codingLanguages}} <span
+                                class="text-danger">*</span></label>
+                        <ng-multiselect-dropdown [disabled]="!isCodingEnvironmentSelected"
+                            [settings]="stackLanguageDropDownSetting" [data]="filteredStackLanguages"
+                            (onSelect)="onStackLanguageSelect($event)" (onDeSelect)="onStackLanguageDeSelect($event)"
+                            formControlName="stackCodingLanguages">
+                        </ng-multiselect-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div formArrayName="testCaseTemplateDetails"
+                    *ngFor="let testcase of testCaseTemplateDetails.controls; let i = index">
+                    <div [formGroupName]="i">
+                        <div class="card-body d-flex flex-wrap justify-content-between">
+                            <div class="w-35 p-10">
+                                <label class="font-weight-bold">{{constants.stackName}} <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" readonly placeholder="{{constants.stackName}}"
+                                    formControlName="language">
+                                <small class="field-required" *ngIf="testcase.get('language').errors?.required">
+                                    {{questionsValidationMessages.selectStackLanguage}}
+                                </small>
+                            </div>
+                            <div class="w-35 p-10" *ngIf="testCaseTemplateDetails.length !== 1">
+                                <label class="font-weight-bold">{{constants.stackFolderName}} <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" placeholder="{{constants.stackFolderName}}"
+                                    formControlName="stackFolderName">
+                                <small class="field-required"
+                                    *ngIf="testcase.get('stackFolderName').errors?.required || testcase.get('stackFolderName').errors?.whitespace">
+                                    {{questionsValidationMessages.stackFolderNameRequired}}
+                                </small>
+                                <small class="field-required" *ngIf="testcase.get('stackFolderName').errors?.pattern">
+                                    {{questionsValidationMessages.stackFolderNamePattern}}
+                                </small>
+                            </div>
+                            <div class="w-35 p-10">
+                                <label class="font-weight-bold">{{constants.pleaseEnterTheNoOfTestCases}} <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control" placeholder="{{constants.noOfTestCases}}"
+                                    min="1" max="9999" formControlName="testCaseCount">
+                                <small class="field-required"
+                                    *ngIf="testcase.get('testCaseCount').errors?.required && testcase.get('testCaseCount').touched">
+                                    {{questionsValidationMessages.stackNoOfTestCasesRequired}}
+                                </small>
+                                <small class="field-required" *ngIf="testcase.get('testCaseCount').errors?.max">
+                                    {{questionsValidationMessages.maximumCount}}
+                                </small>
+                                <small class="field-required" *ngIf="testcase.get('testCaseCount').errors?.min">
+                                    {{questionsValidationMessages.minimumCount}}
+                                </small>
+                                <small class="field-required"
+                                    *ngIf="!testcase.get('testCaseCount').errors?.min && testcase.get('testCaseCount').hasError('pattern')">
+                                    {{constants.pleaseEnterValidNoOfTestCases}}</small>
+                            </div>
+                            <div class="w-35 p-10">
+                                <label class="font-weight-bold">{{constants.pleaseEnterScore}} <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control" placeholder="{{constants.score}}" min="1"
+                                    max="9999" formControlName="score">
+                                <small class="field-required"
+                                    *ngIf="testcase.get('score').errors?.required && testcase.get('score').touched">
+                                    {{questionsValidationMessages.stackTestCaseScoreRequired}}
+                                </small>
+                                <small class="field-required" *ngIf="testcase.get('score').errors?.max">
+                                    {{questionsValidationMessages.maximumCount}}
+                                </small>
+                                <small class="field-required" *ngIf="testcase.get('score').errors?.min">
+                                    {{questionsValidationMessages.minimumCount}}
+                                </small>
+                                <small class="field-required"
+                                    *ngIf="!testcase.get('score').errors?.min && testcase.get('score').hasError('pattern')">
+                                    {{constants.pleaseEnterValidScore}}</small>
+                            </div>
+                            <div class="w-35 p-10">
+                                <label class="font-weight-bold">{{constants.pleaseEnterThePathsToHide}} <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control"
+                                    placeholder="{{ isVMEnvironment == true ? constants.egFolderFileExtFileExtForHideVm : constants.egFolderFileExtFileExt}}"
+                                    formControlName="testCaseHidePath">
+                                <small class="field-required"
+                                    *ngIf="testcase.get('testCaseHidePath').errors?.required && testcase.get('testCaseHidePath').touched">
+                                    {{constants.pleaseEnterThePaths}}
+                                </small>
+                                <small class="field-required"
+                                    *ngIf="testcase.get('testCaseHidePath').hasError('pattern')">
+                                    {{constants.pleaseEnterValidPaths}}</small>
+                            </div>
+                            <div class="w-35 p-10" *ngIf="isVMEnvironment">
+                                <label class="font-weight-bold">{{constants.pleaseEnterThePathForTestCase}}</label>
+                                <input type="text" class="form-control"
+                                    placeholder="{{constants.egFolderFileExtFileExt}}" formControlName="testCasePath">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body" *ngIf="isVMEnvironment || hasStackInstructions">
+                    <input type="file" id="stackInstrctionsUpload" #stackInstrctionsUpload hidden
+                        accept=".doc,.docx,.pdf" (change)="onStackFileChange($event.target.files)">
+                    <label class="font-weight-bold">{{constants.uploadStackInstructions}} <span
+                            class="text-danger">*</span></label>
+                    <label for="stackInstrctionsUpload"
+                        class="border d-flex flex-column justify-content-center align-items-center p-20 h-120"
+                        appDragDrop (onFileDropped)="onStackFileChange($event)">
+                        <span class="text-muted">{{constants.dragAndDropFile}}</span>
+                    </label>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">{{constants.onlyDocPdfFilesAreAccepted}}</small>
+                        <div *ngIf="stackInstructions">
+                            <small class="label label-rounded label-primary" [ngbTooltip]="stackInstructions?.name">
+                                <span>{{truncate(stackInstructions?.name)}}</span>
+                                <span aria-hidden="true" class="pointer" (click)="removeInstructions()">
+                                    &times;</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body d-flex flex-wrap justify-content-between">
+                    <div class="w-50 p-10" *ngIf="!isVMEnvironment">
+                        <label class="font-weight-bold">{{constants.cpuCore}} <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" placeholder="{{constants.cpuCore}}"
+                            formControlName="stackCpuCore">
+                        <small class="field-required" *ngIf="!isFormValid('stackCpuCore')">
+                            {{questionsValidationMessages.stackCpuCoreRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('stackCpuCore').errors?.min">
+                            {{questionsValidationMessages.minValue}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('stackCpuCore').errors?.max">
+                            {{questionsValidationMessages.cpuCoreMaxValue}}
+                        </small>
+                    </div>
+                    <div class="w-50 p-10" *ngIf="!isVMEnvironment">
+                        <label class="font-weight-bold">{{constants.memorySize}} <span
+                                class="text-danger">*</span></label>
+                        <input type="number" class="form-control" placeholder="{{constants.memorySize}}"
+                            formControlName="stackCpuMemory">
+                        <small class="field-required" *ngIf="!isFormValid('stackCpuMemory')">
+                            {{questionsValidationMessages.stackCpuMemoryRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('stackCpuMemory').errors?.min">
+                            {{questionsValidationMessages.minValue}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('stackCpuMemory').errors?.max">
+                            {{questionsValidationMessages.memoryMaxValue}}
+                        </small>
+                    </div>
+                    <div class="w-50 p-10" *ngIf="!isVMEnvironment">
+                        <label class="font-weight-bold">{{constants.planSize}} <span
+                                class="text-danger">*</span></label>
+                        <select class="custom-select" formControlName="planSize">
+                            <option value="" disabled selected hidden>{{constants.planSize}}</option>
+                            <option *ngFor="let size of planSize" [ngValue]="size.id" [selected]="size.name === medium">
+                                {{size.name}}</option>
+                        </select>
+                        <small class="field-required" *ngIf="!isFormValid('planSize')">
+                            {{questionsValidationMessages.planSizeRequired}}
+                        </small>
+                    </div>
+                    <div class="w-50 p-10" *ngIf="!isVMEnvironment">
+                        <label class="font-weight-bold">{{constants.maxInstanceCount}} <span
+                                class="text-danger">*</span></label>
+                        <input type="number" class="form-control" min="1" max="100"
+                            placeholder="{{constants.maxInstanceCount}}" formControlName="maxCount">
+                        <small class="field-required" *ngIf="!isFormValid('maxCount')">
+                            {{questionsValidationMessages.maxInstanceCountRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('maxCount').errors?.min">
+                            {{questionsValidationMessages.minValue}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('maxCount').errors?.max">
+                            {{questionsValidationMessages.instanceMaxValue}}
+                        </small>
+                    </div>
+                </div>
+                <div class="card instruction-width">
+                    <div class="w-100 p-10" *ngIf="isVMEnvironment">
+                        <label class="font-weight-bold">{{constants.skuId}} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="{{constants.skuId}}"
+                            formControlName="skuId">
+                        <small class="field-required" *ngIf="!isFormValid('skuId')">
+                            {{questionsValidationMessages.stackSkuIdRequired}}
+                        </small>
+                    </div>
+                    <div class="w-100 p-10">
+                        <label class="font-weight-bold">{{constants.gitTemplateURL}} <span
+                                class="text-danger">*</span></label>
+                        <input type="url" class="form-control" placeholder="{{constants.gitTemplateURL}}"
+                            formControlName="stackTemplateUrl">
+                        <small class="field-required" *ngIf="!isFormValid('stackTemplateUrl')">
+                            {{questionsValidationMessages.stackGitUrlRequired}}
+                        </small>
+                        <small class="field-required" *ngIf="questionForm.get('stackTemplateUrl').errors?.pattern">
+                            {{questionsValidationMessages.urlPattern}}
+                        </small>
+                    </div>
+                    <div class="w-100 p-10">
+                        <label class="font-weight-bold">{{constants.scanConfigXML}}</label>
+                        <div class="d-flex">
+                            <input type="text" class="form-control w-75" placeholder="{{constants.scanConfigXML}}"
+                                formControlName="scanConfigXml">
+                            <button type="button" class="btn btn-outline-info m-l-10"
+                                (click)="validateXMLAndCreateOrUpdateStackQuestion(questionForm.get('scanConfigXml').value)">{{constants.validateXML}}</button>
+                        </div>
+                        <small class="field-required" *ngIf="!isScanConfigXmlValid">
+                            {{questionsValidationMessages.scanConfigXml}}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-direction card d-flex" *ngIf="puzzle && showPuzzle">
+            <div id="create-Question-puzzle-wrapper"><!-- crossword puzzle appended here --></div>
+        </div>
+
+        <!-- Hints -->
+        <div class="card" *ngIf="!coding && !stack && !puzzle && !cloud">
+            <div class="card-body">
+                <label>{{constants.hint}}</label>
+                <div formArrayName="questionHint" class="m-b-10 p-r-40 hints"
+                    *ngFor="let hint of questionHint.controls; let i = index">
+                    <div [formGroupName]="i">
+                        <button type="button" class="btn btn-rounded text-danger"
+                            *ngIf="questionHint.controls.length > 1" (click)="deleteHints(i)">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <quill-editor class="ql-editor strong" [styles]="{height: '100px'}" formControlName="hint"
+                            placeholder="{{constants.enterHintsHere}}" [modules]="quillConfig"></quill-editor>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-info"
+                    (click)="addHint()">{{constants.addAnotherHint}}</button>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="button" class="btn btn-secondary m-r-20" (click)="back()">{{constants.cancel}}</button>
+            <button type="button" class="btn btn-info" (click)="save()" [disabled]="!questionForm.valid">
+                {{isEdit || onReviewerRequest ? constants.update : constants.save}}
+            </button>
+        </div>
+    </form>
+</div>

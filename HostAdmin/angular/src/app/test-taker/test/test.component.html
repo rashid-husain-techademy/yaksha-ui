@@ -1,0 +1,676 @@
+<div [ngClass]="screenPause ? 'overlay' : ''" appDisableCopy appDisablePaste appDisableRightClick>
+    <div *ngIf="isQuestionsLoading" class="question-loading d-flex align-items-center justify-content-center">
+        <div>{{constants.questionsLoadingMessage}}</div>
+    </div>
+    <div *ngIf="!isQuestionsLoading && isReload"
+        class="question-loading d-flex align-items-center justify-content-center">
+        <div>{{constants.questionReloadMessage}}</div>
+    </div>
+    <div #testTaker id="testTaker" *ngIf="assessmentDetails">
+        <div class="p-10  main-head" id="assessment-title">
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="text-white m-0 assessment-label" style="word-break: break-word;">
+                    <span *ngIf="campaignName">{{campaignName}}
+                        :</span>
+                    {{ assessmentDetails ? assessmentDetails.assessmentName : '' }}
+                </h4>
+                <a href="javascript:void(0)" class="text-warning d-flex align-items-center m-r-10"
+                    (click)="openInstructions(invitation)">
+                    <i class="icon-info m-r-10"></i> <small class="icon-text">{{constants.instructions}}</small>
+                </a>
+            </div>
+            <div class="countdown-mobile" *ngIf="!isPreview">
+                <span class="m-r-10" *ngIf="lastSavedTime">{{constants.lastSaved}}</span>
+                <span class="m-r-10 font-weight-bold">{{lastSavedTime | date:'hh:mm:ss'}}</span>
+                <span class="m-r-10">{{constants.timeRemaining}}</span>
+                <countdown #cd class="count-down font-weight-bold"
+                    [ngClass]="highlightTimer ? 'text-danger' : 'text-white'"
+                    [ngClass]="blinkTimer ? 'text-white' : highlightTimer ? 'text-danger': 'show'" [config]="config"
+                    (event)="handleEvent($event)"></countdown>
+            </div>
+        </div>
+        <div class="p-10 d-flex flex-wrap flex-md-nowrap justify-content-between border-bottom" id="assessment-section">
+            <div class="d-flex section-navs" *ngIf="assessmentSections">
+                <div class="m-r-10" *ngFor="let section of assessmentSections">
+                    <button type="button" (click)="changeSection(section)" [ngbTooltip]="section.assessmentSectionName"
+                        [placement]="['bottom']" class="text-truncate sections-btn btn btn-sm"
+                        [ngClass]="(currentQuestion && section.assessmentSectionId === currentQuestion.assessmentSectionId && !isStatusClicked)
+                    ? (isCustomThemeEnabled ?'btn-outline-info-cus' : 'btn-outline-info') : (isCustomThemeEnabled ? 'btn-outline-secondary-cus' : 'btn-outline-secondary')"
+                        [disabled]="section?.questions?.length <= 0 || screenPause || (!(currentQuestion && section.assessmentSectionId === currentQuestion.assessmentSectionId) && viewBySection)">
+                        {{section.assessmentSectionName}}
+                    </button>
+                    <span class="d-flex desc-title" *ngIf="isAdaptiveAssessment && section?.questions?.length > 0">
+                        {{mapIdToProficiency(assessmentDetails.currentProficiencyId)}}</span>
+                </div>
+            </div>
+            <div class="d-md-flex align-items-center timer-submit-container">
+                <div class="d-flex align-items-center m-r-20" *ngIf="!isPreview && averageSpeed >= 0">
+                    <span class="m-r-5">{{constants.speedTestAvg}}:</span>
+                    <span class="m-r-10 font-weight-bold" [ngClass]="{'text-danger': averageSpeed < 10}">
+                        {{ averageSpeed >= 10 ? '>= 10Mbps' : (averageSpeed | number:'1.2-2') + constants.mbps }}
+                    </span>
+                </div>
+                <div class="d-flex align-items-center m-r-20" *ngIf="!isPreview  && currentSpeed >= 0 ">
+                    <span class="m-r-5">{{constants.live}}:</span>
+                    <span class="m-r-10 font-weight-bold" [ngClass]="{'text-danger': currentSpeed < 10}">
+                        {{ currentSpeed >= 10 ? '>= 10Mbps' : (currentSpeed | number:'1.2-2') + constants.mbps }}
+                    </span>
+                </div>
+                <div class="d-flex align-items-center m-r-20 countdown" *ngIf="!isPreview">
+                    <span class="m-r-10" *ngIf="lastSavedTime">{{constants.lastSaved}}</span>
+                    <span class="m-r-10 font-weight-bold">{{lastSavedTime | date:'hh:mm:ss'}}</span>
+                    <span class="m-r-10">{{constants.timeRemaining}}</span>
+                    <countdown #cd class="count-down font-weight-bold"
+                        [ngClass]="highlightTimer ? 'text-danger' : 'text-white'"
+                        [ngClass]="blinkTimer ? 'text-white' : highlightTimer ? 'text-danger': 'show'" [config]="config"
+                        (event)="handleEvent($event)"></countdown>
+                </div>
+                <button type="button" *ngIf="!isPreview"
+                    [ngClass]="isCustomThemeEnabled ? 'custom-theme submit-button' : ''" class="btn btn-info btn-sm"
+                    (click)="submit()" [disabled]="screenPause || isSubmitDisabled">
+                    {{constants.finalSubmission}}
+                </button>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between h-93">
+            <div class="card m-0" [ngClass]="question_toggle ? 'qus-hidden' : 'w-25' ">
+                <button class="btn btn-info qus-nav" [ngbTooltip]="constants.questionNav" (click)="toggleQuestions()"
+                    [disabled]="screenPause" type="button" *ngIf="!isStack && !isCloud">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="card-header text-center" *ngIf="!isAdaptiveAssessment">
+                    <h4 class="m-0">
+                        {{currentQuestion ? currentQuestion.assessmentSectionName : ''}}
+                    </h4>
+                </div>
+                <div class="card-body questions-nav p-0">
+                    <div class="d-flex flex-column align-items-center justify-content-between border-bottom p-10">
+                        <label class="font-weight-bold">{{constants.legends}}</label>
+                        <div class="d-flex align-items-center">
+                            <div class="m-r-10 text-center" *ngFor="let status of questionsStatus">
+                                <button type="button" ngClass="btn btn-{{status.class}} btn-sm m-0"></button>
+                                <div class="text-center"><small>{{status.label}}</small></div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" [ngClass]="infoClass"></button>
+                                <div class="text-center"><small>{{constants.currentQuestion}}</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column align-items-center justify-content-between border-bottom p-10">
+                        <label class="font-weight-bold">{{constants.questions}}</label>
+                        <div class="d-flex align-items-center">
+                            <div class="m-r-20 text-center" *ngFor="let status of questionsStatus">
+                                <button type="button" ngClass="btn btn-{{status.class}} btn-sm m-0"
+                                    [disabled]="!status.count || screenPause || viewBySection || isAdaptiveAssessment"
+                                    (click)="showStatusQuestions(status)">
+                                    <span>
+                                        {{ (status.count > 0 && status.count < 10) ? ("0"+status.count) : status.count
+                                            }} </span>
+                                </button>
+                                <div class="text-center"><small>{{status.label}}</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap p-t-20 p-l-10" *ngIf="!isStatusClicked">
+                        <ng-container *ngFor="let question of currentSelectedSectionQuestions">
+                            <button type="button" (click)="onQuestionNumberClick(question)" [disabled]="screenPause"
+                                [ngClass]="currentQuestion?.serialNumber === question.serialNumber ? activeClass : question.statusClass">
+                                <span>
+                                    {{ (question.serialNumber > 0 && question.serialNumber < 10) ?
+                                        ("0"+question.serialNumber) : question.serialNumber }} </span>
+                            </button>
+                        </ng-container>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap p-t-20 p-l-10" *ngIf="isStatusClicked">
+                        <ng-container *ngFor="let question of currentSelectedSectionQuestions">
+                            <button type="button" (click)="onQuestionNumberClick(question)"
+                                [ngClass]="currentQuestion?.serialNumber === question.serialNumber ? activeClass : question.statusClass">
+                                <span>
+                                    {{ (question.serialNumber > 0 && question.serialNumber < 10) ?
+                                        ("0"+question.serialNumber) : question.serialNumber }} </span>
+                            </button>
+                        </ng-container>
+                    </div>
+                    <!-- Adaptive assesssment -->
+                    <div *ngIf="isAdaptiveAssessment">
+                        <div class="border-top border-bottom p-20 d-flex justify-content-between m-b-20">
+                            <div>
+                                <small>{{constants.progressionAvailabale}}</small> <strong
+                                    class="m-l-10 font-weight-bold">{{assessmentDetails.availableProgression}}</strong>
+                            </div>
+                            <div>
+                                <small>{{constants.regressionAvailable}}</small> <strong
+                                    class="m-l-10 font-weight-bold">{{assessmentDetails.availableRegression}}</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-left justify-content-between border-bottom p-10"
+                            *ngIf="proficiencyChartData.length && !isSkillCompleted">
+                            <h4 class="text-center m-b-30">{{constants.proficiencyLevelJourney}}</h4>
+                            <div class="scores d-flex border-center">
+                                <canvas baseChart width="300" height="180" [chartType]="'line'"
+                                    [datasets]="proficiencyChartMetrics?.resultChartData"
+                                    [labels]="proficiencyChartMetrics?.resultChartLabels"
+                                    [options]="proficiencyChartMetrics?.resultChartOptions"
+                                    [legend]="proficiencyChartMetrics?.resultChartLegend">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Adaptive assesssment -->
+                </div>
+            </div>
+            <div class="w-75 d-flex flex-column"
+                [ngClass]="question_toggle ? 'w-100 fulltest' : 'w-75 p-l-20 fulltest' ">
+                <div class="my-3 question-count">
+                    <h4 class="text-center">{{currentQuestion.serialNumber}}/{{assessmentDetails.totalQuestions}}</h4>
+                </div>
+                <ng-container *ngIf="currentQuestion">
+                    <app-dynamic-form [fields]="currentQuestion"></app-dynamic-form>
+                </ng-container>
+                <div class="card m-0" *ngIf="!isStack && !isCloud">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <button type="button" [disabled]="isPreview || screenPause || currentQuestion.isCodeSubmitted"
+                            class="btn btn-warning btn-sm m-r-20" (click)="markForReview()">
+                            {{(currentQuestion && currentQuestion.isMarkedForReview === markedForReviewStatus.Marked) ?
+                            constants.marked : constants.markForReview}}
+                        </button>
+                        <span
+                            [ngbTooltip]="currentQuestion && (currentQuestion.questionType.name === 'CodeBased' || currentQuestion.questionHints.length === 0) ? 'No hints available' : null">
+                            <button type="button" class="btn btn-outline-info btn-sm m-r-20" (click)="viewHint()"
+                                [disabled]="currentQuestion && (currentQuestion.questionType.name === 'CodeBased' || currentQuestion.questionHints.length === 0) || screenPause"
+                                *ngIf="currentQuestion &&  currentQuestion.questionHints.length !== 0">
+                                {{constants.hint}}
+                            </button>
+                        </span>
+                        <button type="button" [ngClass]="isFirstQuestion ? disabledClass: previousButtonClass"
+                            (click)="gotoPreviousQuestion()" [disabled]="isFirstQuestion || screenPause">
+                            {{constants.prev}}
+                        </button>
+                        <button type="button" [ngClass]="isLastQuestion ? disabledClass: nextButtonClass"
+                            (click)="gotoNextQuestion()" [disabled]="(isLastQuestion || screenPause)">
+                            {{constants.next}}
+                        </button>
+                    </div>
+                </div>
+                <div class="submit-btn-container my-3">
+                    <button type="button" *ngIf="!isPreview"
+                        [ngClass]="isCustomThemeEnabled ? 'custom-theme submit-button' : ''"
+                        class="btn btn-info btn-sm " (click)="submit()" [disabled]="screenPause || isSubmitDisabled">
+                        {{constants.finalSubmission}}
+                    </button>
+                </div>
+                <div class="dragger" cdkDragBoundary=".container-fluid" cdkDrag
+                    *ngIf="assessmentDetails.enableCalculator">
+                    <div class="d-flex flex-column align-items-center drag-element" cdkDragHandle
+                        *ngIf="!viewCalculator">
+                        <i cdkDragHandle class="fas fa-calculator"></i>
+                        <h6 (click)="showCalculator()" (mousedown)="disableDragging($event)">{{constants.open}}</h6>
+                    </div>
+                    <div class="card m-t-20 calculator-holder" *ngIf="viewCalculator">
+                        <div class="card-body">
+                            <div class="p-1 form-group">
+                                <div class="w-100">
+                                    <div class="row">
+                                        <div class="col text-right">
+                                            <button class="btn btn-sm btn-danger" type="button"
+                                                (mousedown)="disableDragging($event)" (click)="showCalculator()">
+                                                X
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row pb-1">
+                                        <div class="col">
+                                            <button class="btn btn-secondary btn-sm" *ngIf="!isScientific" type="button"
+                                                (click)="changeCalculator()" (mousedown)="disableDragging($event)"
+                                                [ngbTooltip]="constants.scientificCalculator">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm" *ngIf="isScientific" type="button"
+                                                (click)="changeCalculator()" (mousedown)="disableDragging($event)"
+                                                [ngbTooltip]="constants.basicCalculator">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col text-right">
+                                            <span class="badge badge-info" *ngIf="statusMemory()">Mem:
+                                                {{valueMemory()}}</span>
+                                            <span class="badge badge-success" *ngIf="getOperand()!=='';"
+                                                [innerHTML]="getOperand()"></span>
+                                            <span class="badge badge-warning"
+                                                *ngIf="getRadians(); else badgeGrads">Rad</span>
+                                            <ng-template #badgeGrads><span
+                                                    class="badge badge-info">Grad</span></ng-template>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col"><input type="text" placeholder="0" #inputField
+                                                value="{{getFormula()}}" class="form-control text-right"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 " *ngIf="isScientific">
+                                            <div class="row pt-2">
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="clearMemory();"
+                                                        (mousedown)="disableDragging($event)">{{constants.memoryClear}}</button>
+                                                </div>
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="sumToMemory();"
+                                                        (mousedown)="disableDragging($event)">{{constants.memoryPlus}}</button>
+                                                </div>
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="deductToMemory();"
+                                                        (mousedown)="disableDragging($event)">{{constants.memoryMinus}}</button>
+                                                </div>
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="readMemory();"
+                                                        (mousedown)="disableDragging($event)">{{constants.memoryReset}}</button>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-4 col-md-2 mg-sm-5" *ngIf="!getScreen(); else fs">
+                                                    <button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="secondScreen();"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorTwo}}<sup>nd</sup></button>
+                                                </div>
+                                                <ng-template #fs>
+                                                    <div class="col  d-lt-flex"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="secondScreen();"
+                                                            (mousedown)="disableDragging($event)">1<sup>nd</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2 mg-sm-5"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('pow',2);"
+                                                        (mousedown)="disableDragging($event)">{{constants.variableX}}<sup>{{constants.calculatorTwo}}</sup></button>
+                                                </div>
+                                                <div class="col-4 col-md-2 mg-sm-5"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('pow',3);"
+                                                        (mousedown)="disableDragging($event)">{{constants.variableX}}<sup>{{constants.calculatorThree}}</sup></button>
+                                                </div>
+                                                <div class="col-4 col-md-2 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="setOperation('pow');"
+                                                        (mousedown)="disableDragging($event)">{{constants.variableX}}<sup>y</sup></button>
+                                                </div>
+                                                <div class="col-4 col-md-2 " *ngIf="!getScreen(); else yx"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('pow_base','e');"
+                                                        (mousedown)="disableDragging($event)">{{constants.exponent}}<sup>x</sup></button>
+                                                </div>
+                                                <ng-template #yx>
+                                                    <div class="col-4 col-md-2"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="setOperation('yx');"
+                                                            (mousedown)="disableDragging($event)">y<sup>{{constants.variableX}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2" *ngIf="!getScreen(); else x2"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('pow_base',10);"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorTen}}<sup>x</sup></button>
+                                                </div>
+                                                <ng-template #x2>
+                                                    <div class="col-3 col-md-2  d-lt-flex"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('pow_base',2);"
+                                                            (mousedown)="disableDragging($event)">{{constants.calculatorTwo}}<sup>x</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-4 col-md-2 mg-sm-5"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('div',1);"
+                                                        (mousedown)="disableDragging($event)"><sup>1</sup>/<sub>x</sub></button>
+                                                </div>
+                                                <div class="col-4 col-md-2 mg-sm-5"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('sqrt',2);"
+                                                        (mousedown)="disableDragging($event)"><sup>{{constants.calculatorTwo}}</sup>&radic;x</button>
+                                                </div>
+                                                <div class="col-4 col-md-2 mg-sm-5"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('sqrt3',1/3);"
+                                                        (mousedown)="disableDragging($event)"><sup>{{constants.calculatorThree}}</sup>&radic;x</button>
+                                                </div>
+                                                <div class="col-4 col-md-2"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="setOperation('sqrt');"
+                                                        (mousedown)="disableDragging($event)"><sup>y</sup>&radic;x</button>
+                                                </div>
+                                                <div class="col-4 col-md-2" *ngIf="!getScreen(); else log"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('ln',2.7);"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorLn}}</button>
+                                                </div>
+                                                <ng-template #log>
+                                                    <div class="col-2"><button class="form-control btn btn-sm btn-info"
+                                                            (click)="setOperation('log');"
+                                                            (mousedown)="disableDragging($event)">{{constants.log}}<sub>y</sub></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2" *ngIf="!getScreen(); else log2"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('lg',10);"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorLg}}</button>
+                                                </div>
+                                                <ng-template #log2>
+                                                    <div class="col-2"><button class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('lg',2);"
+                                                            (mousedown)="disableDragging($event)">{{constants.log}}<sub>{{constants.calculatorTwo}}</sub></button>
+                                                    </div>
+                                                </ng-template>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-4 col-md-2 mg-sm-5"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('factorial',1);"
+                                                        (mousedown)="disableDragging($event)">x!</button></div>
+                                                <div class="col-4 col-md-2 mg-sm-5" *ngIf="!getScreen(); else asin">
+                                                    <button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('sin',1);"
+                                                        (mousedown)="disableDragging($event)">{{constants.sin}}</button>
+                                                </div>
+                                                <ng-template #asin>
+                                                    <div class="col d-none d-lt-flex"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('asin',1);"
+                                                            (mousedown)="disableDragging($event)">{{constants.sin}}<sup>{{constants.calculatorMinusOne}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2 mg-sm-5" *ngIf="!getScreen(); else acos">
+                                                    <button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('cos',1);"
+                                                        (mousedown)="disableDragging($event)">{{constants.cos}}</button>
+                                                </div>
+                                                <ng-template #acos>
+                                                    <div class="col d-none d-lt-flex"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('acos',1);"
+                                                            (mousedown)="disableDragging($event)">{{constants.cos}}<sup>{{constants.calculatorMinusOne}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2" *ngIf="!getScreen(); else atan"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('tan',1);"
+                                                        (mousedown)="disableDragging($event)">{{constants.tan}}</button>
+                                                </div>
+                                                <ng-template #atan>
+                                                    <div class="col d-none d-lt-flex"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('atan',1);"
+                                                            (mousedown)="disableDragging($event)">{{constants.tan}}<sup>{{constants.calculatorMinusOne}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('2.718281828459045',true);"
+                                                        (mousedown)="disableDragging($event)">e</button></div>
+                                                <div class="col-4 col-md-2"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('ee',1);" title="Exponencial view of number"
+                                                        (mousedown)="disableDragging($event)">{{constants.exponentE}}</button>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-4 col-md mg-sm-5 mb-1" *ngIf="getRadians(); else Grads">
+                                                    <button class="form-control btn btn-sm btn-warning"
+                                                        (click)="setRadians();"
+                                                        (mousedown)="disableDragging($event)">{{constants.radiant}}</button>
+                                                </div>
+                                                <ng-template #Grads>
+                                                    <div class="col-3 mb-1"><button
+                                                            class="form-control btn btn-sm btn-info"
+                                                            (click)="setRadians();"
+                                                            (mousedown)="disableDragging($event)">{{constants.gradiant}}</button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md mg-sm-5" *ngIf="!getScreen(); else asinh">
+                                                    <button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('sinh',1);"
+                                                        (mousedown)="disableDragging($event)">
+                                                        {{constants.sin}}<sup>h</sup></button>
+                                                </div>
+                                                <ng-template #asinh>
+                                                    <div class="col"><button class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('asinh',1);"
+                                                            (mousedown)="disableDragging($event)">{{constants.sinh}}<sup>{{constants.calculatorMinusOne}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md mg-sm-5" *ngIf="!getScreen(); else acosh">
+                                                    <button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('cosh',1);"
+                                                        (mousedown)="disableDragging($event)">{{constants.cos}}<sup>h</sup></button>
+                                                </div>
+                                                <ng-template #acosh>
+                                                    <div class="col"><button class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('acosh',1);"
+                                                            (mousedown)="disableDragging($event)">{{constants.cosh}}<sup>{{constants.calculatorMinusOne}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md" *ngIf="!getScreen(); else atanh"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="singleton('tanh',1);"
+                                                        (mousedown)="disableDragging($event)">{{constants.tan}}<sup>h</sup></button>
+                                                </div>
+                                                <ng-template #atanh>
+                                                    <div class="col"><button class="form-control btn btn-sm btn-info"
+                                                            (click)="singleton('atanh',1);"
+                                                            (mousedown)="disableDragging($event)">{{constants.tanh}}<sup>{{constants.calculatorMinusOne}}</sup></button>
+                                                    </div>
+                                                </ng-template>
+                                                <div class="col-4 col-md-2"><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('3.141592653589793',true);"
+                                                        (mousedown)="disableDragging($event)">&#x213C;</button></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 " *ngIf="!isScientific">
+                                            <div class="row pt-2">
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-danger"
+                                                        (click)="clear();"
+                                                        (mousedown)="disableDragging($event)">C</button></div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-info"
+                                                        (click)="singleton('invert',-1);"
+                                                        (mousedown)="disableDragging($event)">&#177;</button></div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-info"
+                                                        (click)="singleton('percent',-1);"
+                                                        (mousedown)="disableDragging($event)">%</button></div>
+                                                <div class="col-3"><button
+                                                        class="form-control btn btn-sm btn-xl btn-info"
+                                                        (click)="setOperation('/');"
+                                                        (mousedown)="disableDragging($event)">&divide;</button></div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('7');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorSeven}}</button>
+                                                </div>
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('8');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorEight}}</button>
+                                                </div>
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('9');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorNine}}</button>
+                                                </div>
+                                                <div class="col-3 "><button
+                                                        class="form-control btn btn-sm btn-xl btn-info"
+                                                        (click)="setOperation('*');"
+                                                        (mousedown)="disableDragging($event)">&times;</button></div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('4');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorFour}}</button>
+                                                </div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('5');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorFive}}</button>
+                                                </div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('6');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorSix}}</button>
+                                                </div>
+                                                <div class="col-3"><button
+                                                        class="form-control btn btn-sm btn-xl btn-info"
+                                                        (click)="setOperation('-');"
+                                                        (mousedown)="disableDragging($event)">&minus;</button></div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('1');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorOne}}</button>
+                                                </div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('2');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorTwo}}</button>
+                                                </div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('3');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorThree}}</button>
+                                                </div>
+                                                <div class="col-3"><button
+                                                        class="form-control btn btn-sm btn-xl btn-info"
+                                                        (click)="setOperation('+');"
+                                                        (mousedown)="disableDragging($event)">&#43;</button></div>
+                                            </div>
+                                            <div class="row pt-2">
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('0');"
+                                                        (mousedown)="disableDragging($event)">{{constants.calculatorZero}}</button>
+                                                </div>
+                                                <div class="col-3"><button class="form-control btn btn-sm btn-secondary"
+                                                        (click)="addSymbol('.');"
+                                                        (mousedown)="disableDragging($event)">.</button></div>
+                                                <div class="col-6"><button class="form-control btn btn-sm btn-success"
+                                                        (click)="calculate();"
+                                                        (mousedown)="disableDragging($event)">=</button></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #invitation let-modal>
+        <form action="" class="invitation-form" appDisableCopy appDisablePaste appDisableRightClick appDisableSelect>
+            <div class="modal-header">
+                <h4 class="modal-title">{{constants.instructions}}</h4>
+                <button class="btn" type="button" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="assessmentDetails.endDateTime !== null">
+                    <b>Link validity - </b>
+                    {{helper.convertUTCDateToLocalDate(assessmentDetails.endDateTime) |
+                    date: 'd/M/yyyy, h:mm a'}}
+                    , Candidate is not allowed to login after
+                    <b> Cut-off time - </b>
+                    {{helper.convertUTCDateToLocalDate(cutOffTime) |
+                    date: 'd/M/yyyy, h:mm a'}} <br />
+                </div>
+                <p *ngIf="currentQuestion.questionType.name === 'CodeBased'">
+                    Your code will be auto-saved after every <b>2 minutes</b></p>
+                <div [innerHTML]="assessmentDetails.assessmentInstructions"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+                    {{constants.close}}
+                </button>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #terminationModal let-modal>
+        <form action="" class="invitation-form" appDisableCopy appDisablePaste appDisableSelect>
+            <div class="modal-header warning-font">
+                <h4 class="modal-title"><img src="../assets/images/warning.png"
+                        class="warning-png" />{{constants.testTerminationWarning}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li class="warning-color">
+                        {{constants.youHaveReachedTheAllowedViolationLimit}}
+                    </li>
+                    <li class="warning-color">
+                        {{constants.anyMoreAttemptsWillLeadToTestTermination}}
+                    </li>
+                </ul>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    (click)="modal.close('Close click')">{{constants.close}}</button>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #confirmationModal let-modal>
+        <form action="" class="invitation-form" appDisableCopy appDisablePaste appDisableRightClick>
+            <div class="modal-header">
+                <h4 class="modal-title">{{constants.proctoring}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="m-b-20">
+                    <p [innerHTML]="proctoringMessage"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    (click)="openFullScreen()">{{constants.continue}}</button>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #warningModal let-modal>
+        <form action="" class="invitation-form" appDisableCopy appDisablePaste appDisableRightClick appDisableSelect>
+            <div class="modal-header">
+                <h4 class="modal-title">{{constants.warning}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="m-b-20">
+                    <p [innerHTML]="warningMessage"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </form>
+    </ng-template>
+</div>
+<div *ngIf="assessmentDetails?.enableWheeboxProctoring">
+    <app-wheebox></app-wheebox>
+</div>
+<!-- AdaptiveAssessment - skill completion proficiency level journey popup -->
+<ng-template #completedSkillProficiencyJourneyChart let-modal>
+    <div class="modal-body">
+        <div class="m-b-30">
+            <h5>{{skillProficiencyJourneyModalTitle}}</h5>
+        </div>
+        <canvas baseChart width="300" height="180" [chartType]="'line'"
+            [datasets]="proficiencyChartMetrics?.resultChartData" [labels]="proficiencyChartMetrics?.resultChartLabels"
+            [options]="proficiencyChartMetrics?.resultChartOptions"
+            [legend]="proficiencyChartMetrics?.resultChartLegend">
+        </canvas>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-info proficiencyJourney-ok-btn"
+            (click)="closeSkillProficiencyJourneyChart()">{{constants.okay}}</button>
+    </div>
+</ng-template>

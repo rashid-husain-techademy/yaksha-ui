@@ -1,0 +1,48 @@
+<div id="loginform" [ngClass]="fields ? 'tenant' : '' ">
+      <div class="row">
+            <div class="col-12">
+                  <form class="form-horizontal m-t-20" id="loginform" name="loginform" #loginform="ngForm"
+                        [formGroup]="userLogin">
+                        <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="ti-user"></i></span>
+                              </div>
+                              <input matInput type="text" class="form-control" [placeholder]="constants.username"
+                                    aria-label="Username" aria-describedby="basic-addon1" formControlName="userName"
+                                    name="userNameOrEmailAddress">
+                        </div>
+                        <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="ti-pencil"></i></span>
+                              </div>
+                              <input matInput type="password" class="form-control" [placeholder]="constants.password"
+                                    aria-label="Password" aria-describedby="basic-addon1" formControlName="password"
+                                    name="password">
+                        </div>
+                        <div class="form-group row">
+                              <div class="col-md-12">
+                                    <div class="custom-control custom-checkbox d-flex">
+                                          <input type="checkbox" class="custom-control-input">
+                                          <a [routerLink]="['../forgotpassword']" class="text-dark font-14 ml-auto"><i
+                                                      class="fa fa-lock m-r-5"></i>
+                                                {{constants.forgotPassword}}</a>
+                                    </div>
+                              </div>
+                        </div>
+                        <div *ngIf="!disableCaptcha">
+                              <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" [size]="size" [hl]="lang" [theme]="theme"
+                                    [type]="type" formControlName="recaptcha">
+                              </ngx-recaptcha2>
+                        </div>
+                        <div class="form-group text-center">
+                              <div class="col-xs-12 p-b-20">
+                                    <button class="btn btn-block btn-lg btn-info" mat-raised-button aria-label="LOGIN"
+                                          (click)="login()">
+                                          {{constants.logIn}}
+                                    </button>
+                              </div>
+                        </div>
+                  </form>
+            </div>
+      </div>
+</div>

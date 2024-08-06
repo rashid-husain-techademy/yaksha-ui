@@ -1,0 +1,64 @@
+.w-25 {
+    width: 25%;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.w-16 {
+    width: 16%;
+}
+
+.auto-width {
+    width: auto
+}
+
+table {
+    tbody {
+        img {
+            width: 300px;
+            height: 175px;
+        }
+
+        .no-img {
+            width: 300px;
+            height: 175px;
+            border: 1px solid rgb(85, 83, 83);
+            border-radius: 5px;
+            background-color: lightgray;
+
+            i {
+                text-align: center;
+                font-size: 40px;
+                opacity: 0.6;
+            }
+
+            p {
+                text-align: center;
+                opacity: 0.6;
+            }
+        }
+
+        @media only screen and (max-width: 945px) {
+            img {
+                width: 75px;
+                height: 75px;
+            }
+
+            .no-img {
+                width: 75px;
+                height: 75px;
+
+                i {
+                    font-size: 16px;
+                }
+
+                p {
+                    font-size: 12px;
+                }
+            }
+
+        }
+    }
+}

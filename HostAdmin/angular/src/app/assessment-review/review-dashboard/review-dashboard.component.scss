@@ -1,0 +1,396 @@
+    .users {
+        gap: 20;
+    }
+
+    .w-19 {
+        width: 19%;
+    }
+
+    .w-33 {
+        width: 32%;
+    }
+
+    .w-45 {
+        width: 45%;
+    }
+
+    .w-50 {
+        width: 50%;
+    }
+
+    .w-55 {
+        width: 55%;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .m-b-57 {
+        margin-bottom: 57px;
+    }
+
+    .mt-16 {
+        margin-top: 16px;
+    }
+
+    .mb-10 {
+        margin-bottom: 10px;
+    }
+
+    .m-b-33 {
+        margin-bottom: 33px;
+    }
+
+    .m-b-20 {
+        margin-bottom: 20PX;
+    }
+
+    .m-t-14 {
+        margin-top: 14px;
+    }
+
+    .chart-container {
+        display: block;
+        position: relative;
+        max-height: 382px;
+    }
+
+    .total-value {
+        font-size: 28px !important;
+    }
+
+    .advanced-pie-legend {
+        height: 382px !important;
+    }
+
+    .color {
+        color: white;
+    }
+
+    .test {
+        min-height: 530px;
+    }
+
+    .skill {
+        min-height: 527px;
+    }
+
+    .pie-chart-container {
+        height: 300px;
+        max-width: 620px;
+        display: block;
+        background: white;
+    }
+
+
+    .user-chart {
+        margin-left: 22%;
+
+        h4 {
+            color: #fff;
+        }
+    }
+
+    .assessment-count {
+        text-align: right;
+        color: #90a4ae;
+
+        h4 {
+            font-weight: 600;
+        }
+    }
+
+    .no-question {
+        position: relative;
+        top: 47%;
+    }
+
+    .card {
+        width: 100%;
+        position: relative;
+        height: 100%;
+
+        .ribbon {
+            width: 79px;
+            height: 79px;
+            overflow: hidden;
+            position: absolute;
+            top: -7px;
+            left: -7px;
+            z-index: 1;
+            cursor: pointer;
+
+            &::before,
+            &::after {
+                position: absolute;
+                z-index: -1;
+                content: '';
+                display: block;
+                border: 3px solid #2980b9;
+                border-top-color: transparent;
+                border-left-color: transparent;
+            }
+
+            &::before {
+                top: 0;
+                right: 0;
+            }
+
+            &::after {
+                bottom: 0;
+                left: 0;
+            }
+
+            span {
+                position: absolute;
+                display: block;
+                width: 225px;
+                padding: 2px 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+                color: #fff;
+                font-size: 9px;
+                font-weight: 500;
+                text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+                text-transform: uppercase;
+                text-align: center;
+                right: -67px;
+                top: 25px;
+                transform: rotate(-45deg);
+            }
+
+            &.drafts {
+
+                &::before,
+                &::after {
+                    border: 3px solid #9b6504;
+                }
+
+                span {
+                    background-color: #fca304;
+                }
+            }
+
+            &.published {
+
+                &::before,
+                &::after {
+                    border: 3px solid #2980b9;
+                }
+
+                span {
+                    background-color: #3498db;
+                }
+            }
+
+            &.scheduled {
+
+                &::before,
+                &::after {
+                    border: 3px solid #506417;
+                }
+
+                span {
+                    background-color: #87b409;
+                }
+            }
+
+            &.expired {
+
+                &::before,
+                &::after {
+                    border: 3px solid #7b1313;
+                }
+
+                span {
+                    background-color: #d70000;
+                }
+            }
+        }
+
+        .assessments-list {
+            margin: 0 -10px;
+
+            >div {
+                width: 33%;
+            }
+        }
+
+        .btn.actions {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            z-index: 1;
+        }
+
+        .card-body {
+            h4 {
+                cursor: pointer;
+
+                &:hover {
+                    color: #009efb;
+                }
+            }
+
+            form.filter {
+                width: 100%;
+
+                >div {
+                    width: 53%;
+                }
+
+                select.form-control {
+                    max-width: 200px;
+                }
+            }
+        }
+    }
+
+    ::ng-deep .advanced-pie-legend .total-value {
+        font-size: 30px !important;
+    }
+
+    ::ng-deep .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-value {
+        font-size: 20px !important;
+    }
+
+    ::ng-deep .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+        display: none;
+    }
+
+    .dashboardcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+        white-space: nowrap;
+        max-width: 95px !important;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .dashboardcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+        position: absolute;
+        right: 62px;
+        top: 6px;
+        font-weight: bolder;
+    }
+
+    .custom-height {
+        height: 468px;
+    }
+
+    .m-b-72 {
+        margin-bottom: 72px;
+    }
+
+    .custom-width {
+        width: 233px;
+    }
+
+    .m-b-72 {
+        margin-bottom: 72px;
+    }
+
+    .pf-logo {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+    }
+
+    .ml-50 {
+        margin-left: 50px;
+    }
+
+    #chart {
+        max-width: 380px;
+        margin: 0px auto;
+        padding: 0;
+    }
+
+    .progress {
+        margin: 5px auto;
+        padding: 0;
+        width: 100%;
+        height: 10px;
+        overflow: hidden;
+        background: #e5e5e5;
+        border-radius: 0px;
+    }
+
+    .bar {
+        position: relative;
+        float: left;
+        min-width: 1%;
+        height: 100%;
+        background: #39c449 !important;
+    }
+
+    .percent {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        font-family: tahoma, arial, helvetica;
+        font-size: 12px;
+        color: white;
+    }
+
+    .end-date {
+        text-align: right;
+        right: 20px;
+        position: absolute;
+    }
+
+    .mtb-20 {
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+
+    @media screen and (max-width:640px) {
+        .w-50 {
+            width: 100% !important;
+        }
+
+        .w-33 {
+            width: 100%;
+        }
+    }
+
+    .pr-10 {
+        padding: 0px 10px 0px 0px;
+    }
+
+    .ptb-5 {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .l-h-15 {
+        line-height: 15;
+    }
+
+    ::ng-deep .apexcharts-text {
+        fill: #ffffff;
+    }
+
+    .w-40 {
+        width: 40%;
+    }
+
+    .w-20 {
+        width: 20%;
+    }
+
+    .m-t-10 {
+        margin-top: 10px;
+    }
+
+    .text-align-center {
+        text-align: center;
+    }
+
+    .font-size-larger {
+        font-size: larger;
+    }
+
+    .assessment-label {
+        white-space: pre-wrap;
+    }

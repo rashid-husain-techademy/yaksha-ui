@@ -1,0 +1,462 @@
+<div id="user-assessments">
+    <h3 class="page-title m-b-20">{{constants.myAssessments}}</h3>
+    <div class="card" style="background-color: #272b34; color: white" *ngIf="isGuruKashiTenant">
+        <div class="card-body">
+            <img src="../../assets/images/gk-hindi.png" width="581" height="87" />
+            <div style="margin-top: 20px;">
+                <img src="../../assets/images/new-hindi-Gk.png" width="485" height="55" />
+            </div>
+            <div class="d-flex justify-content-end">
+                <p style="font-size: 18px; max-width: 614px; text-align: right">
+                    Those candidates who have actually completed the assessment (514101), (514102), (514103) need not
+                    to appear again. You just need to complete the remaining exam on the
+                    day specified in the date sheet. Thank you <br><br>
+                    Starting from the fourth exam(PLANT DISEASES AND THEIR MANAGEMENT), everyone is required to take all
+                    the remaining exams.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body p-0">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav-tabs">
+                <li [ngbNavItem]="1" *ngIf="!isGuruKashiTenant">
+                    <a ngbNavLink
+                        (click)="getMyAssessmentsByStatus(userMyAssessmentStatus.SelfEnrolled)">{{constants.selfEnrolled}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="m-r-20 w-25">
+                                        <select class="form-control"
+                                            [(ngModel)]="selfEntrolled_SelectedMyAssessmentStatus"
+                                            (change)="getMyAssessmentsByAssessmentStatus($event)">
+                                            <option [value]="null">{{constants.viewAll}}</option>
+                                            <option [value]="userAssessmentStatus.InProgress">{{constants.inProgress}}
+                                            </option>
+                                            <option [value]="userAssessmentStatus.Completed">{{constants.completed}}
+                                            </option>
+                                            <option [value]="userAssessmentStatus.Expired">{{constants.expired}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="m-r-20 w-25"
+                                        [ngStyle]="{'visibility': isVisibleFilter === true ? 'visible' : 'hidden'}">
+                                        <select class="form-control" [(ngModel)]="completed_SelectedMyAssessmentStatus"
+                                            (change)="getMyAssessmentsByCompletedAssessmentStatus()">
+                                            <option [value]="null">{{constants.viewAll}}</option>
+                                            <option *ngIf="isCompletedStatus"
+                                                [value]="userAssessmentCompletedStatus.EvaluationPending">
+                                                {{constants.pendingForReview}}
+                                            </option>
+                                            <option *ngIf="isExpiredStatus"
+                                                [value]="userAssessmentCompletedStatus.Abandoned">
+                                                {{constants.abandoned}}
+                                            </option>
+                                            <option [value]="userAssessmentCompletedStatus.Failed">
+                                                {{constants.notCleared}}
+                                            </option>
+                                            <option [value]="userAssessmentCompletedStatus.Passed">{{constants.passed}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group w-50">
+                                        <input type="text" [(ngModel)]="selfEntrolled_SearchString"
+                                            (keyup.enter)="search()" placeholder="{{constants.search}}"
+                                            class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="search()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-secondary" (click)="reset()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap assessments">
+                            <div class="card m-b-20 m-l-10 m-r-10 m-b-20"
+                                *ngFor="let userAssessment of userAssessmentList?.assessments">
+                                <div class="card-body d-flex flex-column">
+
+                                    <div [ngClass]="getStatusColor(userAssessment)" class="ribbon ribbon-top-left">
+                                        <span>{{getStatusName(userAssessment)}}</span>
+                                    </div>
+
+                                    <div class="d-flex  flex-column">
+                                        <h4 class="text-info m-0 assessment-label">{{userAssessment.name}}</h4>
+                                        <small class="text-muted">{{userAssessment.categoryName}}</small>
+                                    </div>
+                                    <div class="m-t-10 d-flex justify-content-between align-items-center">
+                                        <div class="keywords d-flex flex-wrap align-items-center">
+                                            <div class="m-r-20 m-t-10">
+                                                <h6 class="m-0">{{userAssessment.noOfAvailedAttempts | number:'2.0-0'}}
+                                                    of {{userAssessment.totalAttempts | number:'2.0-0'}}</h6>
+                                                <small
+                                                    [ngClass]="userAssessment.noOfAvailedAttempts === null || userAssessment.totalAttempts === null ? 'assessmentemptydiv':''"
+                                                    class="text-muted">{{constants.attempts}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10">
+                                                <h6 class="m-0">{{userAssessment.startTime | date:'d, MMM y - h:mm a'}}
+                                                </h6>
+                                                <small
+                                                    [ngClass]="userAssessment.startTime === null ? 'assessmentemptydiv':''"
+                                                    class="text-muted">{{constants.startDate}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10">
+                                                <h6 class="m-0">{{userAssessment.endTime | date:'d, MMM y - h:mm a'}}
+                                                </h6>
+                                                <small
+                                                    [ngClass]="userAssessment.endTime === null ? 'assessmentemptydiv':''"
+                                                    class="text-muted">{{constants.endDate}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10"
+                                                *ngIf="userAssessment.status === userAssessmentStatus.InProgress">
+                                                <h6 class="m-0">{{userAssessment.lastAccessed | date:'d, MMM y'}}</h6>
+                                                <small
+                                                    [ngClass]="userAssessment.lastAccessed === null ? 'assessmentemptydiv':''"
+                                                    *ngIf="userAssessment.status === userAssessmentStatus.InProgress"
+                                                    class="text-muted">{{constants.lastAccessed}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10" *ngIf="isCompleted(userAssessment)">
+                                                <h6 class="m-0">{{userAssessment.completionDate | date:'d, MMM y'}}</h6>
+                                                <small
+                                                    [ngClass]="userAssessment.completionDate === null ? 'assessmentemptydiv':''"
+                                                    *ngIf="userAssessment.status !== userAssessmentStatus.InProgress"
+                                                    class="text-muted">{{constants.completionDate}}</small>
+                                            </div>
+                                            <div class="m-t-10"
+                                                *ngIf="(userAssessment.assessmentCompletedStatus === userAssessmentCompletedStatus.Failed && assessmentType !== assessmentType.Adaptive)">
+                                                <h6 class="m-0 text-danger">{{constants.notCleared}}</h6>
+                                                <small class="text-muted">{{constants.status}}</small>
+                                            </div>
+                                            <div class="m-t-10"
+                                                *ngIf="(userAssessment.assessmentCompletedStatus === userAssessmentCompletedStatus.Passed && assessmentType !== assessmentType.Adaptive)">
+                                                <h6 class="m-0 text-success">PASS ({{userAssessment.scorePercentage}}%)
+                                                </h6>
+                                                <small class="text-muted">{{constants.status}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button
+                                                *ngIf="userAssessment.status === userAssessmentStatus.InProgress && userAssessment.isAvailable && userAssessment.isValid"
+                                                (click)="retryorcontinueAssessment(userAssessment)"
+                                                [disabled]="checkForInstanceStatus(userAssessment)"
+                                                class="btn btn-success" type="button">{{constants.continue}}</button>
+                                            <button class="btn btn-outline-info" type="button"
+                                                *ngIf="(userAssessment.isValid && (userAssessment.status === userAssessmentStatus.InProgress)) || (userAssessment.status === userAssessmentStatus.Expired && userAssessment.completionDate === null)"
+                                                [disabled]="true">{{constants.abandoned}}</button>
+                                            <div *ngIf="isCompleted(userAssessment)" class="d-flex">
+                                                <button
+                                                    *ngIf="userAssessment.noOfAvailedAttempts < userAssessment.totalAttempts && userAssessment.isAvailable"
+                                                    (click)="retryorcontinueAssessment(userAssessment)"
+                                                    class="btn btn-outline-secondary" type="button">
+                                                    <i class="fas fa-retweet"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info" type="button"
+                                                    *ngIf="!isCognizantYakshaTenant"
+                                                    (click)="viewAssessmentReport(userAssessment.assessmentScheduleId)">{{constants.report}}</button>
+                                            </div>
+                                            <button
+                                                *ngIf="userAssessment.assessmentCompletedStatus === userAssessmentCompletedStatus.EvaluationPending"
+                                                class="btn btn-warning" disabled
+                                                type="button">{{constants.pendingReview}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="m-t-10 d-flex justify-content-between align-items-center">
+                                        <div class="d-flex">
+                                            <div class="vmstatuscolor" *ngIf="checkForInstanceStatus(userAssessment)">
+                                                <span>{{constants.vmSubmissionIsInProgress}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-2" *ngIf="userAssessmentList?.totalCount">
+                            <ngb-pagination [(page)]="selfEntrolled_PageIndex" [pageSize]="selfEntrolled_PageSize"
+                                [collectionSize]="userAssessmentList?.totalCount" (pageChange)="loadPage()"
+                                [maxSize]="selfEntrolled_MaxSize" [rotate]="true" [ellipses]="false"
+                                [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                                [(ngModel)]="selfEntrolled_PageSize">
+                                <option [ngValue]="pageSize" *ngFor="let pageSize of selfEntrolled_PageSizes">
+                                    {{pageSize}}
+                                    {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                    <a ngbNavLink
+                        (click)="getMyAssessmentsByStatus(userMyAssessmentStatus.Invites)">{{constants.invites}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="m-r-20 w-25">
+                                        <select class="form-control" [(ngModel)]="invites_SelectedMyAssessmentStatus"
+                                            (change)="getMyAssessmentsByAssessmentStatus($event)">
+                                            <option [value]="null">{{constants.viewAll}}</option>
+                                            <option [value]="userAssessmentStatus.UpComing">{{constants.upComing}}
+                                            <option [value]="userAssessmentStatus.NotStarted">{{constants.notStarted}}
+                                            </option>
+                                            <option [value]="userAssessmentStatus.InProgress">{{constants.inProgress}}
+                                            </option>
+                                            <option [value]="userAssessmentStatus.Completed">{{constants.completed}}
+                                            </option>
+                                            <option [value]="userAssessmentStatus.Expired">{{constants.expired}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="m-r-20 w-25"
+                                        [ngStyle]="{'visibility': isVisibleFilter === true ? 'visible' : 'hidden'}">
+                                        <select class="form-control" [(ngModel)]="completed_SelectedMyAssessmentStatus"
+                                            (change)="getMyAssessmentsByCompletedAssessmentStatus()">
+                                            <option [value]="null">{{constants.viewAll}}</option>
+                                            <option *ngIf="isCompletedStatus"
+                                                [value]="userAssessmentCompletedStatus.EvaluationPending">
+                                                {{constants.pendingForReview}}
+                                            </option>
+                                            <option *ngIf="isExpiredStatus"
+                                                [value]="userAssessmentCompletedStatus.Abandoned">
+                                                {{constants.abandoned}}
+                                            </option>
+                                            <option [value]="userAssessmentCompletedStatus.Failed">
+                                                {{constants.notCleared}}
+                                            </option>
+                                            <option [value]="userAssessmentCompletedStatus.Passed">{{constants.passed}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group w-50">
+                                        <input type="text" [(ngModel)]="invites_SearchString" (keyup.enter)="search()"
+                                            placeholder="{{constants.search}}" class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="search()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-secondary" (click)="reset()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap assessments">
+                            <div class="card m-b-20 m-l-10 m-r-10 m-b-20"
+                                *ngFor="let userAssessment of userAssessmentList?.assessments">
+                                <div [ngClass]="getStatusColor(userAssessment)" class="ribbon ribbon-top-left">
+                                    <span>{{getStatusName(userAssessment)}}</span>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex  flex-column">
+                                        <h4 class="text-info m-0 assessment-label">{{userAssessment.name}}</h4>
+                                        <small class="text-muted">{{userAssessment.categoryName}}</small>
+                                    </div>
+                                    <div class="m-t-10 d-flex justify-content-between align-items-center">
+                                        <div [ngClass]="
+                                        isGuruKashiTenant
+                                          ? 'keywords d-flex flex-wrap align-items-center w-68'
+                                          : 'keywords d-flex flex-wrap align-items-center'
+                                      ">
+                                            <div class="m-r-20 m-t-10" *ngIf="!isGuruKashiTenant">
+                                                <h6 class="m-0">{{userAssessment.noOfAvailedAttempts | number:'2.0-0'}}
+                                                    of {{userAssessment.totalAttempts | number:'2.0-0'}}</h6>
+                                                <small
+                                                    [ngClass]="userAssessment.noOfAvailedAttempts === null || userAssessment.totalAttempts === null ? 'assessmentemptydiv':''"
+                                                    class="text-muted">{{constants.attempts}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10">
+                                                <h6 class="m-0">{{userAssessment.startTime | date:'d, MMM y - h:mm a'}}
+                                                </h6>
+                                                <small
+                                                    [ngClass]="userAssessment.startTime === null ? 'assessmentemptydiv':''"
+                                                    class="text-muted">{{constants.startDate}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10">
+                                                <h6 class="m-0">{{userAssessment.endTime | date:'d, MMM y - h:mm a'}}
+                                                </h6>
+                                                <small
+                                                    [ngClass]="userAssessment.endTime === null ? 'assessmentemptydiv':''"
+                                                    class="text-muted">{{constants.endDate}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10"
+                                                *ngIf="userAssessment.status === userAssessmentStatus.InProgress">
+                                                <h6 class="m-0">{{userAssessment.lastAccessed | date:'d, MMM y'}}</h6>
+                                                <small
+                                                    [ngClass]="userAssessment.lastAccessed === null ? 'assessmentemptydiv':''"
+                                                    *ngIf="userAssessment.status === userAssessmentStatus.InProgress"
+                                                    class="text-muted">{{constants.lastAccessed}}</small>
+                                            </div>
+                                            <div class="m-r-20 m-t-10" *ngIf="isCompleted(userAssessment)">
+                                                <h6 class="m-0">{{userAssessment.completionDate | date:'d, MMM y'}}</h6>
+                                                <small
+                                                    [ngClass]="userAssessment.completionDate === null ? 'assessmentemptydiv':''"
+                                                    *ngIf="userAssessment.status !== userAssessmentStatus.InProgress"
+                                                    class="text-muted">{{constants.completionDate}}</small>
+                                            </div>
+                                            <div class="m-t-10"
+                                                *ngIf="(userAssessment.assessmentCompletedStatus === userAssessmentCompletedStatus.Failed && userAssessment.assessmentType !== assessmentType.Adaptive)">
+                                                <h6 class="m-0 text-danger">{{constants.notCleared}}</h6>
+                                                <small class="text-muted">{{constants.status}}</small>
+                                            </div>
+                                            <div class="m-t-10"
+                                                *ngIf="(userAssessment.assessmentCompletedStatus === userAssessmentCompletedStatus.Passed && userAssessment.assessmentType !== assessmentType.Adaptive)">
+                                                <h6 class="m-0 text-success">PASS ({{userAssessment.scorePercentage}}%)
+                                                </h6>
+                                                <small class="text-muted">{{constants.status}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button
+                                                *ngIf="userAssessment.status === userAssessmentStatus.InProgress && userAssessment.isAvailable && userAssessment.isValid"
+                                                (click)="retryorcontinueAssessment(userAssessment)"
+                                                [disabled]="checkForInstanceStatus(userAssessment)"
+                                                class="btn btn-success" type="button">{{constants.continue}}</button>
+                                            <button
+                                                *ngIf="userAssessment.status === userAssessmentStatus.NotStarted && userAssessment.isAvailable && userAssessment.isValid"
+                                                (click)="retryorcontinueAssessment(userAssessment)"
+                                                class="btn btn-success" type="button">{{constants.start}}</button>
+                                            <button class="btn btn-outline-info" type="button"
+                                                *ngIf="(userAssessment.isValid && (userAssessment.status === userAssessmentStatus.InProgress)) || (userAssessment.status === userAssessmentStatus.Expired && userAssessment.completionDate === null)"
+                                                [disabled]="true">{{constants.abandoned}}</button>
+                                            <div *ngIf="isCompleted(userAssessment)" class="d-flex">
+                                                <button
+                                                    *ngIf="userAssessment.noOfAvailedAttempts < userAssessment.totalAttempts && userAssessment.isAvailable"
+                                                    (click)="retryorcontinueAssessment(userAssessment)"
+                                                    class="btn btn-outline-secondary" type="button">
+                                                    <span *ngIf="isGuruKashiTenant">{{constants.reTake}}</span>
+                                                    <i class="fas fa-retweet" *ngIf="!isGuruKashiTenant"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info" type="button"
+                                                    (click)="viewAssessmentReport(userAssessment.assessmentScheduleId)"
+                                                    *ngIf="!isGuruKashiTenant && !isCognizantYakshaTenant">{{constants.report}}</button>
+                                            </div>
+                                            <button
+                                                *ngIf="userAssessment.assessmentCompletedStatus === userAssessmentCompletedStatus.EvaluationPending"
+                                                class="btn btn-warning" disabled
+                                                type="button">{{constants.pendingReview}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="m-t-10 d-flex justify-content-between align-items-center">
+                                        <div class="d-flex">
+                                            <div class="vmstatuscolor" *ngIf="checkForInstanceStatus(userAssessment)">
+                                                <span>{{constants.vmSubmissionIsInProgress}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-2" *ngIf="userAssessmentList?.totalCount">
+                            <ngb-pagination [(page)]="invites_PageIndex" [pageSize]="invites_PageSize"
+                                [collectionSize]="userAssessmentList?.totalCount" (pageChange)="loadPage()"
+                                [maxSize]="invites_MaxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                                [(ngModel)]="invites_PageSize">
+                                <option [ngValue]="pageSize" *ngFor="let pageSize of invites_PageSizes">{{pageSize}}
+                                    {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="3" *ngIf="!isGuruKashiTenant">
+
+                    <a ngbNavLink (click)="getCampaigns()">{{constants.drives}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="m-r-20 w-25">
+                                        <select class="form-control" [(ngModel)]="campaign_SelectedCampaignStatus"
+                                            (change)="getCampaignByStatus($event)">
+                                            <option [value]="null">{{constants.viewAll}}</option>
+                                            <option [value]="userCampaignStatus.NotStarted">{{constants.notStarted}}
+                                            </option>
+                                            <option [value]="userCampaignStatus.InProgress">{{constants.inProgress}}
+                                            </option>
+                                            <option [value]="userCampaignStatus.Completed">{{constants.completed}}
+                                            </option>
+                                            <option [value]="userCampaignStatus.Failed">{{constants.notCleared}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group w-50">
+                                        <input type="text" [(ngModel)]="campaign_SearchString"
+                                            (keyup.enter)="searchCampaign()"
+                                            placeholder="{{constants.searchByDriveName}}" class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="searchCampaign()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-secondary" (click)="resetCampaign()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap assessments">
+
+                            <div class="card m-b-20 m-l-10 m-r-10 m-b-20" *ngFor="let userCampaign of userCampaigns">
+                                <div class="card-body d-flex flex-column">
+                                    <div [ngClass]="getCampaignStatusColour(userCampaign)"
+                                        class="ribbon ribbon-top-left">
+                                        <span>{{getCampaignStatusName(userCampaign)}}</span>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <h4 class="text-info m-0 assessment-label">{{userCampaign.campaignName}}</h4>
+                                    </div>
+                                    <div class="m-t-10 d-flex justify-content-between align-items-center">
+                                        <div class="keywords d-flex flex-wrap align-items-center">
+                                            <div class="m-r-15 m-t-10">
+                                                <h6 class="m-0">{{userCampaign.totalAssessments}}</h6>
+                                                <small class="text-muted">{{constants.totalAssessments}}</small>
+                                            </div>
+                                            <!-- <div class="m-r-20 m-t-10">
+                                                <h6 class="m-0">{{userCampaign.totalVirtutors}}</h6>
+                                                <small class="text-muted">{{constants.totalVirtutors}}</small>
+                                            </div> -->
+                                            <div class="m-r-15 m-t-10">
+                                                <h6 class="m-0">{{userCampaign.startDate | date:'d, MMM y - h:mm a'}}
+                                                </h6>
+                                                <small class="text-muted">{{constants.startDate}}</small>
+                                            </div>
+                                            <div class="m-r-15 m-t-10">
+                                                <h6 class="m-0">{{userCampaign.endDate | date:'d, MMM y - h:mm a'}}</h6>
+                                                <small class="text-muted">{{constants.endDate}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button class="btn btn-outline-info" type="button"
+                                                (click)="viewCampaignAssessments(userCampaign.campaignScheduleId, userCampaign.campaignId)">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!noCampaignsFound" class="d-flex justify-content-between p-2">
+                            <ngb-pagination [(page)]="campaign_PageIndex" [pageSize]="campaign_PageSize"
+                                [collectionSize]="campaigns?.totalCount" (pageChange)="loadCampaignPage()"
+                                [maxSize]="campaign_MaxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select" style="width: auto" (change)="changeCampaignPageSize()"
+                                [(ngModel)]="campaign_PageSize">
+                                <option [ngValue]="pageSize" *ngFor="let pageSize of campaign_PageSizes">
+                                    {{pageSize}}
+                                    {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div [ngbNavOutlet]="nav"></div>
+</div>
+<div class="d-flex justify-content-center" *ngIf="noAssessmentsFound">
+    <h4>{{constants.noAssessmentsFound}}</h4>
+</div>
+<div class="d-flex justify-content-center" *ngIf="noCampaignsFound">
+    <h4>{{constants.noDrivesFound}}</h4>
+</div>

@@ -1,0 +1,329 @@
+<div *ngIf="assessment">
+    <div class="list-assessment-custom d-flex flex-wrap">
+        <div class="card w-100">
+            <div class="card-body d-flex flex-wrap">
+                <div class="w-100">
+                    <h3 class="assessment-label">{{assessment.assessmentName}}</h3>
+                    <div class="d-flex">
+                        <div class="m-r-40">
+                            <h4 class="m-b-0">{{assessment.type === 1 ? 'Assessment' : assessment.type === 2 ?
+                                'Hackathon' : assessment.type === 3 ? 'Adaptive' : '' }}</h4>
+                            <small class="text-muted">{{constants.assessmentType}}</small>
+                        </div>
+                        <div class="m-r-40">
+                            <h4 class="m-b-0">{{assessment.totalSections}}</h4>
+                            <small class="text-muted">{{constants.sections}}</small>
+                        </div>
+                        <div class="m-r-40">
+                            <h4 class="m-b-0">{{assessment.totalSkills}}</h4>
+                            <small class="text-muted">{{constants.skills}}</small>
+                        </div>
+                        <div class="m-r-40">
+                            <h4 class="m-b-0">{{assessment.totalCategories}}</h4>
+                            <small class="text-muted">{{constants.categories}}</small>
+                        </div>
+                        <div>
+                            <h4 class="m-b-0">{{assessment.duration}}</h4>
+                            <small class="text-muted">{{constants.duration}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-100 card">
+            <div class="card-body d-flex flex-wrap">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="page-title m-0">{{assessment.startDateTime | date: 'd MMM y'}}</h4>
+                    <h4 class="page-title m-0 end-date text-danger">{{assessment.endDateTime | date: 'd MMM y'}}</h4>
+                </div>
+                <div class="scores d-flex w-100">
+                    <ng-container class="w-100">
+                        <div class="progress">
+                            <div class="bar" [ngStyle]="{'width': assessment.currentProgress + '%'}">
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="page-title m-0">{{constants.startDate}}</h6>
+                    <h6 class="page-title m-0 end-date">{{constants.endDate}}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="assessments-list d-flex flex-wrap">
+        <div class="w-50 pr-10 ptb-5">
+            <div class="card m-b-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="w-100">
+                        <h4 class="text-left m-b-30">{{constants.overallQuestionsReviewStatus}}</h4>
+                    </div>
+                    <div id="chart1">
+                        <apx-chart [series]="overallQuestionsChartOptions.series"
+                            [chart]="overallQuestionsChartOptions.chart" [labels]="overallQuestionsChartOptions.labels"
+                            legend="overallQuestionsChartOptions.legend"
+                            [responsive]="overallQuestionsChartOptions.responsive" [colors]="chartColors"
+                            [fill]="overallQuestionsChartOptions.fill"
+                            [dataLabels]="overallQuestionsChartOptions.dataLabels"></apx-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-50 ptb-5">
+            <div class="card m-b-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="w-100">
+                        <h4 class="text-left m-b-30">{{constants.basicQuestionsReviewStatus}}</h4>
+                    </div>
+                    <div id="chart2">
+                        <apx-chart [series]="beginnerQuestionsChartOptions.series"
+                            [chart]="beginnerQuestionsChartOptions.chart"
+                            [labels]="beginnerQuestionsChartOptions.labels"
+                            legend="beginnerQuestionsChartOptions.legend1"
+                            [responsive]="beginnerQuestionsChartOptions.responsive" *ngIf="!noBeginnerLevelQuestions"
+                            [fill]="beginnerQuestionsChartOptions.fill" [colors]="chartColors"
+                            [dataLabels]="beginnerQuestionsChartOptions.dataLabels"></apx-chart>
+                        <h4 class="text-center l-h-15" *ngIf="noBeginnerLevelQuestions">{{constants.noQuestionsFound}}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-50 pr-10 ptb-5">
+            <div class="card m-b-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="w-100">
+                        <h4 class="text-left m-b-30">{{constants.intermediateQuestionsReviewStatus}}</h4>
+                    </div>
+                    <div id="chart3">
+                        <apx-chart [series]="intermediateQuestionsChartOptions.series"
+                            [chart]="intermediateQuestionsChartOptions.chart"
+                            [labels]="intermediateQuestionsChartOptions.labels"
+                            legend="intermediateQuestionsChartOptions.legend2"
+                            [responsive]="intermediateQuestionsChartOptions.responsive"
+                            *ngIf="!noIntermediateLevelQuestions" [fill]="intermediateQuestionsChartOptions.fill"
+                            [colors]="chartColors" [dataLabels]="intermediateQuestionsChartOptions.dataLabels">
+                        </apx-chart>
+                        <h4 class="text-center l-h-15" *ngIf="noIntermediateLevelQuestions">
+                            {{constants.noQuestionsFound}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-50 ptb-5">
+            <div class="card m-b-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="w-100">
+                        <h4 class="text-left m-b-30">{{constants.advancedQuestionsReviewStatus}}</h4>
+                    </div>
+                    <div id="chart4">
+                        <apx-chart [series]="advancedQuestionsChartOptions.series"
+                            [chart]="advancedQuestionsChartOptions.chart"
+                            [labels]="advancedQuestionsChartOptions.labels"
+                            legend="advancedQuestionsChartOptions.legend3"
+                            [responsive]="advancedQuestionsChartOptions.responsive" *ngIf="!noAdvancedLevelQuestions"
+                            [fill]="advancedQuestionsChartOptions.fill" [colors]="chartColors"
+                            [dataLabels]="advancedQuestionsChartOptions.dataLabels"></apx-chart>
+                        <h4 class="text-center l-h-15" *ngIf="noAdvancedLevelQuestions">{{constants.noQuestionsFound}}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card w-100" *ngIf="assessment">
+        <div class="card-body d-flex flex-wrap">
+            <div class="w-100">
+                <h4 class="text-align-center m-t-10 font-size-larger">{{constants.acceptedQuestionDetails}}</h4>
+            </div>
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th class="font-weight-bold w-40"></th>
+                        <th class="font-weight-bold text-align-center w-20">{{constants.required}}</th>
+                        <th class="font-weight-bold text-align-center w-20">{{constants.current}}</th>
+                        <th class="font-weight-bold text-align-center w-20">{{constants.gap}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of assessment.acceptedQuestionsDetail">
+                        <td class="font-weight-bold">
+                            {{constants.totalAcceptedQuestions}} {{getProficiency(data.proficiencyLevelId)}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.requiredAcceptedCount}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.currentAcceptedCount}}
+                        </td>
+                        <td class="text-align-center">
+                            {{((data.requiredAcceptedCount === 0 && data.currentAcceptedCount === 0 &&
+                            noValidSignOffCriteria) || (data.remainingCount === null)) ? 'N/A' : data.remainingCount}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card w-100" *ngIf="assessment">
+        <div class="card-body d-flex flex-wrap">
+            <div class="w-100">
+                <h4 class="text-align-center m-t-10 font-size-larger">Section Wise Details
+                </h4>
+            </div>
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th class="font-weight-bold w-30"></th>
+                        <th class="font-weight-bold text-align-center w-20">Approved Questions</th>
+                        <th class="font-weight-bold text-align-center w-20">Beginner Questions</th>
+                        <th class="font-weight-bold text-align-center w-20">Intermediate Questions</th>
+                        <th class="font-weight-bold text-align-center w-20">Advanced Questions</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isQuestionApproved">
+                    <tr *ngFor="let data of assessmentSectionStatus; let i = index">
+                        <td class="font-weight-bold">
+                            {{data.sectionName}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.approvedQuestionCount}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.beginnerQuestions}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.intermediateQuestions}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.advancedQuestions}}
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="!isQuestionApproved">
+                    <tr>
+                        <td class="text-center" colspan="5">
+                            <h5>{{constants.noApprovedQuestionsFound}}</h5>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card w-100" *ngIf="assessment">
+        <div class="card-body d-flex flex-wrap">
+            <div class="w-100">
+                <div class="col-sm-4">
+                    <form [formGroup]="selectSectionForm">
+                        <ng-multiselect-dropdown [data]="assessmentSectionStatus"
+                            (onSelect)="getskillsBySection(assessmentId,$event.assessmentSectionId)"
+                            (onDeSelect)="skillReset()" [settings]="singleDropdownSettings"
+                            formControlName="selectedSection">
+                        </ng-multiselect-dropdown>
+                    </form>
+                </div>
+                <h4 class="text-align-center m-t-10 font-size-larger">Skill Wise Details
+                </h4>
+            </div>
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th class="font-weight-bold w-30"></th>
+                        <th class="font-weight-bold text-align-center w-20">Approved Questions</th>
+                        <th class="font-weight-bold text-align-center w-20">Beginner Questions</th>
+                        <th class="font-weight-bold text-align-center w-20">Intermediate Questions</th>
+                        <th class="font-weight-bold text-align-center w-20">Advanced Questions</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isSkillWiseApprovedQuestion">
+                    <tr *ngFor="let data of assessmentSectionSkillStatus; let i = index">
+                        <td class="font-weight-bold">
+                            {{data.skillName}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.approvedQuestionCount}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.beginnerQuestions}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.intermediateQuestions}}
+                        </td>
+                        <td class="text-align-center">
+                            {{data.advancedQuestions}}
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="!isSkillWiseApprovedQuestion">
+                    <tr>
+                        <td class="text-center" colspan="5">
+                            <h5>{{constants.noApprovedQuestionsFound}}</h5>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="w-100 card mtb-20">
+        <div class="card-body d-flex flex-wrap">
+            <div class="w-100">
+                <h4 class="text-align-center m-t-10 font-size-larger">{{constants.reviewerWiseStatus}}</h4>
+            </div>
+            <table class="table table-striped border">
+                <thead>
+                    <tr>
+                        <th class="font-weight-bold w-20">{{constants.reviewerName}}</th>
+                        <th class="font-weight-bold text-align-center w-20">{{constants.accepted}}</th>
+                        <th class="font-weight-bold text-align-center w-20">{{constants.rejected}}</th>
+                        <th class="font-weight-bold text-align-center w-20">{{constants.suggested}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let reviewer of assessment.reviewers">
+                        <td class="font-weight-bold">
+                            {{reviewer?.userName}}
+                        </td>
+                        <td class="text-align-center">
+                            {{reviewer?.acceptedQuestionsCount}}
+                        </td>
+                        <td class="text-align-center">
+                            {{reviewer?.rejectedQuestionCount}}
+                        </td>
+                        <td class="text-align-center">
+                            {{reviewer?.suggestedQuestionCount}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="w-100 card mtb-20">
+        <div class="card-body d-flex flex-wrap">
+            <div class="w-100">
+                <h4 class="text-left m-b-30">{{constants.signOffReviewer}}</h4>
+            </div>
+            <ng-container *ngFor="let reviewer of assessment.reviewers">
+                <div class="w-33 mtb-20" *ngIf="reviewer.canSignOff">
+                    <div class="score-data d-flex flex-column justify-content-between">
+                        <img src="assets/images/all-reviews.png" alt="logo" class="pf-logo" />
+                        <div class="sections m-t-10 w-100">
+                            <span class="section-name ml-50">{{reviewer?.userName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="back()">{{constants.back}}</button>
+    </div>
+</div>

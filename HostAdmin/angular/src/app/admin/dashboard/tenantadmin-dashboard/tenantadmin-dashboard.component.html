@@ -1,0 +1,59 @@
+<mat-tab-group *ngIf="userRole && userRole === userRoles[1]" dynamicHeight [selectedIndex]="0" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="Question Bank">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="QuestionBank"></div>
+    </mat-tab>
+
+    <mat-tab label="Question Bank Report">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="QuestionBankReport"></div>
+    </mat-tab>
+
+    <mat-tab label="Question Performance">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="QuestionPerformance"></div>
+    </mat-tab>
+
+    <mat-tab label="Assessments and Tenants">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="AssessmentsAndTenants"></div>
+    </mat-tab>
+</mat-tab-group>
+
+<mat-tab-group *ngIf="userRole && userRole === userRoles[2]" dynamicHeight [selectedIndex]="0" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="Dashboard">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="Dashboard"></div>
+    </mat-tab>
+
+    <mat-tab label="Knowledge Base Assessments">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="KnowledgeBaseAssessments"></div>
+    </mat-tab>
+
+    <mat-tab label="Composite Assessments">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="CompositeAssessments"></div>
+    </mat-tab>
+
+    <mat-tab label="Project Base Assessments">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="ProjectBaseAssessments"></div>
+    </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,145 @@
+.users {
+    gap: 20;
+}
+
+.w-19 {
+    width: 19%;
+}
+
+.w-45 {
+    width: 45%;
+}
+
+.w-55 {
+    width: 55%;
+}
+
+.m-b-57 {
+    margin-bottom: 57px;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.m-b-33 {
+    margin-bottom: 33px;
+}
+
+.m-b-20 {
+    margin-bottom: 20PX;
+}
+
+.m-t-14 {
+    margin-top: 14px;
+}
+
+.chart-container {
+    display: block;
+    position: relative;
+    max-height: 382px;
+}
+
+.total-value {
+    font-size: 28px !important;
+}
+
+.advanced-pie-legend {
+    height: 382px !important;
+}
+
+.color {
+    color: white;
+}
+
+.test {
+    min-height: 530px;
+}
+
+.skill {
+    min-height: 527px;
+}
+
+.pie-chart-container {
+    height: 300px;
+    max-width: 620px;
+    display: block;
+    background: white;
+}
+
+.chart {
+    margin-top: 15%;
+}
+
+.user-chart {
+    margin-left: 22%;
+
+    h4 {
+        color: #fff;
+    }
+}
+
+.assessment-count {
+    text-align: right;
+    color: #90a4ae;
+
+    h4 {
+        font-weight: 600;
+    }
+}
+
+.no-question {
+    position: relative;
+    top: 47%;
+}
+
+::ng-deep .advanced-pie-legend .total-value {
+    font-size: 30px !important;
+}
+
+::ng-deep .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-value {
+    font-size: 20px !important;
+}
+
+::ng-deep .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+    display: none;
+}
+
+.dashboardcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 95px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.dashboardcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 62px;
+    top: 6px;
+    font-weight: bolder;
+}
+
+.custom-height {
+    height: 468px;
+}
+
+.m-b-72 {
+    margin-bottom: 72px;
+}
+
+.custom-width {
+    width: 233px;
+    ;
+}
+
+.m-b-72 {
+    margin-bottom: 72px;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}

@@ -1,0 +1,91 @@
+.option-width {
+    @media screen and (min-width:766px) {
+        width: 50% !important;
+    }
+
+    width: 100% !important;
+}
+
+::ng-deep .option img {
+
+    @media screen and (max-width:376px) {
+        max-width: 240px !important;
+    }
+
+    @media screen and (max-width:1024px) {
+        max-width: 260px !important;
+    }
+
+    @media screen and (min-width:1025px) {
+        max-width: 360px !important;
+    }
+
+}
+
+.option {
+    width: 100% !important;
+    max-height: 180px !important;
+    overflow: auto !important;
+}
+
+.line {
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.indentaion {
+    white-space: pre-wrap;
+    ::ng-deep p {
+        margin-bottom: 0px !important;
+    }
+
+    @media screen and(max-width:650px) {
+        padding: 1.9rem;
+    }
+}
+
+.input-group-text {
+    text-align: left !important;
+    white-space: normal !important;
+    max-height: 440px !important;
+    overflow: auto;
+}
+
+::ng-deep p .indentaion img {
+    width: fit-content !important;
+}
+
+::ng-deep div .indentaion img {
+    max-width: 100% !important;
+}
+
+.p-9{
+    padding: 7px;
+}
+.bg-wrong{
+background-color: #f62d51;
+}
+.bg-correct{
+    background-color: #39c449;
+}
+.dflex{
+    display: flex;
+}
+.pa-9{
+    padding: 6px 12px;
+}
+.sections-btn {
+    min-width: 120px;
+    max-width: 200px;
+}
+
+.section-navs {
+    overflow-y: hidden;
+    overflow-x: auto;
+    width: 100%;
+}
+
+
+  input[type="checkbox"][disabled] {
+    filter: invert(100%) hue-rotate(18deg) brightness(5);
+  }

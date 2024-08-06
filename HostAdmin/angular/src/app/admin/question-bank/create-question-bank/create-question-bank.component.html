@@ -1,0 +1,196 @@
+<div class="d-flex justify-content-between align-items-center m-b-20">
+    <h4 class="page-title m-0">{{edit ? constants.editAssignQuestionBank : clone ? constants.cloneAssignQuestionBank :
+        constants.createAssignQuestionBank }}</h4>
+</div>
+<form [formGroup]="questionBankForm" novalidate autocomplete="off">
+    <div class="card">
+        <div class="card-body d-flex justify-content-between align-items-center createqbcustom">
+            <div class="w-70 p-r-20">
+                <label class="font-weight-bold">{{constants.enterQuestionBankName}} <span
+                        class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="questionBankName"
+                    placeholder="{{constants.enterQuestionBankName}}" aria-label="Question Bank Name">
+                <small class="field-required" *ngIf="questionBankForm.get('questionBankName').hasError('pattern')">
+                    {{constants.questionBankNamePattern}}
+                </small>
+            </div>
+            <div class="w-30">
+                <label class="font-weight-bold">{{constants.selectTenant}} <span class="text-danger">*</span></label>
+                <ng-multiselect-dropdown formControlName="tenantName" [disabled]="isTenantDisabled"
+                    [placeholder]="constants.selectTenant" [settings]="singleDropdownSettings"
+                    [data]="tenantDetailsList">
+                </ng-multiselect-dropdown>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="d-flex justify-content-between align-items-center m-b-10">
+    <div class="w-70 text-center">
+        <strong>{{constants.chooseSkills}}</strong>
+    </div>
+    <div class="w-30 text-center">
+        <strong>{{constants.selectedItems}}</strong>
+    </div>
+</div>
+<div class="d-flex justify-content-between m-b-20 createqbcustom">
+    <div class="w-70 p-r-20">
+        <form [formGroup]="filterForm" novalidate autocomplete="off">
+            <div class="card">
+                <div class="card-body d-flex align-items-stretch">
+                    <i class="fas fa-filter text-info m-r-20 align-self-center"></i>
+                    <div class="d-flex flex-wrap justify-content-between w-100">
+                        <div class="w-50 p-r-20">
+                            <label class="font-weight-bold">{{constants.selectCategory}}</label>
+                            <ng-multiselect-dropdown (onSelect)="onSelectCategory($event)" (onDeSelect)="onDeSelectCategory()"
+                                [data]="categoryList" [placeholder]="constants.selectCategory"
+                                [settings]="singleDropdownSettings" formControlName="category">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="w-50">
+                            <label class="font-weight-bold">{{constants.selectSkill}} </label>
+                            <ng-multiselect-dropdown (onSelect)="getCategorySkillDetails()"
+                                (onDeSelect)="onSkillDeselect()" [data]="filteredSkills"
+                                [settings]="skillDropdownSettings" formControlName="skill"
+                                (onSelect)="getCategorySkillDetails()" [placeholder]="constants.selectSkill" (onFilterChange)="displaySkillsFilteredData($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="input-group w-100 m-t-20 d-flex align-items-end">
+                            <div class="w-75 m-r-15">
+                                <label class="font-weight-bold">{{constants.searchBySkillName}}</label>
+                                <input type="text" class="form-control" formControlName="searchValue"
+                                    (change)="getCategorySkillDetails()" placeholder="{{constants.searchBySkillName}}">
+                            </div>
+                            <button class="btn btn-info m-r-5" type="button" (click)="getCategorySkillDetails()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-secondary" (click)="reset()" type="button">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card w-30">
+        <div class="card-body">
+            <div>
+                <span class="w-50 d-inline-block">{{constants.totalSkills}}:</span>
+                <strong class="text-info">{{totalSkills}}</strong>
+            </div>
+            <div>
+                <span class="w-50 d-inline-block">{{constants.totalQuestions}}:</span>
+                <strong class="text-info">{{totalQuestions}}</strong>
+            </div>
+            <div>
+                <span class="w-50 d-inline-block">{{constants.mcqTitle}}:</span>
+                <strong class="text-info">{{totalMCQ}}</strong>
+            </div>
+            <div>
+                <span class="w-50 d-inline-block">{{constants.coding}}:</span>
+                <strong class="text-info">{{totalCoding}}</strong>
+            </div>
+            <div>
+                <span class="w-50 d-inline-block">{{constants.stack}}:</span>
+                <strong class="text-info">{{totalStack}}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center m-b-10">
+    <div class="w-70 text-center">
+        <strong>{{constants.drgaFromHere}}</strong>
+    </div>
+    <div class="w-30 text-center">
+        <strong>{{constants.dropHere}}</strong>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-stretch m-b-20">
+    <div class="w-70 p-r-20">
+        <div class="card m-0">
+            <div class="card-body">
+                <div class="d-flex flex-wrap align-items-center" cdkDropList #dragList="cdkDropList"
+                    [cdkDropListData]="skillDetails" [cdkDropListConnectedTo]="[dropList]"
+                    (cdkDropListDropped)="onDrop($event)">
+                    <div class="border results align-items-center justify-content-between p-10 m-10 d-flex"
+                        *ngFor="let item of skillDetails" cdkDrag>
+                        <span class="m-r-10 text-center" *ngIf="item.imageUrl">
+                            <img class="img-50" src="{{item.imageUrl}}">
+                        </span>
+                        <span class="m-r-10 text-center" *ngIf="!item.imageUrl">
+                            <img class="img-50" src="assets/images/skillimage.png">
+                        </span>
+                        <div>
+                            <h4 class="card-title">{{item.name}}</h4>
+                            <div class="d-flex">
+                                <div class="m-r-20">
+                                    <h5 class="font-weight-bold text-info m-0">{{item.TotalQuestions}}</h5>
+                                    <div><small>{{constants.questions}}</small></div>
+                                </div>
+                                <div class="m-r-20">
+                                    <h5 class="font-weight-bold text-info m-0">{{item.MCQ}}</h5>
+                                    <div><small>{{constants.mcqTitle}}</small></div>
+                                </div>
+                                <div class="m-r-20">
+                                    <h5 class="font-weight-bold text-info m-0">{{item.Coding}}</h5>
+                                    <div><small>{{constants.coding}}</small></div>
+                                </div>
+                                <div>
+                                    <h5 class="font-weight-bold text-info m-0">{{item.Stack}}</h5>
+                                    <div><small>{{constants.stack}}</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card w-30 m-0">
+        <div class="card-body p-0">
+            <div class="d-flex flex-column" style="height: 100%;" cdkDropList #dropList="cdkDropList"
+                [cdkDropListData]="selectedSkillDetails" [cdkDropListConnectedTo]="[dragList]"
+                (cdkDropListDropped)="onDrop($event)">
+                <div class="border p-10 d-flex justify-content-between align-items-center"
+                    *ngFor="let item of selectedSkillDetails" cdkDrag>
+                    <span class="m-r-10 text-center" *ngIf="item.imageUrl">
+                        <img class="img-50" src="{{item.imageUrl}}">
+                    </span>
+                    <span class="m-r-10 text-center" *ngIf="!item.imageUrl">
+                        <img class="img-50" src="assets/images/skillimage.png">
+                    </span>
+                    <div>
+                        <h4 class="card-title">{{item.name}}</h4>
+                        <div class="d-flex">
+                            <div class="m-r-20">
+                                <h5 class="font-weight-bold text-info m-0">{{item.TotalQuestions}}</h5>
+                                <div><small>{{constants.questions}}</small></div>
+                            </div>
+                            <div class="m-r-20">
+                                <h5 class="font-weight-bold text-info m-0">{{item.MCQ}}</h5>
+                                <div><small>{{constants.mcqTitle}}</small></div>
+                            </div>
+                            <div class="m-r-20">
+                                <h5 class="font-weight-bold text-info m-0">{{item.Coding}}</h5>
+                                <div><small>{{constants.coding}}</small></div>
+                            </div>
+                            <div>
+                                <h5 class="font-weight-bold text-info m-0">{{item.Stack}}</h5>
+                                <div><small>{{constants.stack}}</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0);" (click)="removeSkill(item.id)"
+                        class="align-self-center border text-danger p-10">
+                        X
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-right">
+    <button type="button" class="btn btn-secondary m-r-20" (click)="cancel()">{{constants.cancel}}</button>
+    <button type="button" class="btn btn-info" (click)="saveQuestionBank()">{{edit ? constants.update : clone ?
+        constants.cloneAndAssign : constants.createAndAssign }}</button>
+</div>

@@ -1,0 +1,115 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-b-48">
+                <h4 class="card-title mb-0"><span class="lstick"></span>{{constants.users}}</h4>
+                <div class="d-flex justify-content-between mt-3">
+                    <div class="d-flex w-75">
+                        <div class="m-r-15 w-27 usercustom" *ngIf="userRole === userRoles[1]">
+                            <ng-multiselect-dropdown (onSelect)="getTenantUsers($event)" (onDeSelect)="reset()"
+                                [(ngModel)]="tenantDetails" [placeholder]="constants.selectTenant"
+                                [settings]="singleDropdownSettings" [data]="tenantList">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <input type="text" placeholder="{{constants.search}}" [(ngModel)]="searchString"
+                            (change)="search($event)" class="form-control w-auto" />
+                        <div>
+                            <button class="btn btn-info m-l-15" (click)="getUserDetails()" type="button"><i
+                                    class="fas fa-search"></i></button>
+                            <button class="btn btn-secondary m-l-5" type="button" (click)="reset()">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-info ml-auto" (click)="openUpload()">
+                            {{constants.importUsers}}
+                        </button>
+                    </div>
+                </div>
+                <table class="table table-striped border mt-4 ">
+                    <thead>
+                        <tr>
+                            <th sortable="Name">{{constants.firstName}}</th>
+                            <th sortable="UserName">{{constants.lastName}}</th>
+                            <th sortable="Email">{{constants.email}}</th>
+                            <th sortable="phone">{{constants.phone}}</th>
+                            <th sortable="unit">{{constants.businessUnit}}</th>
+                            <th>{{constants.role}}</th>
+                            <th class="text-center">{{constants.actions}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of userList?.users">
+                            <td class="text-wrap-15">
+                                <img *ngIf="user.profilePicture" [src]='user.profilePicture' class="mr-2 img-avatar">
+                                <span *ngIf="!user.profilePicture"
+                                    class="mr-2 avatar">{{helper.getStaticProfileImage(user?.name, user?.surName ?
+                                    user.surName : '')}}</span>
+                                <ngb-highlight [result]="user.name"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-15">
+                                <ngb-highlight [result]="user.surName"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-25">
+                                <ngb-highlight [result]="user.emailAddress"></ngb-highlight>
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="user.phoneNumber"></ngb-highlight>
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="user.businessUnitName"></ngb-highlight>
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="user.role"></ngb-highlight>
+                            </td>
+                            <td>
+                                <span *ngIf="user.role.toLowerCase() !== userRoles[1].toLowerCase()">
+                                    <label class="m-r-15">
+                                        <input type="checkbox" [checked]="user.isLoginEnabled"
+                                            class="cB loginenabledisable_{{user.id}}" />
+                                        <div class="cB-outer-div" [ngbPopover]="constants.disableUserLogin"
+                                            *ngIf="user.isLoginEnabled" triggers="mouseenter:mouseleave"
+                                            (click)="updateUserLoginEnable(user)">
+                                            <div class="cB-inner-div"></div>
+                                        </div>
+                                        <div class="cB-outer-div" [ngbPopover]="constants.enableUserLogin"
+                                            *ngIf="!user.isLoginEnabled" triggers="mouseenter:mouseleave"
+                                            (click)="updateUserLoginEnable(user)">
+                                            <div class="cB-inner-div"></div>
+                                        </div>
+                                    </label>
+                                </span>
+                                <i class="icon-user pointer m-r-15" (click)="userProfile(user.id,user.emailAddress)"
+                                    *ngIf="user.role.toLowerCase() !== userRoles[1].toLowerCase()"
+                                    [ngbTooltip]="constants.viewProfile"></i>
+                                <i class="far fa-file-alt pointer m-r-15" (click)="proctoringReport(user)"
+                                    *ngIf="user.role.toLowerCase() !== userRoles[1].toLowerCase()"
+                                    [ngbTooltip]="constants.viewProctoringReport"></i>
+                                <i class="fa fa-chart-pie pointer m-r-10" (click)="openUserDashboardOperation(user)"
+                                    [ngbTooltip]="constants.viewUserProfile"></i>
+                                <i class="ti-trash text-danger pointer " (click)="deleteUser(user)"
+                                    [ngbTooltip]="constants.delete"></i>
+                            </td>
+                        </tr>
+                        <div *ngIf="!userList?.totalCount" class="result pt-4">
+                            <p>{{constants.noUsersFound}}</p>
+                        </div>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between p-2" *ngIf="userList?.totalCount">
+                    <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="userList?.totalCount"
+                        (pageChange)="loadPage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                        [(ngModel)]="pageSize">
+                        <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                            {{constants.itemsPerPage}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

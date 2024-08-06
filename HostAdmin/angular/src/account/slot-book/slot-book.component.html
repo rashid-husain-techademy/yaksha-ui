@@ -1,0 +1,238 @@
+<div id="book-slot">
+    <header class="p-20">
+        <div class="d-flex justify-content-between align-items-center assessment-title">
+            <h3 class="text-white w-65 m-0 assessment-label text-tenant">
+                {{this.assessmentName}}
+            </h3>
+            <div class="logo text-center w-35 m-0" *ngIf="logoUrl">
+                <img [src]="logoUrl" alt="Logo" class="width-150">
+            </div>
+        </div>
+        <div class="w-50 registration-section" *ngIf="!isslotBooked">
+            <form [formGroup]="bookSlotForm"  novalidate autocomplete="off">
+                <div class="card">
+                    <div class="card-header text-center">
+                        {{constants.slotBookingDetails}}
+                        <div>
+                            {{constants.registrationValidity}} {{this.registrationStartDate}} {{constants.to}} {{this.registrationEndDate}}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="firstName" class="font-weight-bold">
+                                    {{constants.firstName}} <small class="text-danger">*</small>
+                                </label>
+                                <input
+                                    [ngClass]="(isFormValid('firstName') || bookSlotForm.get('firstName').errors?.pattern )? '':'input-error'"
+                                    type="text" class="form-control" id="firstName"
+                                    placeholder={{constants.firstName}} formControlName="firstName">
+                                <small class="form-text text-danger" *ngIf="!isFormValid('firstName')">
+                                    {{constants.firstNameCannotbeEmpty}}
+                                </small>
+                                <small class="form-text text-danger"
+                                    *ngIf="bookSlotForm.get('firstName').errors?.pattern">
+                                    {{constants.pleaseEnterValidFirstName}}
+                                </small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="lastName" class="font-weight-bold">
+                                    {{constants.lastName}} <small class="text-danger">*</small>
+                                </label>
+                                <input
+                                    [ngClass]="(isFormValid('lastName') || bookSlotForm.get('lastName').errors?.pattern )? '':'input-error'"
+                                    type="text" class="form-control" id="lastName"
+                                    placeholder={{constants.lastName}} formControlName="lastName">
+                                <small class="form-text text-danger" *ngIf="!isFormValid('lastName')">
+                                    {{constants.lastNameCannotBeEmpty}}
+                                </small>
+                                <small class="form-text text-danger"
+                                    *ngIf="bookSlotForm.get('lastName').errors?.pattern">
+                                    {{constants.pleaseEnterValidLastName}}
+                                </small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="m-b-0 font-weight-bold">{{constants.selectGender}}  <small class="text-danger">*</small></label>
+                                <ng-multiselect-dropdown  placeholder="Select Gender"
+                                [settings]="singleDropdownSettings" [data]="genders" formControlName="gender">
+                            </ng-multiselect-dropdown>
+                            <small class="form-text text-danger" *ngIf="!isFormValid('gender')">
+                                {{constants.pleaseSelectGender}}
+                             </small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="phone" class="font-weight-bold">
+                                    {{constants.phone}}
+                                    ({{constants.optional}})
+                                </label>
+                                <input class="form-control" type="text" id="phoneNumber"
+                                    formControlName="phoneNumber" placeholder={{constants.phone}}>
+                                <small class="form-text text-danger"
+                                    *ngIf="bookSlotForm.get('phoneNumber').errors?.pattern">
+                                    {{constants.pleaseEnterValidPhoneNumber}}
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="eMail" class="font-weight-bold">
+                                    {{constants.email}} <small class="text-danger">*</small>
+                                </label>
+                                <input
+                                    [ngClass]="(isFormValid('email') || bookSlotForm.get('email').errors?.pattern )? '':'input-error'"
+                                    class="form-control" type="email" id="email" placeholder={{constants.email}}
+                                    formControlName="email">
+                                <small class="form-text text-danger" *ngIf="!isFormValid('email')">
+                                    {{constants.emailCannotBeEmpty}}
+                                </small>
+                                <small class="form-text text-danger"
+                                    *ngIf="bookSlotForm.get('email').errors?.email || bookSlotForm.get('email').errors?.pattern">
+                                    {{constants.pleaseEnterValidEmailAddress}}
+                                </small>
+                            </div>
+                            <div class="col-md-4 ">
+                                <div class="form-group m-r-20 w-100">
+                                    <label for="" class="font-weight-bold">
+                                       {{constants.dateOfBirth}}<label class="text-danger">*</label>
+                                    </label>
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="yyyy-mm-dd" name="dp1"
+                                            formControlName="dateOfBirth" ngbDatepicker [minDate]="minDate" [maxDate]="todayDate"
+                                            #d7="ngbDatepicker">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary no-shadow" (click)="d7.toggle()"
+                                                type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-danger error-text"  *ngIf="bookSlotForm.get('dateOfBirth').errors?.required && bookSlotForm.get('dateOfBirth').touched && !isFormValid('dateOfBirth')">
+                                        {{constants.pleaseEnterValidDateOfBirth}}
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="" class="m-b-0 font-weight-bold">{{constants.selectslot}}  <small class="text-danger">*</small></label>
+                                    <ng-multiselect-dropdown  placeholder="Select Slot"
+                                    [settings]="singleDropdownSettings" [data]="slots" formControlName="slot">
+                                </ng-multiselect-dropdown>
+                                <small class="form-text text-danger" *ngIf="!isFormValid('slot')">
+                                   {{constants.pleaseSelectslot}}
+                                </small>
+                            </div>
+                            <div class="col-md-6 ">
+                                <label for="" class="m-b-0 font-weight-bold">{{constants.selectCenter}}  <small class="text-danger">*</small></label>
+                                <ng-multiselect-dropdown  placeholder="Select Center"
+                                [settings]="singleDropdownSettings" [data]="centers" formControlName="center">
+                            </ng-multiselect-dropdown>
+                            <small class="form-text text-danger" *ngIf="!isFormValid('center')">
+                                {{constants.pleaseSelectCenter}}
+                             </small>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="" class="m-b-0 font-weight-bold">Language</label>
+                                <input type="text" class="form-control" formControlName="language">
+                                <small class="form-text text-danger" *ngIf="!isFormValid('language')">
+                                   {{constant.selectLanguage}}
+                                </small>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label for="" class="m-b-0 font-weight-bold">{{constants.uploadPhoto}}  <small class="text-danger">*</small></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{constants.upload}}</span>
+                                    </div>
+                                    <div class="custom-file" >
+                                        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png" #image
+                                        formControlName="candidatePhoto" (change)="onFileChange($event, 'candidatePhoto')"
+                                           >
+                                        <label class="custom-file-label">{{constants.chooseImage}}</label>
+                                    </div>
+                                </div>
+                                
+                                <small class="form-text text-success text-right" *ngIf="fileName.candidatePhoto">{{ fileName.candidatePhoto }}</small>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="" class="m-b-0 font-weight-bold">{{constants.uploadsignature}}  <small class="text-danger">*</small></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{constants.upload}}</span>
+                                    </div>
+                                    <div class="custom-file" >
+                                        <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png" #image
+                                        formControlName="candidateSignature" (change)="onFileChange($event, 'candidateSignature')"
+                                           >
+                                        <label class="custom-file-label">{{constants.chooseImage}}</label>
+                                    </div>
+                                </div>
+                                <small class="form-text text-success text-right" *ngIf="fileName.candidateSignature">{{ fileName.candidateSignature }}</small>
+                            </div>
+                            <div class="w-100" *ngIf="assessmentDetails?.assessmentScheduleCustomFields">
+                                <div class="d-flex justify-content-between flex-wrap m-b-10" formArrayName="customFields">
+                                <div class="w-48"
+                                    *ngFor="let customField of this.assessmentDetails.assessmentScheduleCustomFields; let i = index;">
+                                    <div [formGroupName]="i">
+                                        <label for="phone" class="font-weight-bold">
+                                            {{customField.fieldLabel}}
+                                            <small *ngIf="customField.isMandatory" class="text-danger">*</small>
+                                            <small *ngIf="!customField.isMandatory">
+                                                ({{constants.optional}})
+                                            </small>
+                                        </label>
+                                        <input class="form-control" type="text" id="customField"
+                                            formControlName="customField" placeholder={{customField.fieldLabel}}>
+
+                                    </div>
+                                    <small class="form-text text-danger" *ngIf="isFormArrayGroupValid(i)">
+                                        {{constants.pleaseEnterValue}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="isFormArrayGroupValidRegularExpresson(i)">
+                                        {{constants.pleaseEnterValidValue}}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-12 d-flex justify-content-between">
+                                <button class="btn btn-info m-auto" (click)="bookSlot()">{{constants.bookSlot}}</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div *ngIf="isslotBooked" class="h-100vh d-flex align-items-center">
+            <div class="register-completed">
+                <h3 class="m-b-35">{{constants.emailHasBeenSuccessfullySentTo}} </h3>
+                <h4 class="m-b-35 user-email">{{userEmail}}</h4>
+                <h3 class="m-b-35">{{constants.pleaseCheckYourMailForFurtherInstructions}} </h3>
+                <button class="btn btn-info " (click)="openResedEmail(resendContent)">{{constants.resendEmail}}</button>
+            </div>
+        </div>
+        <ng-template #resendContent let-modal >
+            <div class="modal-header">		
+                <h4>{{constants.resendEmail}}</h4>	
+                <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                    (click)="modal.dismiss('Cross click')">&times;</span>
+            </div>	
+            <div class="modal-body user-invite-modal">
+                <h3>
+                   {{constants.doYouWantToResendEmail}}
+                </h3>
+                <div class="d-flex align-items-center justify-content-end mt-3">
+                    <button class="btn btn-info mr-3" (click)="modal.close('Close click')">
+                        {{constants.no}}
+                    </button>
+                    <button class="btn btn-info" (click)="resendEmail()">
+                        {{constants.yes}}
+                    </button>
+                </div>
+            </div>	
+            <div class="modal-footer">		
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">{{constants.close}}  
+                </button>	
+            </div>
+    </ng-template> 
+    </header>
+</div>

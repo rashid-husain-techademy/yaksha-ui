@@ -1,0 +1,222 @@
+<div id="assessment-report" *ngIf="userAssessmentProgressDetails" id="contentToConvert">
+    <div class="card header">
+        <div class="card-body p-l-40">
+            <h3 class="page-title m-r-30 assessment-label">
+                {{userAssessmentProgressDetails?.assessmentTitle}}</h3>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="border d-inline-flex align-items-center">
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold m-0">{{userAssessmentProgressDetails?.maxAttempts}}</h5>
+                        <small class="text-muted">{{constants.totalAttempts}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold m-0">{{userAssessmentProgressDetails?.availedAttempts}}</h5>
+                        <small class="text-muted">{{constants.myAttempts}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold m-0">{{userAssessmentProgressDetails?.assessmentDuration}} Mins</h5>
+                        <small class="text-muted">{{constants.totalDuration}}</small>
+                    </div>
+                    <div class="duration border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold m-0">{{userAssessmentDuration}}
+                        </h5>
+                        <small class="text-muted">{{constants.myDuration}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 class="font-weight-bold m-0">{{completionDate}}</h5>
+                        <small class="text-muted">{{constants.completionDate}}</small>
+                    </div>
+                    <div class="p-t-10 p-b-10 p-l-20 p-r-20 text-center">
+                        <h5 *ngIf="!isCompleted" class="font-weight-bold m-0"
+                            [ngClass]="isUserPassed ? 'text-success' : 'text-danger'">
+                            {{isUserPassed ? (constants.pass | uppercase) : (constants.notCleared | uppercase)}}</h5>
+                        <h5 *ngIf="isCompleted" class="font-weight-bold m-0 text-success">
+                            {{constants.completed | uppercase}}</h5>
+                        <small class="text-muted">{{constants.result}}</small>
+                    </div>
+                </div>
+                <div class="w-50 text-right">
+                    <button class="btn btn-outline-info" (click)="htmltoPDF()">{{constants.downloadReport}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-3 border-right">
+                    <div class="d-flex flex-column align-items-center">
+                        <apx-chart [series]="assessmentResultChartOptions?.series"
+                            [plotOptions]="assessmentResultChartOptions?.plotOptions"
+                            [chart]="assessmentResultChartOptions?.chart"
+                            [labels]="assessmentResultChartOptions?.labels" [fill]="assessmentResultChartOptions?.fill">
+                        </apx-chart>
+                        <div *ngIf="!isCompleted" class="m-t-30">{{isUserPassed ? constants.cleared :
+                            constants.notCleared}}</div>
+                        <div *ngIf="isCompleted" class="m-t-30">{{constants.completed}}</div>
+                    </div>
+                </div>
+                <div class="col-3 border-right">
+                    <br />
+                    <span style="float: left;" class="hour-icon">
+                        <i class="fas fa-hourglass me-2" style="font-size:26px"></i>
+                    </span>
+                    <div>
+                        <p class="font-weight-bold mb-0">
+                            {{userAssessmentDuration}}
+                        </p>
+                        <p style="font-size: 10px;">
+                            {{constants.timeUtilized}}
+                        </p>
+                    </div>
+
+
+                    <span style="float: left;" class="hour-icon">
+                        <i class="fas fa-hourglass me-2" style="font-size:26px"></i>
+                    </span>
+                    <div>
+                        <p class="font-weight-bold mb-0">
+                            {{averageQuestionDuration}}
+                        </p>
+                        <p style="font-size: 10px;">
+                            {{constants.averageTimePerQuestion}}
+                        </p>
+                    </div>
+
+                    <span style="float: left;">
+                        <i class="fa fa-question me-2" style="font-size:26px"></i>
+                    </span>
+                    <div>
+                        <p class="font-weight-bold mb-0">
+                            {{userAssessmentProgressDetails?.totalCorrect}} /
+                            {{userAssessmentProgressDetails?.assessmentTotalQuestions}}
+                        </p>
+                        <p style="font-size: 10px;">{{constants.totalCorrectAnswers}}</p>
+                    </div>
+
+                </div>
+                <div class="col-3 border-right">
+                    <br />
+                    <div *ngIf="totalBeginnerQuestions > 0">
+                        <p class="font-weight-bold mb-0">
+                            {{correctBeginnerQuestions}} /
+                            {{totalBeginnerQuestions}}
+                        </p>
+                        <p style="font-size: 10px;">{{constants.beginnerQuestions}}</p>
+                    </div>
+
+                    <div *ngIf="totalIntermediateQuestions > 0">
+                        <p class="font-weight-bold mb-0">
+                            {{correctIntermediateQuestions}} /
+                            {{totalIntermediateQuestions}}
+                        </p>
+                        <p style="font-size: 10px;">{{constants.intermediateQuestions}}</p>
+                    </div>
+
+                    <div *ngIf="totalAdvancedQuestions > 0">
+                        <p class="font-weight-bold mb-0">
+                            {{correctAdvancedQuestions}} /
+                            {{totalAdvancedQuestions}}
+                        </p>
+                        <p style="font-size: 10px;">{{constants.advancedQuestions}}</p>
+                    </div>
+
+                </div>
+                <div class="col-3">
+                    <br />
+                    <div>
+                        <p class="font-weight-bold mb-0">
+                            {{userAssessmentProgressDetails?.totalAnswered}}/{{userAssessmentProgressDetails?.assessmentTotalQuestions}}
+                        </p>
+                        <p style="font-size: 10px;">{{constants.questionsAttempted}}</p>
+                    </div>
+                    <div *ngIf="!userAssessmentProgressDetails?.totalTestCases">
+                        <p class="font-weight-bold mb-0">
+                            {{questionsSkipped}}/{{userAssessmentProgressDetails?.assessmentTotalQuestions}}
+                        </p>
+
+                        <p style="font-size: 10px;">{{constants.questionsSkipped}}</p>
+                    </div>
+                    <div *ngIf="userAssessmentProgressDetails?.totalTestCases">
+                        <p class="font-weight-bold mb-0">
+                            {{userAssessmentProgressDetails?.totalTestCases}}
+                        </p>
+                        <p style="font-size: 10px;">{{constants.totalTestCases}}</p>
+                    </div>
+                    <div *ngIf="!userAssessmentProgressDetails?.totalTestCases">
+                        <p class="font-weight-bold mb-0">
+                            {{userAssessmentProgressDetails?.totalMarkedForReview}}/{{userAssessmentProgressDetails?.assessmentTotalQuestions}}
+                        </p>
+                        <p style="font-size: 10px;">
+                            {{constants.questionsMarkedforReview}}
+                        </p>
+                    </div>
+                    <div *ngIf="userAssessmentProgressDetails?.totalTestCases">
+                        <p class="font-weight-bold mb-0">
+                            {{userAssessmentProgressDetails?.testCasesPassed}}
+                        </p>
+                        <p style="font-size: 10px;">
+                            {{constants.testCasesPassed}}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-weight-bold mb-0">
+                            {{remainingAttempts}}
+                        </p>
+                        <p style="font-size: 10px;">
+                            {{constants.remainingAttempts}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12 card m-p-20">
+                    <h4 class="text-center m-b-30 m-t-20">{{constants.sectionBaseScore}}</h4>
+                    <div class="scores d-flex border-left">
+                        <ng-container *ngFor="let section of sections">
+                            <div class="score-data border-right d-flex flex-column justify-content-between"
+                                [ngStyle]="{'width': section.SectionPercentage+'%'}">
+                                <div class="sections m-t-20 w-100">
+                                    <span class="section-name" [ngbTooltip]="section.SectionName"
+                                        [ngStyle]="{'max-width':'calc(100% - ' + section.SectionPercentage + 'px)'}">{{section.SectionName}}</span>
+                                    <span class="section-score">{{section.TotalScore}}</span>
+                                </div>
+                                <div class="user-score m-b-20" [ngStyle]="{'width': section.EarnedScorePercentage+'%'}">
+                                    <span class="section-score">{{section.UserEarnedScore}}</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12 card m-p-20">
+                    <h4 class="text-center m-b-30 m-t-20">{{constants.skillBaseScore}}</h4>
+                    <div class="row">
+                        <div class="col-md-6 w-40 m-b-40" *ngFor="let skill of skills">
+                            <div
+                                class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                <span class="skill-name">{{skill.SkillName}}</span>
+                                <div class="total">
+                                    <div class="cut-off" [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                        <span class="border-left">
+                                            {{skill.EarnedScorePercentage}}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

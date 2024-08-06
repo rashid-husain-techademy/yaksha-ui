@@ -1,0 +1,64 @@
+<div class="modal-header" appDisableCopy appDisablePaste appDisableRightClick>
+    <h4 class="modal-title" *ngIf="!isDynamicMessageConfirmation">{{ isMoveOtherQuestion ?
+        constants.areYouWantToLeaveThisQuestion :
+        constants.areYouSureYouWantToSubmit }}?</h4>
+    <h4 class="modal-title" *ngIf="isDynamicMessageConfirmation">{{ inputMessage }}</h4>
+    <button class="btn" type="button" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="d-flex justify-content-center align-items-start"
+        *ngIf="!isExecuteAndSubmit && !isSubmitAdaptiveAssessment">
+        <div class="d-flex questions-status flex-column align-items-center justify-content-center"
+            *ngFor="let status of questionsStatus">
+            <div class="confirmation-border" [ngClass]="status.class">
+                <span [ngClass]="status.class">{{status.count > 0 && status.count< 10 ? ("0"+status.count) :
+                        status.count}}</span>
+            </div>
+            <div class="m-t-10">{{status.label}}</div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center" *ngIf="isSubmitAdaptiveAssessment">
+        <span>{{constants.adaptiveSubmissionWithoutProperCompletion}} </span>
+    </div>
+    <div class="m-b-10" *ngIf="isResetQuestion">
+        {{constants.clickOnThe}}&nbsp;<b>{{constants.cancel}}</b>&nbsp;{{constants.buttonToRemainOnTheSameSection}}
+    </div>
+    <div class="m-b-10" *ngIf="isResetQuestion && !isDynamicMessageConfirmation ">
+        {{constants.clickOnThe}}&nbsp;<b>{{constants.leave}}</b>&nbsp;{{constants.buttonToMoveToTheNextQuestionButTheCodeChangesWillBeDiscarded}}
+    </div>
+    <div *ngIf="isResetQuestion && !isDynamicMessageConfirmation && !isMoveOtherQuestion">
+        {{constants.clickOnThe}}&nbsp;<b>{{constants.submitCode}}</b>&nbsp;{{constants.buttonToSubmitTheCodeAndMoveToTheNextQuestionButTheCodeYouSubmittedCannotBeEditedAgain}}
+    </div>
+    <div *ngIf="!isDynamicMessageConfirmation && isMoveOtherQuestion">
+        {{constants.clickOnThe}}&nbsp;<b>{{constants.save}}</b>&nbsp;{{constants.buttonToSaveTheCode}}
+    </div>
+    <div *ngIf="isExecuteAndSubmit && !isResetQuestion">{{constants.codeWillBeSubmittedAndCannotBeEdited}}</div>
+    <div class="d-flex justify-content-center align-items-start final_confiramtion_text_color"
+        *ngIf="!isDynamicMessageConfirmation && !isMoveOtherQuestion">
+        {{constants.questionsThatAreUnreadOrMarkedForReviewWithoutBeingAnsweredWillBeConsideredSkipped}}
+    </div>
+    <div *ngIf="isDynamicMessageConfirmation">
+        {{constants.clickOnThe}}&nbsp;<b>{{constants.confirm}}</b>&nbsp;{{constants.moveToOtherSection}}
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="close()">{{constants.cancel}}</button>
+    <button type="button" class="btn btn-info" *ngIf="isResetQuestion && !isDynamicMessageConfirmation"
+        (click)="leaveQuestion()">
+        {{constants.leave}}
+    </button>
+    <button type="button" class="btn btn-info" *ngIf="!isDynamicMessageConfirmation && isMoveOtherQuestion"
+        (click)="saveAnswer()">
+        {{constants.save}}
+    </button>
+    <button type="button" *ngIf="!isDynamicMessageConfirmation && !isMoveOtherQuestion" class="btn btn-info"
+        (click)="submitAssessment()">
+        {{sourceOfSchedule === constants.techademy ? (isExecuteAndSubmit? constants.submitCode :
+        constants.finalSubmit) : (isExecuteAndSubmit? constants.submitCode :constants.finalSubmit)}}
+    </button>
+    <button type="button" *ngIf="isDynamicMessageConfirmation" class="btn btn-info" (click)="submitAssessment()">
+        {{constants.confirm}}
+    </button>
+</div>

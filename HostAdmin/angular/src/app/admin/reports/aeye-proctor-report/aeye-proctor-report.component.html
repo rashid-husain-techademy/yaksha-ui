@@ -1,0 +1,688 @@
+<div class="profile-report-page">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between">
+            <h1>{{testTakerData?.first_name}} {{testTakerData?.last_name}}</h1>
+            <div>
+                <button type="button" class="btn btn-info" (click)="reviewSession()"><i
+                        class="fa fa-play m-r-10"></i>{{constants.reviewSession}}</button>
+                <button type="button" class="btn btn-info" (click)="downloadPDF()"><i
+                        class="fa fa-download m-r-10"></i>{{constants.downloadPDF}}</button>
+            </div>
+
+        </div>
+
+        <!-- Summary section -->
+        <div class="card mt-20">
+            <div class="card-body">
+                <div class="h3 card-title">{{constants.summary}}</div>
+                <div class="d-flex justify-content-between">
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.candidateName}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.first_name}} {{testTakerData?.last_name}}</h5>
+                    </div>
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.assessment}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.exam_name}}</h5>
+                    </div>
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.proctoringScore}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.proctoring_score}}</h5>
+                    </div>
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.assessmentSchedule}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.start_at | date:'fullDate'}}</h5>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-20">
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.candidateEmail}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.email_id}}</h5>
+                    </div>
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.proctors}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.proctors}}</h5>
+                    </div>
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.proctoringResult}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.proctoring_result}}</h5>
+                    </div>
+                    <div class="w-25">
+                        <small class="text-muted">{{constants.candidateDuration}}</small>
+                        <h5 class="m-b-0">{{testTakerData?.duration}} Minutes</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Violation Section -->
+        <div class="card mt-20">
+            <div class="card-body">
+                <div class="h3 card-title">{{constants.violations}} ({{constants.total}}:{{totalRuleViolations}})</div>
+                <div class="d-flex justify-content-between">
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.safeBrowser}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("safe_browser")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.autoTestAbort}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("auto_test_abort")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.screenCount}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("screen_count")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.lookingaway}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("looking_away")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.pauseExamRequest}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("pause_exam_request")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.voiceDetect}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("voice_detect")}}</h5>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-20">
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.backgroundNoise}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("background_noise")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.roomScanRequest}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("room_scan_request")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.controlDesktopApps}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("control_desktop_apps")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.individualTestTakerSettings}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("individual_test_taker_settings")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.windowSwapRecognition}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("window_swap_recognition")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.manualApproveORReject}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("manual_approve_reject")}}</h5>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-20">
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.falseFace}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("false_face")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.allowProctoringComponents}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("allow_proctoring_components")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.dataCaptureInterval}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("data_capture_interval")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.restrictedObject}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("restricted_object")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.multiplePeople}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("multiple_people")}}</h5>
+                    </div>
+                    <div class="w-16">
+                        <small class="text-muted">{{constants.blankFeed}}</small>
+                        <h5 class="m-b-0">{{getRuleBasedScore("blank_feed")}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Violation Details -->
+        <div class="card mt-20">
+            <div class="card-body">
+                <div class="h3 card-title">{{constants.violationDetails}}</div>
+                <table class="table table-striped border mt-4">
+                    <thead>
+                        <tr>
+                            <th>{{constants.time}}</th>
+                            <th>{{constants.violation}}</th>
+                            <th>{{constants.cameraCapture}}</th>
+                            <th>{{constants.screenCapture}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dataitem of userReports?.results">
+                            <td>{{dataitem.timestamp}}</td>
+                            <td>{{dataitem.alert_title}}</td>
+                            <td>
+                                <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                                <div *ngIf="!dataitem?.media_blob_name"
+                                    class=" d-flex flex-column justify-content-center no-img">
+                                    <i class="fa fa-camera"></i>
+                                    <p>{{constants.imageNotCaptured}}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                                <div *ngIf="!dataitem?.desktop_blob_name"
+                                    class=" d-flex flex-column justify-content-center no-img">
+                                    <i class="fa fa-camera"></i>
+                                    <p>{{constants.imageNotCaptured}}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between p-2" *ngIf="userReports?.count">
+                    <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="userReports?.count"
+                        (pageChange)="loadPage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select auto-width" (change)="changePageSize()" [(ngModel)]="pageSize">
+                        <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                            {{constants.itemsPerPage}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- chat history Section -->
+        <div class="card mt-20" *ngIf="chatHistory?.length">
+            <div class="card-body">
+                <div class="h3 card-title">{{constants.chatHistory}}</div>
+                <div *ngFor="let chat of chatHistory">
+                    <div class="d-flex align-items-end">
+                        <h4 class="m-b-0 p-r-5">{{chat.created_for === constants.proctor ? chat.test_taker_name :
+                            chat.proctor_name}}</h4>
+                        <small class="text-muted ">{{chat.created_at | date:'mediumTime'}}</small>
+                    </div>
+                    <p>{{chat.message_text}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- content to download -->
+<div class="profile-report-page" hidden id="content" #content>
+
+    <!-- Summary section -->
+    <div class="card mt-20">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.summary}}</div>
+            <div class="d-flex justify-content-between">
+                <div class="w-25">
+                    <small class="text-muted">{{constants.candidateName}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.first_name}} {{testTakerData?.last_name}}</h5>
+                </div>
+                <div class="w-25">
+                    <small class="text-muted">{{constants.assessment}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.exam_name}}</h5>
+                </div>
+                <div class="w-25">
+                    <small class="text-muted">{{constants.proctoringScore}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.proctoring_score}}</h5>
+                </div>
+                <div class="w-25">
+                    <small class="text-muted">{{constants.assessmentSchedule}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.start_at}}</h5>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-20">
+                <div class="w-25">
+                    <small class="text-muted">{{constants.candidateEmail}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.email_id}}</h5>
+                </div>
+                <div class="w-25">
+                    <small class="text-muted">{{constants.proctors}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.proctors}}</h5>
+                </div>
+                <div class="w-25">
+                    <small class="text-muted">{{constants.proctoringResult}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.proctoring_result}}</h5>
+                </div>
+                <div class="w-25">
+                    <small class="text-muted">{{constants.candidateDuration}}</small>
+                    <h5 class="m-b-0">{{testTakerData?.duration}} {{constants.timeInMinutes}}</h5>  
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Violation Section -->
+    <div class="card mt-20">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violations}} ({{constants.total}}:{{totalRuleViolations}})</div>
+            <div class="d-flex justify-content-between">
+                <div class="w-16">
+                    <small class="text-muted">{{constants.safeBrowser}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("safe_browser")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.autoTestAbort}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("auto_test_abort")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.screenCount}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("screen_count")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.lookingaway}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("looking_away")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.pauseExamRequest}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("pause_exam_request")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.voiceDetect}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("voice_detect")}}</h5>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-20">
+                <div class="w-16">
+                    <small class="text-muted">{{constants.backgroundNoise}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("background_noise")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.roomScanRequest}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("room_scan_request")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.controlDesktopApps}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("control_desktop_apps")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.individualTestTakerSettings}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("individual_test_taker_settings")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.windowSwapRecognition}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("window_swap_recognition")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.manualApproveORReject}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("manual_approve_reject")}}</h5>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-20">
+                <div class="w-16">
+                    <small class="text-muted">{{constants.falseFace}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("false_face")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.allowProctoringComponents}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("allow_proctoring_components")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.dataCaptureInterval}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("data_capture_interval")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.restrictedObject}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("restricted_object")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.multiplePeople}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("multiple_people")}}</h5>
+                </div>
+                <div class="w-16">
+                    <small class="text-muted">{{constants.blankFeed}}</small>
+                    <h5 class="m-b-0">{{getRuleBasedScore("blank_feed")}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Violation Details -->
+    <div class="card mt-20" *ngIf="contentToDownload?.sec1?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec1">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec2?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec2">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec3?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec3">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec4?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec4">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec5?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec5">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec6?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec6">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec7?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec7">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec8?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec8">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-20" *ngIf="contentToDownload?.sec9?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.violationDetails}}</div>
+            <table class="table table-striped border mt-4">
+                <thead>
+                    <tr>
+                        <th>{{constants.time}}</th>
+                        <th>{{constants.violation}}</th>
+                        <th>{{constants.cameraCapture}}</th>
+                        <th>{{constants.screenCapture}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataitem of contentToDownload?.sec9">
+                        <td>{{dataitem.timestamp}}</td>
+                        <td>{{dataitem.alert_title}}</td>
+                        <td>
+                            <img *ngIf="dataitem?.media_blob_name" [src]="dataitem.media_blob_name">
+                            <div *ngIf="!dataitem?.media_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img *ngIf="dataitem?.desktop_blob_name" [src]="dataitem.desktop_blob_name">
+                            <div *ngIf="!dataitem?.desktop_blob_name"
+                                class=" d-flex flex-column justify-content-center no-img">
+                                <i class="fa fa-camera"></i>
+                                <p>{{constants.imageNotCaptured}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- chat history Section -->
+    <div class="card mt-20" *ngIf="chatHistory?.length">
+        <div class="card-body">
+            <div class="h3 card-title">{{constants.chatHistory}}</div>
+            <div *ngFor="let chat of chatHistory">
+                <div class="d-flex align-items-end">
+                    <h4 class="m-b-0">{{chat.created_for === constants.proctor ? chat.test_taker_name :
+                        chat.proctor_name}}</h4>
+                    <small class="text-muted ">{{chat.created_at | date:'mediumTime'}}</small>
+                </div>
+                <p>{{chat.message_text}}</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+.dark-logo,
+.light-logo {
+    max-width: 115px;
+    height:45px;
+
+    @media screen and (min-width:1024px) {
+        margin-left: 10px;
+    }
+
+    &.custom-logo {
+        max-width: 200px;
+
+        @media screen and (min-width:1024px) {
+            margin-left: 10px;
+        }
+    }
+
+}
+
+.page-wrapper-fs {
+    padding-top: 0;
+}
+
+.topbar {
+    height: 68px;
+}
+
+.footer {
+    padding: 10px;
+
+    p {
+        font-size: 14px;
+        margin: auto 0;
+    }
+
+    .col-auto {
+        display: inherit;
+
+        a {
+            color: inherit;
+            cursor: pointer;
+        }
+    }
+
+    .col-auto:not(:last-child)::after {
+        content: '|';
+    }
+}

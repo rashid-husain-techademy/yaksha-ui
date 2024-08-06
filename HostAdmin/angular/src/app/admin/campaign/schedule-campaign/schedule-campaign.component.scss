@@ -1,0 +1,15 @@
+.w-30 {
+    width: 30%;
+}
+
+.test-link {
+    position: relative;
+
+    .far {
+        position: absolute;
+        z-index: 1;
+        cursor: pointer;
+        right: 15px;
+        bottom: 12px;
+    }
+}

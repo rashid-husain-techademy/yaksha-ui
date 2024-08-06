@@ -1,0 +1,185 @@
+<div id="review-candidate" appDisableCopy appDisablePaste appDisableRightClick>
+
+    <div class="card">
+        <div *ngIf="candidateInfo" class="card-body">
+            <h3>{{candidateInfo.firstName}} {{candidateInfo.lastName}}</h3>
+            <h5>{{candidateInfo.emailAddress}}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="border d-inline-flex">
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-info m-0">{{candidateInfo.attempt}}</h5>
+                        <small class="text-muted">{{constants.attempts}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-info m-0">{{formattedDateTime(candidateInfo.submissionDate)}}</h5>
+                        <small class="text-muted">{{constants.submissionDate}}</small>
+                    </div>
+                    <div class="p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 *ngIf="candidateInfo.evaluationStatus == reviewStatus.Pending" class="text-warning m-0">
+                            {{constants.pending}}</h5>
+                        <h5 *ngIf="candidateInfo.evaluationStatus == reviewStatus.Completed" class="text-success m-0">
+                            {{constants.reviewed}}</h5>
+                        <small class="text-muted">{{constants.status}}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div *ngIf="currentQuestion" class="card-body">
+            <div class="question m-b-10 p-b-10 border-bottom" appDisableCopy appDisableRightClick appDisableSelect>
+                <div class="row">
+                    <div class="col-md-10">
+                        <h4 class="m-b-10">{{constants.question}}</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <div *ngIf="currentQuestion.questionTypeId === constants.subjectiveId && currentQuestion.rubrixUrl"
+                            class="rubrix m-b-10 p-b-10" appDisableCopy appDisableRightClick appDisableSelect>
+                            <a [href]="currentQuestion.rubrixUrl"><span class="label"><i class="fa fa-download"></i>
+                                    {{constants.downloadRubrix}}
+                                </span></a>
+                        </div>
+                    </div>
+                </div>
+                <span [innerHTML]="currentQuestion.questionText" class="question-content"></span>
+            </div>
+            <div class="answer m-b-10 p-b-10 border-bottom">
+                <div class="d-flex justify-content-between align-items-center m-b-10">
+                    <h4 class="m-0">{{constants.candidatesSubmission}}</h4>
+                </div>
+                <div class="uploaded-view">
+                    <!-- Coding question -->
+                    <div *ngIf="currentQuestion.questionTypeId === constants.codingId && currentQuestion.answer"
+                        class="w-70 p-l-20">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <span class="m-r-10">{{constants.language}}</span>
+                                    <select class="form-control form-width-200" [disabled]="true">
+                                        <option [value]="currentQuestion.language">
+                                            {{currentQuestion.language}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <ngx-monaco-editor #editor [options]="editorOptions"
+                                    [(ngModel)]="currentQuestion.answer" (onInit)="onInitEditor($event)">
+                                </ngx-monaco-editor>
+                                <!-- Input / Output -->
+                                <div class="d-flex justify-content-between p-l-10 p-r-10">
+                                    <div class="w-50 p-r-10">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold m-0">{{constants.input}}</label>
+                                            <textarea rows="3" class="form-control" [(ngModel)]="input"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="w-100" [ngClass]="isSqlQuestion ? 'w-100' : 'w-50 p-l-10'">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold m-0">{{constants.output}}</label>
+                                            <textarea rows="3" class="form-control" ([ngModel])="output"
+                                                [value]="output"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-flex align-items-center justify-content-center mt-2 mb-2">
+                                    <button type="button" class="btn btn-info btn-sm m-r-20" (click)="compileAndRun()">
+                                        {{constants.compileAndRun}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subjective text question -->
+                    <div
+                        *ngIf="currentQuestion.questionTypeId === constants.subjectiveId && !currentQuestion.isSubjectiveUrl && currentQuestion.answer">
+                        <span [innerHTML]="subjectiveText | safeHtml"></span>
+                    </div>
+                    <!-- Subjective file submission -->
+                    <div *ngIf="currentQuestion.isSubjectiveUrl && currentQuestion.answer">
+                        <div *ngFor="let subjectiveAnswer of subjectiveAnswerList">
+                            <a (click)="goToLink(subjectiveAnswer.answer);"><span class="label"><i
+                                        class="fa fa-download"></i>
+                                    {{truncate(subjectiveAnswer.fileName)}}
+                                </span></a>
+                        </div>
+                    </div>
+                    <div *ngIf="currentQuestion.answer == null">
+                        {{constants.noSubmissionFoundForThisQuestion}}
+                    </div>
+                </div>
+            </div>
+            <div class="m-b-15 p-b-15 border-bottom"
+                *ngIf="currentQuestion.questionTypeId === constants.subjectiveId && currentQuestion.rubrixUrl">
+                <div [class.disabled]="isEvaluated">
+                    <div class="disable-overlay"></div>
+                    <input type="file" id="rubrixUpload" #rubrixInput hidden accept=".xls,.xlsx"
+                        (change)="onRubrixFileUpload($event.target.files)">
+                    <div class="d-flex justify-content-between align-items-center m-b-10">
+                        <h4 class="m-0">{{constants.uploadRubrixFile}}</h4>
+                    </div>
+                    <label for="rubrixUpload"
+                        class="border d-flex flex-column justify-content-center align-items-center p-20 h-120"
+                        appDragDrop (onFileDropped)="onRubrixFileUpload($event)">
+                        <span class="text-muted">{{constants.dragAndDropFile}}</span>
+                    </label>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="w-50">
+                        <small class="text-muted">{{constants.xlsAndxlsxFileareAccepted}}</small>
+                    </div>
+                    <div *ngIf="rubrixFile">
+                        <small class="file label-rounded label-primary" [ngbTooltip]="rubrixFile?.name">
+                            <span>{{rubrixFile?.name}}</span>
+                            <span aria-hidden="true" class="pointer" [style]="isEvaluated ? '' : 'cursor: pointer;'"
+                                (click)="removeRubrix()">
+                                &times;</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-secondary" type="button" [disabled]="!showPreviousQuestion"
+                    (click)="previousQuestion()">{{constants.prev}}</button>
+                <div class="d-flex justify-content-end footer">
+                    <div class="m-r-20">
+                        <label class="font-weight-bold"><span class="text-danger">{{constants.maxScore}}
+                                {{constants.totalPercentage}}</span></label>
+                        <div class="Inputbox">
+                            <input type="number" class="form-control score" [(ngModel)]="score"
+                                (ngModelChange)="validateScore(score)" [value]="score" [disabled]="isEvaluated" min="0"
+                                max="{{constants.totalPercentage}}" placeholder="Score"
+                                onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="0">
+                        </div>
+                        <div class="error">
+                            <small class="field-required" *ngIf="isScoreEmpty">
+                                {{reviewValidationMessages.pleaseEnterTheScore}}
+                            </small>
+                            <small class="field-required" *ngIf="isScoreExceeds">
+                                {{reviewValidationMessages.scoreShouldNotExceedMaximumScore}}
+                            </small>
+                            <small class="field-required" *ngIf="isScoreNegative">
+                                {{reviewValidationMessages.scoreShouldNotbeNegative}}
+                            </small>
+                        </div>
+                    </div>
+                    <button class="btn btn-info btntop" type="button"
+                        [disabled]="!showNextQuestion || (currentQuestion.rubrixUrl && !rubrixFile)"
+                        (click)="nextQuestion()">{{constants.next}}</button>
+                    <fieldset *ngIf="showRetry && !isEvaluated" class="checkbox m-r-20">
+                        <label class="font-weight-bold checkboxretrytop">
+                            <input type="checkbox" #retry (change)="toggleRetry(retry.checked)"> {{constants.retry}}
+                            ({{questionsToReview.totalAttempts - candidateInfo.attempt}})
+                        </label>
+                    </fieldset>
+                    <button *ngIf="enableSubmit && !isEvaluated" class="btn btn-info btntop" type="button"
+                        (click)="submit()"
+                        [disabled]="currentQuestion.rubrixUrl && !rubrixFile">{{constants.submit}}</button>
+                    <button *ngIf="enableSubmit && isEvaluated" class="btn btn-info btntop" type="button"
+                        (click)="backToCandidates()">{{constants.back}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+﻿.buttons {
+    padding: 10px 40px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    border-radius: 3px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    overflow: hidden !important;
+    border: none !important;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2) !important;
+    max-width: 250px;
+    text-overflow: ellipsis;
+}
+
+.buttons.sml-btn {
+    padding: 0 20px !important;
+}
+
+.buttons:after {
+    content: "" !important;
+    position: absolute !important;
+    width: 500% !important;
+    height: 0% !important;
+    z-index: -1 !important;
+    left: 50% !important;
+    top: 50% !important;
+    -webkit-transition: all 300ms ease;
+    -moz-transition: all 300ms ease;
+    -o-transition: all 300ms ease;
+    transition: all 300ms ease;
+    -moz-transform: translateX(-50%) translateY(-50%) rotate(25deg);
+    -ms-transform: translateX(-50%) translateY(-50%) rotate(25deg);
+    -webkit-transform: translateX(-50%) translateY(-50%) rotate(25deg);
+    transform: translateX(-50%) translateY(-50%) rotate(25deg);
+}
+
+.buttons:hover:after {
+    height: 500% !important;
+}
+
+.buttons.primary-btn {
+    background-color: #0071bc !important;
+    color: white !important;
+}
+
+.buttons.primary-btn:after {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.buttons.secondary-btn {
+    background-color: #ccc !important;
+    color: black !important;
+}
+
+.buttons.secondary-btn:after {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.popup-header {
+    border-bottom: 1px solid #CCC;
+    margin-bottom: 30px;
+}
+
+.popup-header h3 {
+    font-size: 25px;
+    text-transform: uppercase;
+    font-weight: 300;
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.popup-header .popup-close {
+    position: relative;
+    top: -10px;
+}
+
+.popup-content .btn-border {
+    border-top: 1px solid #ccc;
+}
+
+::ng-deep ngx-recaptcha2 div div div div iframe {
+    display: block !important;
+}
+
+.tenant .btn-info {
+    color: #fff;
+    background-color: #607d8b;
+    border-color: #607d8b;
+}
+
+.tenant .btn-info:hover {
+    color: #fff;
+    background-color: #607d8b;
+    border-color: #607d8b;
+}

@@ -1,0 +1,82 @@
+.custom-file-label::after {
+    background-color: #727B84;
+    color           : #ffffff;
+}
+
+.label {
+    padding  : 4px 10px;
+    font-size: 14px;
+}
+
+.icon-text-primary {
+    i {
+        color: #7460ee;
+    }
+
+    .label {
+        color: #7460ee;
+    }
+}
+
+.support-text {
+    .text-muted {
+        font-size: 12px;
+    }
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.custom-file .custom-file-input {
+    cursor: pointer;
+}
+
+.modal-body {
+    max-height: 65vh;
+    overflow  : auto;
+}
+
+.label-secondary {
+    background-color: #727B84;
+}
+
+.error-list {
+    ol {
+        li {
+            font-size: 14px;
+        }
+    }
+}
+
+.profilepicture
+{
+    margin-left: 80px;
+    background:#ededed;
+    padding: 5px;
+    height: 300px;
+    width: 300px;
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Style for each file item */
+  .label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #717172;
+    font-size: 14px;
+  }
+  
+  /* Style for the remove button */
+  .label .remove-button {
+    margin-left: 8px;
+    cursor: pointer;
+    color: #ffffff;
+  }

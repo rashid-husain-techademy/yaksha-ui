@@ -1,0 +1,136 @@
+#verify-questions {
+    .w-48 {
+        width: 48%;
+        min-width: 48%;
+        max-width: 48%;
+    }
+
+    .w-50 {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .w-60 {
+        width: 60%;
+        min-width: 60%;
+        max-width: 60%;
+    }
+
+    button {
+        max-width: 200px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        margin-bottom: 0px;
+    }
+
+    .card {
+        position: relative;
+
+        .actions {
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1;
+        }
+    }
+
+    .w-40 {
+        width: 40%;
+        min-width: 40%;
+        max-width: 40%;
+    }
+}
+
+.m-r-5 {
+    margin-right: 5px;
+}
+
+.btn-60 {
+    min-width: 50px;
+    max-width: 50px;
+}
+
+.status {
+    line-height: 5;
+    width: 100% !important;
+    top: 80px !important;
+}
+
+.m-b-50 {
+    margin-bottom: 50px !important;
+}
+
+.p-0 {
+    padding: 0px !important;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.button-max-width {
+    max-width: 150px !important;
+}
+
+.skill-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 250px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.skill-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 40px;
+    top: 5px;
+    font-weight: bolder;
+}
+
+.subSkill-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 170px !important;
+    overflow: hidden;
+}
+
+.subSkill-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 40px;
+    top: 5px;
+    font-weight: bolder;
+}
+
+.btn-min-width {
+    min-width: 44px;
+}
+
+.background-accepted {
+    background: #e0ff99;
+}
+
+.background-suggested {
+    background: #ffd891;
+}
+
+.background-pending {
+    background: #d6e4ff;
+}
+
+.background-rejected {
+    background: #ffb5b5;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.review-panel {
+    height: 200px;
+    overflow: auto;
+}

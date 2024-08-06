@@ -1,0 +1,813 @@
+.border {
+    padding: 5px 15px;
+    margin: 10px 15px;
+    border: 10px solid black;
+}
+
+.margin {
+    padding: 10px;
+    margin: 5px;
+}
+
+
+$borderWidth : 5px;
+$animationTime : .5s;
+$border-color-default: #efefef;
+$border-color-fill : #ffb43e;
+$size : 160px;
+$howManySteps : 100; //this needs to be even. 
+
+.progress1 {
+    width: $size;
+    height: $size;
+    line-height: $size;
+    background: none;
+    margin: 0 auto;
+    box-shadow: none;
+    position: relative;
+
+    &:after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: $borderWidth solid $border-color-default;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    >span {
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        z-index: 1;
+    }
+
+    .progress-left1 {
+        left: 0;
+    }
+
+    .progress-bar1 {
+        width: 100%;
+        height: 100%;
+        background: none;
+        border-width: $borderWidth;
+        border-style: solid;
+        position: absolute;
+        top: 0;
+        border-color: $border-color-fill;
+    }
+
+    .progress-left1 .progress-bar1 {
+        left: 100%;
+        border-top-right-radius: ($size/2);
+        ;
+        border-bottom-right-radius: ($size/2);
+        ;
+        border-left: 0;
+        -webkit-transform-origin: center left;
+        transform-origin: center left;
+    }
+
+    .progress-right1 {
+        right: 0;
+
+        .progress-bar1 {
+            left: -100%;
+            border-top-left-radius: ($size/2);
+            ;
+            border-bottom-left-radius: ($size/2);
+            ;
+            border-right: 0;
+            -webkit-transform-origin: center right;
+            transform-origin: center right;
+        }
+    }
+
+    .progress-value1 {
+        display: flex;
+        border-radius: 50%;
+        font-size: 1rem;
+        text-align: center;
+        line-height: 20px;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        font-weight: 300;
+
+        span {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+    }
+}
+
+.top-space {
+    margin-top: 25px;
+}
+
+/* This for loop creates the necessary css animation names 
+Due to the split circle of progress-left and progress right, we must use the animations on each side. 
+*/
+@for $i from 1 through $howManySteps {
+    $stepName: (
+        $i*(100 / $howManySteps)
+    );
+
+//animation only the left side if below 50%
+@if $i <=($howManySteps/2) {
+    .progress1[data-percentage="#{$stepName}"] {
+        .progress-right1 .progress-bar1 {
+            animation: loading-#{$i} $animationTime linear forwards;
+        }
+
+        .progress-left1 .progress-bar1 {
+            animation: 0;
+        }
+    }
+}
+
+//animation only the right side if above 50%
+@if $i>($howManySteps/2) {
+    .progress1[data-percentage="#{$stepName}"] {
+        .progress-right1 .progress-bar1 {
+            animation: loading-#{($howManySteps/2)} $animationTime linear forwards; //set the animation to longest animation
+        }
+
+        .progress-left1 .progress-bar1 {
+            animation: loading-#{$i - ($howManySteps/2)} $animationTime linear forwards $animationTime;
+        }
+    }
+}
+}
+
+//animation
+@for $i from 1 through ($howManySteps/2) {
+    $degrees: (
+        180/($howManySteps/2)
+    );
+$degrees: (
+    $degrees*$i
+);
+
+@keyframes loading-#{$i} {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate($degrees);
+        transform : rotate(#{$degrees}deg);
+    }
+}
+}
+
+.card {
+    .card-body {
+        h3 {
+            display: block;
+            line-height: 16px;
+        }
+    }
+}
+
+.questions-section .card {
+    width: 33%;
+}
+
+.scores {
+    height: 120px;
+    position: relative;
+
+    .score-data {
+        height: 120px;
+    }
+
+    .sections,
+    .user-score {
+        height: 10px;
+        position: relative;
+
+        .section-name,
+        .section-score {
+            position: absolute;
+            z-index: 1;
+            font-size: 0.9em;
+        }
+
+        .section-name {
+            top: -22px;
+            left: 3px;
+            cursor: pointer;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .section-score {
+            bottom: -22px;
+            left: 3px;
+            min-width: 50px;
+        }
+    }
+
+    .sections {
+        background-color: #009EFB;
+    }
+
+    .user-score {
+        background-color: #57CD64;
+    }
+}
+
+.score-bar {
+    position: inherit;
+    height: 50px;
+    font-size: 12px;
+    width: 90% !important;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        left: -11px;
+        z-index: 1;
+    }
+
+    &::after {
+        position: absolute;
+        top: 0;
+        right: -33px;
+        z-index: 1;
+        content: '100%';
+    }
+
+    .skill-name {
+        position: relative;
+        top: 0;
+    }
+
+    .total {
+        height: 8px;
+        background-color: #e7e4e4;
+        position: relative;
+
+        .cut-off {
+            height: 8px;
+            background-color: #57CD64;
+            position: relative;
+
+            span {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                left: 100%;
+                height: 50px;
+                padding-right: 6px;
+                padding-top: 33px;
+            }
+        }
+    }
+}
+
+.score-bar-adaptive {
+    position: inherit;
+    height: 50px;
+    font-size: 12px;
+    width: 90% !important;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        left: -11px;
+        z-index: 1;
+    }
+
+    &::after {
+        position: absolute;
+        top: 0;
+        right: -33px;
+        z-index: 1;
+    }
+
+    .total {
+        height: 8px;
+        background-color: #e7e4e4;
+        position: relative;
+
+        .cut-off {
+            height: 8px;
+            background-color: #57CD64;
+            position: relative;
+
+            span {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                left: 100%;
+                height: 50px;
+                padding-right: 6px;
+                padding-top: 33px;
+            }
+        }
+    }
+
+    .skill-name {
+        position: relative;
+        top: 0;
+    }
+
+    .skill {
+        position: relative;
+        top: 0;
+
+        .skill-total-percentage {
+            position: relative;
+            left: 100%;
+            bottom: 25px;
+        }
+    }
+}
+
+.mb-0 {
+    margin-bottom: 0px;
+}
+
+.font-weight-bold {
+    font-weight: 600;
+}
+
+.font-size-12 {
+    font-size: 12px;
+}
+
+.border-radius-5 {
+    border-radius: 5px;
+}
+
+.border-left {
+    border-left: 1px solid;
+}
+
+.border-right {
+    border-right: 1px solid;
+}
+
+.margin-div {
+    margin: 30px 0px !important;
+}
+
+.p-0 {
+    padding: 0px;
+}
+
+.background-white {
+    background: white;
+}
+
+.padding-div {
+    padding: 20px 25px !important;
+}
+
+.mat-expansion-panel-body {
+    padding: 0 0px 0px !important;
+}
+
+.m-p-20 {
+    margin-bottom: 0;
+    padding-bottom: 20px;
+}
+
+.notapplicable {
+    color: #ffb43e;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+.me-4 {
+    margin-right: 1rem !important;
+}
+
+.fb-profile {
+    width: 30px;
+    border-radius: 50px;
+    border: 1px solid;
+    padding: 5px 10px;
+    border: 1px solid #3b5998 !important;
+    color: #3b5998 !important;
+}
+
+.fb-profile:hover {
+    width: 30px;
+    border-radius: 50px;
+    border: 1px solid;
+    padding: 5px 10px;
+    background: #3b5998;
+    color: #fff !important;
+}
+
+.twitter-profile {
+    width: 30px;
+    border-radius: 50px;
+    border: 1px solid;
+    padding: 5px 7px;
+    border: 1px solid #1DA1F2 !important;
+    color: #1DA1F2 !important;
+}
+
+.twitter-profile:hover {
+    width: 30px;
+    border-radius: 50px;
+    border: 1px solid;
+    padding: 5px 7px;
+    background: #1DA1F2;
+    color: #fff !important;
+}
+
+.linkedin-profile {
+    width: 30px;
+    border-radius: 50px;
+    border: 1px solid;
+    padding: 5px 8px;
+    border: 1px solid #0e76a8 !important;
+    color: #0e76a8 !important;
+}
+
+.hour-icon {
+    position: relative;
+    top: 8px
+}
+
+.linkedin-profile:hover {
+    width: 30px;
+    border-radius: 50px;
+    border: 1px solid;
+    padding: 5px 8px;
+    background: #0e76a8;
+    color: #fff !important;
+}
+
+.question-skipped {
+    color: #ffa400;
+}
+
+.question-marked {
+    color: #ff2900;
+}
+
+.m-b-40 {
+    margin-bottom: 40px;
+}
+
+.custom-image {
+    width: 120px;
+    vertical-align: middle;
+    padding: 10px 10px;
+    border-radius: 50%;
+    background: #ededed;
+    margin-left: 20px;
+}
+
+.margin-top {
+    margin-top: 5px;
+}
+
+.toggle-desc .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0 0 !important;
+}
+
+
+.w-40 {
+    width: 40%;
+}
+
+.w-30 {
+    width: 30%;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.w-70 {
+    width: 70%;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.question-height {
+    min-height: 100vh;
+}
+
+.question-height .card-body {
+    height: 100vh;
+    overflow: auto;
+}
+
+.light {
+    background-color: white;
+    color: black !important;
+    border-radius: 5px;
+}
+
+.dark {
+    background-color: #565656;
+    color: #fff !important;
+    border-radius: 5px;
+}
+
+ngx-monaco-editor {
+    min-height: 200px !important;
+    max-height: 200px !important;
+}
+
+.form-width-200 {
+    width: 200px;
+}
+
+.test-cases {
+    .title {
+        margin: 5px 5px 10px 5px;
+    }
+
+    .collapse.show .card-body {
+        background-color: #efefef !important;
+    }
+
+    .content {
+        .tags p {
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 0.5rem;
+        }
+
+        .execute {
+            margin: 0.5rem 0.2rem 0.2rem 0.2rem;
+        }
+
+        .input-output {
+            position: relative;
+            top: 22px;
+        }
+    }
+
+    .table-borderless {
+        th {
+            padding: 0px 0 5px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0;
+        }
+
+        thead {
+            th {
+                font-weight: 400;
+                font-style: italic;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .btn:focus {
+        box-shadow: none !important;
+    }
+
+    .btn-link {
+        color: #009efb !important;
+    }
+
+    .success {
+        color: #30a63e;
+    }
+
+    .danger {
+        color: #f62d51;
+    }
+}
+
+ngx-monaco-editor.ng-untouched.ng-pristine.ng-valid {
+    width: 100% !important;
+}
+
+.text {
+    white-space: pre-line;
+}
+
+.monaco-editor {
+    width: 100% !important;
+}
+
+.box-width {
+    width: 135px;
+}
+
+.indentation {
+    white-space: pre-wrap;
+}
+
+.custom-font {
+    font-weight: bold;
+    color: #009efb;
+    padding-left: 16px;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.sfa-code {
+    border-style: solid;
+    padding: 5px;
+    margin: 5px;
+}
+
+.overflowVisible {
+    overflow: visible !important;
+}
+
+.email-text-wrap {
+    overflow-wrap: break-word !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.left-div {
+    background-color: white;
+    border: 1px solid #9d9d9d;
+    border-radius: 5px;
+}
+
+.font-26 {
+    font-size: 26px;
+}
+
+.font-10 {
+    font-size: 10px;
+}
+
+.left-float {
+    float: left;
+}
+
+.width-percent-100 {
+    width: 100%;
+}
+
+.title-style {
+    background-color: #f2f3f4;
+    padding: 10px 0px 10px 0px;
+}
+
+.background-white {
+    background: #f2f3f3;
+}
+
+.word-wrap {
+    word-wrap: break-word;
+}
+
+.proficiency-level {
+    width: 100% !important;
+    height: 350px;
+}
+
+.proficiency-chart-height {
+    height: 500px;
+}
+
+.assessment-text-wrap {
+    white-space: pre-wrap !important;
+}
+
+.p-t-0 {
+    padding-top: 0;
+}
+
+.plagiarism-label-font {
+    font-size: small;
+    font-weight: 600;
+}
+
+.plagiarismScore-yfont {
+    color: #ffb43e;
+    font-weight: 500;
+}
+
+.plagiarismScore-rfont {
+    color: #d12e2e;
+    font-weight: 500;
+}
+
+.m-l-2 {
+    margin-left: 2px;
+}
+
+.mfa-plagiarismScore {
+    font-size: 11px;
+    text-align: center;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.m-b-5 {
+    margin-bottom: 5px !important;
+}
+
+.progress-value2 {
+    padding-top: 40px;
+}
+
+.mfa-plagiarismScore-yfont {
+    color: #ffb43e;
+    font-weight: 600;
+}
+
+.mfa-plagiarismScore-rfont {
+    color: #d12e2e;
+    font-weight: 600;
+}
+
+.m-l-10 {
+    margin-left: 10px;
+}
+
+.m-t-m20 {
+    margin-top: -20px;
+}
+
+.m-tb-10 {
+    margin: 10px 0px 16px 0px;
+}
+
+.label {
+    color: cornflowerblue;
+    font-size: medium;
+}
+
+.w-27 {
+    width: 27%;
+}
+
+.catalogcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 170px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.catalogcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 41px;
+    top: 6px;
+    font-weight: bolder;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.w-14 {
+    width: 14%;
+}
+
+.w-13 {
+    width: 13%;
+}
+
+.p-lr-1 {
+    padding: 0px 4px;
+}
+
+.bar-chart-container {
+    margin-left: 8rem;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.b-r-5 {
+    border: 1px solid #e9ecef;
+    border-bottom: none;
+    padding: 5px;
+}
+
+.table-container {
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+}

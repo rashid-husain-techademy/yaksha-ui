@@ -1,0 +1,136 @@
+<div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+    *ngIf="isRegistrationLinkValid && scheduleDetail"
+    style="background:url(assets/images/background/login-register.jpg) no-repeat; background-size: cover;">
+    <div class="auth-box m-3 m-md-0 w-600">
+        <div id="hackathonForm">
+            <div class="logo">
+                <span class="db">
+                    <img *ngIf="scheduleDetail.tenantLogoUrl" [src]="scheduleDetail.tenantLogoUrl">
+                    <img *ngIf="!scheduleDetail.tenantLogoUrl" src="assets/images/yaksha-logo.png">
+                </span>
+            </div>
+            <div class="col-12 d-flex flex-column align-items-center justify-content-center" *ngIf="!isRegistered">
+                <div class="pt-30">
+                    <span class="fw-600">{{constants.welcomeToYaksha}}</span>
+                    <span>- {{constants.hackathonRegistation}}</span>
+                </div>
+                <form class="form-horizontal m-t-20 col-12" [formGroup]="assessmentRegisterForm" novalidate
+                    autocomplete="off">
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="firstName" class="font-weight-bold">
+                                {{constants.firstName}} <small class="text-danger">*</small>
+                            </label>
+                            <input matInput type="text" [ngClass]="(isFormValid('firstName') || assessmentRegisterForm.get('firstName').errors?.pattern) ? ''
+                            :'input-error'" class="form-control" [placeholder]="constants.firstName"
+                                aria-label="firstName" aria-describedby="basic-addon1" formControlName="firstName">
+                            <small class="form-text text-danger" *ngIf="!isFormValid('firstName')">
+                                {{constants.firstNameCannotbeEmpty}}
+                            </small>
+                            <small class="form-text text-danger"
+                                *ngIf="assessmentRegisterForm.get('firstName').errors?.pattern">
+                                {{constants.pleaseEnterValidFirstName}}
+                            </small>
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="lastName" class="font-weight-bold">
+                                {{constants.lastName}} <small class="text-danger">*</small>
+                            </label>
+                            <input matInput type="text"
+                                [ngClass]="(isFormValid('lastName') || assessmentRegisterForm.get('lastName').errors?.pattern )? '':'input-error'"
+                                class="form-control" [placeholder]="constants.lastName" aria-label="lastName"
+                                aria-describedby="basic-addon1" formControlName="lastName">
+                            <small class="form-text text-danger" *ngIf="!isFormValid('lastName')">
+                                {{constants.lastNameCannotBeEmpty}}
+                            </small>
+                            <small class="form-text text-danger"
+                                *ngIf="assessmentRegisterForm.get('lastName').errors?.pattern">
+                                {{constants.pleaseEnterValidLastName}}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="email" class="font-weight-bold">
+                                {{constants.email}} <small class="text-danger">*</small>
+                            </label>
+                            <input matInput type="email"
+                                [ngClass]="(isFormValid('email') || assessmentRegisterForm.get('email').errors?.pattern )? '':'input-error'"
+                                class="form-control" [placeholder]="constants.email" aria-label="email"
+                                aria-describedby="basic-addon1" formControlName="email"
+                                pattern="^[\w']+([\.'-]?[\w']+)*@\w+([\.-]?\w+)*(\.\w{1,}\w+)+$">
+                            <small class="form-text text-danger" *ngIf="!isFormValid('email')">
+                                {{constants.emailCannotBeEmpty}}
+                            </small>
+                            <small class="form-text text-danger"
+                                *ngIf="assessmentRegisterForm.get('email').errors?.email || assessmentRegisterForm.get('email').errors?.pattern">
+                                {{constants.pleaseEnterValidEmailAddress}}
+                            </small>
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="phoneNumber" class="font-weight-bold">
+                                {{constants.phone}}
+                                ({{constants.optional}})
+                            </label>
+                            <input matInput type="text" class="form-control" [placeholder]="constants.phone"
+                                aria-label="phone" aria-describedby="basic-addon1" formControlName="phoneNumber">
+                            <small class="form-text text-danger"
+                                *ngIf="assessmentRegisterForm.get('phoneNumber').errors?.pattern">
+                                {{constants.pleaseEnterValidPhoneNumber}}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="scheduleDetail.scheduleCustomFields">
+                        <div class="d-flex flex-wrap col-12 p-lr-0" formArrayName="customFields">
+                            <div class="mb-3 col-6"
+                                *ngFor="let customField of scheduleDetail.scheduleCustomFields; let i = index;">
+                                <div [formGroupName]="i">
+                                    <label for="phone" class="font-weight-bold">
+                                        {{customField.fieldLabel}}
+                                        <small *ngIf="customField.isMandatory" class="text-danger">*</small>
+                                        <small *ngIf="!customField.isMandatory" class="font-weight-bold">
+                                            ({{constants.optional}})
+                                        </small>
+                                    </label>
+                                    <input class="form-control" type="text" id="customField"
+                                        formControlName="customField" placeholder={{customField.fieldLabel}}>
+                                </div>
+                                <small class="form-text text-danger" *ngIf="isFormArrayGroupValid(i)">
+                                    {{constants.pleaseEnterValue}}
+                                </small>
+                                <small class="form-text text-danger" *ngIf="isFormArrayGroupValidRegularExpresson(i)">
+                                    {{constants.pleaseEnterValidValue}}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row border-top">
+                        <div *ngIf="!disableCaptcha" class="col-6 m-t-20">
+                            <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" [size]="size" [hl]="lang" [theme]="theme"
+                                [type]="type" formControlName="recaptcha">
+                            </ngx-recaptcha2>
+                        </div>
+                        <div class="form-group text-center"
+                            class="col-6 d-flex align-items-end justify-content-end m-t-20">
+                            <button type="button" class="btn btn-block btn-info" mat-raised-button aria-label="register"
+                                [disabled]="isDisableRegister" (click)="validateFormData()">
+                                {{constants.register}}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 d-flex flex-column align-items-center justify-content-center" *ngIf="isRegistered">
+                <div class="inst">
+                    {{constants.emailHasBeenSentSucessfullyTo}}
+                </div>
+                <div class="email">
+                    {{userData.emailAddress}}
+                </div>
+                <div class="inst">
+                    {{constants.pleaseCheckYourEmailForFurtherInstructions}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

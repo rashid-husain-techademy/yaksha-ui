@@ -1,0 +1,36 @@
+<mat-tab-group dynamicHeight [selectedIndex]="0" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="Overview">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="Overview"></div>
+    </mat-tab>
+
+    <mat-tab label="Standard Assessments">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="StandardAssessment"></div>
+    </mat-tab>
+
+    <mat-tab label="Coding Assessments">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="CodingAssessment"></div>
+    </mat-tab>
+
+    <mat-tab label="Project Assessments">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="ProjectAssessment"></div>
+    </mat-tab>
+
+    <mat-tab label="Report">
+        <div fxLayout="row" fxLayoutAlign="center center" class="h3 p-48 secondary-text" *ngIf="nochartsAvailable">
+            No charts found!!
+        </div>
+        <div class="loader-group-dashboard p-8 p-md-20" id="Report"></div>
+    </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,18 @@
+{
+  "remoteServiceBaseUrl": "https://idp-prod-iris.azurewebsites.net",
+  "appBaseUrl": "https://assessments.yaksha.com",
+  "localeMappings": [
+    {
+      "from": "pt-BR",
+      "to": "pt"
+    },
+    {
+      "from": "zh-CN",
+      "to": "zh"
+    },
+    {
+      "from": "he-IL",
+      "to": "he"
+    }
+  ]
+}

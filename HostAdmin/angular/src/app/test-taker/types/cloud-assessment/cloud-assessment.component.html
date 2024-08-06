@@ -1,0 +1,81 @@
+<ng-container>
+
+    <div class="row  container">
+        <div class="col w-20">
+            <div class="card question-height">
+                <div class="card-body text" [innerHTML]="questionText | safeHtml">
+                </div>
+            </div>
+        </div>
+        <div class="col w-30 align-items-center mt-100">
+            <div class="input-group mb-3">
+                <label class="ide-label">{{constants.url}}</label>
+                <input type="text" class="form-control" value="{{azureBaseUrl}}" readonly disabled>
+                <div class="input-group-append">
+                    <button class="btn mr-0 btn-info" type="button" [ngbTooltip]="constants.open" (click)="openIde()">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                </div>
+
+            </div>
+            <div class="input-group mb-3">
+                <label class="username-label">{{constants.userName}}</label>
+                <input type="text" class="form-control" value="{{cloudCredentials.cloudUserName}}" readonly disabled>
+                <div class="input-group-append">
+                    <button class="btn mr-0 btn-info" type="button" (click)="copyUsername()"
+                        [ngbTooltip]="constants.copy">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="password-label">{{constants.password}}</label>
+                <input type="text" class="form-control" value="{{cloudCredentials.cloudPassword}}" readonly disabled>
+                <div class="input-group-append">
+                    <button class="btn mr-0 btn-info" type="button" (click)="copyPassword()"
+                        [ngbTooltip]="constants.copy">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <span class="note">{{constants.kindlyUseThisPasswordToLoginIntoTheIde}}</span>
+            <div class="d-flex flex-column p-l-10 p-r-10 mt-3 test-cases">
+                <div class="row justify-content-between title">
+                    <h5 class="card-title font-weight-bold my-auto m-0">{{constants.testCases}}</h5>
+                    <button type="button" class="btn btn-outline-info btn-sm m-r-20" (click)="validateTestCases()">
+                        {{constants.executeTestcases}}
+                    </button>
+                </div>
+
+                <ngb-accordion #acc="ngbAccordion">
+                    <ng-container *ngFor="let test of testCaseDetails; let i= index">
+                        <ngb-panel id="panel-{{i}}">
+                            <ng-template ngbPanelHeader let-opened="opened">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="m-0">{{test.expectedOutput}}</h5>
+                                    <div class="d-flex  justify-content-between">
+                                        <ng-container *ngIf="test.isTestcaseExecuted||!test.isTestcaseExecuted">
+                                            <ng-container *ngIf="test.actualOutput === testcasestatus.Pass">
+                                                <i class="mdi mdi-octagram success"></i>
+                                                <span class="ml-2 success">{{constants.pass}}</span>
+                                            </ng-container>
+                                            <ng-container *ngIf="test.actualOutput === testcasestatus.Fail">
+                                                <i class="mdi mdi-octagram danger"></i>
+                                                <span class="ml-2 danger">{{constants.fail}}</span>
+                                            </ng-container>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+                            </ng-template>
+
+                        </ngb-panel>
+                    </ng-container>
+                </ngb-accordion>
+            </div>
+        </div>
+
+    </div>
+
+</ng-container>

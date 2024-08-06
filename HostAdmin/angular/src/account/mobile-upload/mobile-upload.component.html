@@ -1,0 +1,65 @@
+<header class="topbar d-flex justify-content-center align-items-center">
+    <a class="navbar-brand">
+        <!-- Logo text -->
+        <span class="logo-text" *ngIf="isTenantLogoLoaded">
+            <!-- Light Logo text -->
+            <img [src]="logoUrl" alt="homepage" class="logo-size light-logo" />
+        </span>
+    </a>
+</header>
+<div class="container m-t-20" *ngIf="questionData && !isUploaded">
+    <h4>{{questionData.assessmentName}}</h4>
+    <h5>{{questionData.sectionName}}</h5>
+    <div [innerHTML]="questionData.questionText | safeHtml"></div>
+    <div *ngIf="prevUploadedFileNames.length>0">{{constants.previouslySubmittedFile}}
+        <div *ngFor="let prevUploadedFileName of prevUploadedFileNames">
+            <strong class="filename-message">{{prevUploadedFileName}}
+            </strong>
+        </div>
+    </div>
+    <div class="p-10">
+        <div>
+            <label for="fileUpload" appDragDrop
+                class="border d-flex flex-column file-upload justify-content-center align-items-center p-20 h-120">
+                <input type="file" id="fileUpload" multiple hidden #fileInput
+                    (change)="onFileChange($event.target.files)"
+                    accept=".pdf,.doc,.docx,.jpeg,.jpg,.png,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.html,.htm">
+                {{constants.clickHereToUploadFile}}
+            </label>
+            <div class="d-flex flex-column justify-content-between">
+                <small class="text-muted m-r-40">{{constants.onlyDocDocxPdfFilesAreSupported}}</small>
+                <div *ngIf="files && selectedFileNames.length>0">
+                    <div class="file-list">
+                        <span class="label label-rounded label-secondary"
+                            *ngFor="let selectedFileName of selectedFileNames">
+                            {{truncate(selectedFileName)}}
+                            <span aria-hidden="true" class="pointer remove-button"
+                                (click)="removeSelectedFile(selectedFileName)">&times;</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right m-t-30">
+                <button type="submit" class="btn btn-info" [disabled]="isDisableUpload"
+                    (click)="uploadFile()">{{constants.upload}}</button>
+            </div>
+            <div class="m-t-20" *ngIf="showErrors">
+                <h5>{{constants.errors}}</h5>
+                <div *ngIf="errorMessage.length > errorLength">
+                    <h5>#{{constants.errorCountReachedMaximum}}</h5>
+                </div>
+                <ul>
+                    <li *ngFor="let error of errorMessage">{{error}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="m-20" *ngIf="uploadErrorMessage">
+    <h5>{{uploadErrorMessage}}</h5>
+</div>
+<div class="m-20" *ngIf="isUploadSuccessful">
+    <h5>{{constants.yourAnswerHasBeenUploadedSuccessfullyYouCanCloseThisTabNow}}
+        {{constants.pleaseCheckForFileSubmissionStatusInYourTestTakerWindow}}</h5>
+</div>

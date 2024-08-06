@@ -1,0 +1,118 @@
+<div class="d-flex m-b-20">
+    <h3 class="page-title m-0" *ngIf="!isEdit">{{constants.createAdaptiveAssessment}}</h3>
+    <h3 class="page-title m-0" *ngIf="isEdit">{{constants.editAdaptiveAssessment}}</h3>
+</div>
+<form [formGroup]="createAdaptiveAssessmentForm">
+    <div class="card m-b-20 create-adaptive-assessment-custom">
+        <div class="card-body d-flex">
+
+
+            <div class="w-50 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.adaptiveAssessmentTitle}} <span
+                        class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Adaptive Assessment Title" formControlName="name"
+                    maxlength="500">
+                <small class="form-text text-danger"
+                    *ngIf="isFormSubmitTriggered && createAdaptiveAssessmentForm.get('name').hasError('required')">
+                    {{createAdaptiveAssessmentFormValidationMessages.name.required}}
+                </small>
+            </div>
+            <div class="m-r-15 w-25 multi-select" *ngIf="userRole === userRoles[1]">
+                <label for="" class="font-weight-bold">{{constants.selectTenant}} <span
+                        class="text-danger">*</span></label>
+                <ng-multiselect-dropdown [placeholder]="constants.selectTenant" [settings]="singleDropdownSettings"
+                    [data]="tenantList" formControlName="tenantList" (onSelect)="onTenantSelect($event)"
+                    (onDeSelect)="tenantDeselect($event)">
+                </ng-multiselect-dropdown>
+                <small class="form-text text-danger"
+                    *ngIf="isFormSubmitTriggered && createAdaptiveAssessmentForm.get('tenantList').hasError('required')">
+                    {{createAdaptiveAssessmentFormValidationMessages.tenantId.required}}
+                </small>
+            </div>
+            <div class="w-25 m-r-20 multi-select">
+                <label for="" class="font-weight-bold">{{constants.selectCategory}} <span
+                        class="text-danger">*</span></label>
+
+                <ng-multiselect-dropdown [settings]="categoryDropdownSettings" [data]="categories"
+                    [placeholder]="constants.selectCategory" (onSelect)="onCategorySelect($event)"
+                    (onDeSelect)="categoryDeselect($event)" formControlName="categories">
+                </ng-multiselect-dropdown>
+                <small class="form-text text-danger"
+                    *ngIf="isFormSubmitTriggered && createAdaptiveAssessmentForm.get('categories').hasError('required')">
+                    {{createAdaptiveAssessmentFormValidationMessages.categoryId.required}}
+                </small>
+            </div>
+        </div>
+        <div class="card-body d-flex">
+            <div class="w-25 m-r-20 multi-select">
+                <label for="" class="font-weight-bold">{{constants.selectSkill}} <span
+                        class="text-danger">*</span></label>
+                <ng-multiselect-dropdown [data]="skills" [placeholder]="constants.selectSkill"
+                    [settings]="skillDropDownSettings" formControlName="skills" [disabled]="isSkillDisabled"
+                    (onSelect)="onSkillSelect($event)" (onDeSelect)="skillDeselect($event)">
+                </ng-multiselect-dropdown>
+                <small class="form-text text-danger"
+                    *ngIf="isFormSubmitTriggered && createAdaptiveAssessmentForm.get('skills').hasError('required')">
+                    {{createAdaptiveAssessmentFormValidationMessages.skillId.required}}
+                </small>
+            </div>
+            <div class="w-25 m-r-20 multi-select">
+                <label for="" class="font-weight-bold">{{constants.selectSubSkill}} </label>
+                <ng-multiselect-dropdown [data]="subskills" [placeholder]="constants.selectSubSkill"
+                    [settings]="subSkillDropDownSettings" formControlName="subskills" [disabled]="isSubSkillDisabled"
+                    (onSelect)="onSubSkillSelect($event)" (onDeSelect)="subSkillDeselect($event)">
+                </ng-multiselect-dropdown>
+            </div>
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.totalQuestionsCount}}
+                    {{availableQuestionCount}}</label>
+                <input type="number" (keypress)="preventNegative($event)" (input)="validateInput($event)"
+                    formControlName="totalQuestionsCount" class="w-100 form-control"
+                    [placeholder]="constants.totalQuestionsCount">
+            </div>
+
+        </div>
+        <!--  <div class="card-body d-flex p-t-0">
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.totalQuestionsCount}}</label>
+                <input type="number" formControlName="totalQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.totalQuestionsCount">
+            </div>
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.beginnerQuestionsCount}}</label>
+                <input type="number" formControlName="beginnerQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.beginnerQuestionsCount">
+            </div>
+            <div class="w-25 m-r-20">
+                <label for="" class="font-weight-bold">{{constants.intermediateQuestionsCount}}</label>
+                <input type="number" formControlName="intermediateQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.intermediateQuestionsCount">
+            </div>
+            <div class="w-25">
+                <label for="" class="font-weight-bold">{{constants.advancedQuestionsCount}}</label>
+                <input type="number" formControlName="advancedQuestionsCount" (keydown)="keyDownEvent($event)"
+                    class="w-100 form-control" [placeholder]="constants.advancedQuestionsCount">
+            </div>
+        </div>-->
+    </div>
+    <!-- <div class="card m-b-20">
+        <div class="card-body">
+            <label for="" class="font-weight-bold">{{constants.description}}</label>
+            <quill-editor [styles]="{height: '200px'}" formControlName="description"
+                placeholder="{{constants.enterTheDescriptionHere}}"></quill-editor>
+        </div>
+    </div>
+    <div class="card m-b-20">
+        <div class="card-body">
+            <label for="" class="font-weight-bold">{{constants.instructions}}</label>
+            <quill-editor [styles]="{height: '200px'}" formControlName="instructions"
+                placeholder="{{constants.enterTheInstructionsHere}}"></quill-editor>
+        </div>
+    </div>-->
+    <div class="text-center m-b-20">
+        <button type="button" class="btn btn-secondary m-r-20" (click)="cancel()">{{constants.cancel}}</button>
+        <button type="button" class="btn btn-info" [disabled]="isSaving"
+            (click)="saveAdaptiveAssessment(createAdaptiveAssessmentForm.value)">{{isEdit ?
+            constants.update : constants.save}}</button>
+    </div>
+</form>

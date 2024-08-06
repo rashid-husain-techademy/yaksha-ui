@@ -1,0 +1,385 @@
+<!--Container Based Assessment-->
+<ng-container [formGroup]="group" *ngIf="environmentType===type.Container">
+    <div class="card">
+        <div class="card-body indentaion" [innerHTML]="questionText | safeHtml">
+        </div>
+    </div>
+    <div class="d-flex justify-content-end" *ngIf="this.fileName !== null">
+        <a class="download" *ngIf="!iFrame" [href]="field?.stackAssessmentDetail.instructionDocumentUrl"
+            [download]="fileName">
+            <i class="fas fa-download m-r-10"></i>
+            <span>{{constants.downloadInstructions}}</span>
+        </a>
+        <a class="download" *ngIf="iFrame"
+            (click)="openInstructions(field?.stackAssessmentDetail.instructionDocumentUrl)">
+            <i class="fas fa-download m-r-10"></i>
+            <span>{{constants.downloadInstructions}}</span>
+        </a>
+    </div>
+    <input type="text" *ngIf="formControlName" [formControlName]="formControlName" hidden>
+
+    <div class="content content--wide boxlist" *ngIf="!labLaunchUrl && !isLaunchDisabled">
+        <div class="box" *ngFor="let template of scheduledTemplateDetails">
+            <div class="box-body" (click)="updateAssessmentType(template.id, template.name)">
+                <h4>{{template.name}}</h4>
+                <img class="box-logo box-height" alt="logo" src="{{template.imageUrl}}" loading="lazy">
+                <h4 class="box-title">{{constants.launchIde}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" *ngIf="labLaunchUrl">
+        <div class="row mt-4">
+            <div class="col-12 mb-3">
+                <div class="input-group">
+                    <label class="ide-label">{{constants.url}}</label>
+                    <input type="text" class="form-control" value="{{labLaunchUrl}}" readonly disabled>
+                    <div class="input-group-append">
+                        <button class="btn mr-0 btn-info" type="button" (click)="openIde()"
+                            [ngbTooltip]="constants.open">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12" *ngIf="!isEclipseIde">
+                <div class="input-group">
+                    <label class="password-label">{{constants.password}}</label>
+                    <input type="text" class="form-control" value="{{labPassword}}" readonly disabled>
+                    <div class="input-group-append">
+                        <button class="btn mr-0 btn-info" type="button" (click)="copyPassword()"
+                            [ngbTooltip]="constants.copy">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="note">{{constants.kindlyUseThisPasswordToLoginIntoTheIde}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center actions">
+        <p class="text-center" *ngIf="isLabLaunchFailed" class="provision-fail-message">
+            {{constants.oopsYourLabProvisioninigIsTakingLongerTimeThanUsualPleaseClickLaunchIDEAgain}}
+        </p>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <div *ngIf="!isProctorEnabled">
+            <button type="button" class="btn btn-info btn" *ngIf="labLaunchUrl" (click)="saveExitWarning()">
+                {{constants.saveAndExit}}
+            </button>
+        </div>
+        <p class="text-center" *ngIf="!labLaunchUrl && isLaunchDisabled" class="wait-message">
+            {{constants.pleaseWaitItWouldTake2To4MinutesToProvisionYourEnvironment}} <br>
+            {{constants.pleaseDoNotRefreshThePage}}
+        </p>
+    </div>
+
+    <div *ngIf="!labLaunchUrl && isLaunchDisabled">
+        <div class="bounce">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
+    <div *ngIf="field.isCollaborativeAssessment" class="instructions">
+        <h3 class="title">Instructions for Team Lead</h3>
+        <ul>
+            <li>Main branch will be alloted.</li>
+            <li>After doing changes to the code/alloted feature, it is required to push the
+                changes to he main branch.</li>
+            <li>This can be achieved by using shortcut: Ctrl+Shift+B </li>
+            <h5 class="mt-2">To pull the updated merged content from remote to local branch</h5>
+            <ol>
+                <li>In source control option, pull the changes from remote branch.</li>
+            </ol>
+            <li>Run the test cases associated to all the features before submittting the assessment</li>
+        </ul>
+        <h3 class="title">Instructions for Team Member</h3>
+        <ul>
+            <li>User specific branch will be alloted for each member</li>
+            <h5 class="mt-2">To merge the changes to main branch</h5>
+            <ol>
+                <li>After doing changes to the code/alloted feature, it is required to push the
+                    changes to their respective branches.</li>
+                <li>This can be achieved by using shortcut: Ctrl+Shift+B </li>
+                <li>Checkout to main branch by clicking on checkout branch option at left bottom</li>
+                <li>It will show the list of all the existing branches. Select the main (Lead) branch.</li>
+                <li>Once in master (Lead) branch, click on source control icon on left. It will show all changes of
+                    master.</li>
+                <li>Discard those changes</li>
+                <li>Pull the remote main (Lead) branch to your local.</li>
+                <li>Follow it up by choosing the option of merging the branch</li>
+                <li>This will show the source branch to merge. Select the one that belongs to you(member)</li>
+                <li>Once this is done. Sync the changes</li>
+                <li>Finally, checkout to your branch to continue working. </li>
+            </ol>
+            <h5 class="mt-2">To pull the updated content from Lead and merge in to
+                member branch</h5>
+            <ol>
+                <li>Check out to main (Lead) branch.</li>
+                <li>Pull the changes using Control Version option.</li>
+                <li>Check in back into your own(member) branch.</li>
+                <li>Once back into your branch, use merge option.</li>
+                <li>Select the main branch as source branch to merge.</li>
+                <li>Once done, sync the changes.</li>
+            </ol>
+        </ul>
+    </div>
+</ng-container>
+
+<!--VM Based Assessment-->
+<ng-container *ngIf="environmentType===type.VirtualMachine">
+    <div id="vm-screen" class="d-flex h-100">
+        <div class="col-4 sidebar" id="side-bar">
+            <div class="mb-0 w-30 h-90">
+                <div class="card-body top-bar card-h100" id="question-area"
+                    [ngClass]="{'card-h100': !isLaunchDisabled, 'card-h50': isLaunchDisabled}">
+                    <h5 class="text-center font-weight-600">Question</h5>
+                    <div class="col-12 overflow-card">
+                        <p [innerHTML]="questionText | safeHtml"></p>
+                    </div>
+                </div>
+
+                <div class="card-body top-bar card-h50" *ngIf="isLaunchDisabled">
+                    <h5 class="text-center font-weight-600">Instructions</h5>
+                    <div class="col-12 overflow-card">
+                        <ng-container *ngTemplateOutlet="EnvironmentInstructions"></ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-8 width-100 panel-card">
+            <div class="panel-body w-70" id="parent-div">
+                <div class="top-bar-1" *ngIf="vmLaunched">
+                    <span *ngIf="connectionFailed === true && isRefreshVM === false" class="error-connection"
+                        placement="left">
+                        <h5><strong>{{constants.connectionFailedTryToRefresh}}</strong></h5>
+                    </span>
+                    <span *ngIf="isRefreshVM === true && (isConnectionMade === undefined || isConnectionMade !== true)"
+                        class="connecting blink_me" placement="left">
+                        <h5><strong>{{constants.connecting}}</strong></h5>
+                    </span>
+                    <span *ngIf="isConnectionMade === true" class="connection-made blink_me" placement="left">
+                        <h5><strong>{{constants.pleaseWaitForAWhile}}</strong></h5>
+                    </span>
+                    <span [ngClass]="isRefreshVM === true ? 'refresh-start refresh-margin' : 'refresh-margin' "
+                        placement="left" ngbTooltip="{{constants.refresh}}" (click)="refreshVM()">
+                        <i class="icon-refresh color" aria-hidden="true"></i>
+                    </span>
+                    <button class="btn" placement="left" ngbTooltip="{{constants.toggleFullScreen}}"
+                        (click)="expandFullScreen()">
+                        <i class="fa fa-expand expand color" aria-hidden="true"></i>
+                    </button>
+                    <!-- <a *ngIf="!iFrame && fileName !== null && vmStarted"
+                        [href]="field?.stackAssessmentDetail.instructionDocumentUrl" [download]="fileName" class="btn"
+                        ngbTooltip="{{constants.downloadInstructions}}">
+                        <i class="fas fa-download color"></i>
+                    </a>
+                    <a *ngIf="iFrame && fileName !== null"
+                        (click)="openInstructions(field?.stackAssessmentDetail.instructionDocumentUrl)" class="btn"
+                        ngbTooltip="{{constants.downloadInstructions}}">
+                        <i class="fas fa-download color"></i>
+                    </a> -->
+                    <div *ngIf="!isProctorEnabled">
+                        <button type="button" class="btn btn-info btn save-btn" (click)="saveExitWarning()">
+                            {{constants.saveAndExit}}
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="!vmStarted" id="vm-area">
+                    <div *ngIf="!isLaunchDisabled">
+                        <h5 class="text-center font-weight-600 f-20">{{constants.instructions}}</h5>
+                        <div class="col-12">
+                            <ng-container *ngTemplateOutlet="EnvironmentInstructions"></ng-container>
+                        </div>
+                        <div class="d-flex justify-content-center pbt-16">
+                            <button type="button" class="btn btn-info btn" [disabled]="isPreview"
+                                (click)="createMMLLab()">
+                                {{constants.launchAssessmentEnvironment}}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="isLaunchDisabled">
+                        <div>
+                            <div class="col-12 mb-20">
+                                <img src="../../../../assets/images/connect-gif.gif" class="img-center" />
+                            </div>
+                            <div class="col-12 process">
+                                <div class="progress-container">
+                                    <div [ngClass]="(stageValue === 0)? 'active-circle' : 'completed-circle'">
+                                        <span style="margin-left:0px">
+                                            <div *ngIf="stageValue === 0" class="loader"></div>
+                                            <i class="fas fa-check" *ngIf="stageValue >= 1"></i>
+                                            <span *ngIf="stageValue < 1">1</span>
+                                        </span>
+                                        <span class="progress-width">{{constants.vMCreation}}</span>
+                                    </div>
+                                    <div
+                                        [ngClass]="stageValue <= 0 ? 'notStarted-circle' : (stageValue === 1) ? 'active-circle' : (stageValue > 1) ? 'completed-circle' : '' ">
+                                        <span style="margin-left:0px">
+                                            <div *ngIf="stageValue === 1" class="loader"></div>
+                                            <i class="fas fa-check" *ngIf="stageValue >= 2"></i>
+                                            <span *ngIf="stageValue < 2">2</span>
+                                        </span>
+                                        <span class="progress-width">{{constants.vMAllocation}}</span>
+                                    </div>
+                                    <div
+                                        [ngClass]="stageValue <= 1 ? 'notStarted-circle' : (stageValue === 2) ? 'active-circle' : (stageValue > 2) ? 'completed-circle' : '' ">
+                                        <span style="margin-left:0px">
+                                            <div *ngIf="stageValue === 2" class="loader"></div>
+                                            <i class="fas fa-check" *ngIf="stageValue >= 3"></i>
+                                            <span *ngIf="stageValue < 3">3</span>
+                                        </span>
+                                        <span class="progress-width">{{constants.powerCheck}}</span>
+                                    </div>
+                                    <div
+                                        [ngClass]="stageValue <= 2 ? 'notStarted-circle' : (stageValue === 3) ? 'active-circle' : (stageValue > 3) ? 'completed-circle' : '' ">
+                                        <span style="margin-left:0px">
+                                            <div *ngIf="stageValue === 3" class="loader"></div>
+                                            <i class="fas fa-check" *ngIf="stageValue >= 4"></i>
+                                            <span *ngIf="stageValue < 4">4</span>
+                                        </span>
+                                        <span class="progress-width">{{constants.vMBooting}}</span>
+                                    </div>
+                                    <div
+                                        [ngClass]="stageValue <= 3 ? 'notStarted-circle' : (stageValue === 4) ? 'active-circle' : (stageValue > 4) ? 'completed-circle' : '' ">
+                                        <span style="margin-left:0px">
+                                            <div *ngIf="stageValue === 4" class="loader"></div>
+                                            <i class="fas fa-check" *ngIf="stageValue >= 5"></i>
+                                            <span *ngIf="stageValue < 5">5</span>
+                                        </span>
+                                        <span class="progress-width">{{constants.vMToolsRunning}}</span>
+                                    </div>
+                                    <div
+                                        [ngClass]="stageValue <= 4 ? 'notStarted-circle' : (stageValue === 5) ? 'active-circle' : (stageValue > 5) ? 'completed-circle' : '' ">
+                                        <span style="margin-left:0px">
+                                            <div *ngIf="stageValue === 5" class="loader"></div>
+                                            <i class="fas fa-check" *ngIf="stageValue >= 6"></i>
+                                            <span *ngIf="stageValue < 6">6</span>
+                                        </span>
+                                        <span class="progress-width">{{constants.obtainingIP}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="offset-md-4 p-15" *ngIf="stageValue !== 6 && showExistingLabMessage">
+                                <span
+                                    class="font-weight-600 color-red">{{constants.pleaseWaitWhileWeAreGettingYourLabReady}}</span>
+                            </div>
+                            <div class="note-message d-flex justify-content-center"
+                                *ngIf="(stageValue !== 6) && !showExistingLabMessage">
+                                <span
+                                    class="note-message">{{constants.pleaseWaitItWouldTake5To10MinutesToProvisionYourEnvironment}}
+                                    {{constants.kindlyDontRefreshThePage}}</span>
+                            </div>
+                            <div class="note-message d-flex justify-content-center" *ngIf="deploymentHasError">
+                                <span class="note-message">{{currentMmlStatus}}</span>
+                            </div>
+                        </div>
+                        <div class="col-12" *ngIf="stageValue === 6">
+                            <div class="offset-md-4 p-15" *ngIf="labName!==''">
+                                <span class="font-weight-600">{{constants.labName}}</span>
+                                <span style="padding-left:50px">: &nbsp;&nbsp; <span
+                                        class="color-blue">{{labName}}</span></span>
+                            </div>
+                            <div class="offset-md-4 p-15" *ngIf="currentMmlStatus">
+                                <span class="font-weight-600">{{constants.labStatus}}</span>
+                                <span style="padding-left:45px">: &nbsp;&nbsp; <span
+                                        class="color-green">{{currentMmlStatus}}</span></span>
+                            </div>
+                            <div class="offset-md-4 p-15" *ngIf="ipAddress!==''">
+                                <span class="font-weight-600">{{constants.labIP}}</span>
+                                <span style="padding-left:78px">: &nbsp;&nbsp; <span>{{ipAddress}}</span></span>
+                            </div>
+
+                            <div class="offset-md-4 p-15" *ngIf="isSaveandExit">
+                                <span
+                                    class="font-weight-600 color-red">{{constants.pleaseWaitTillTheVMIsStopped}}</span>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-center"
+                                    *ngIf="isDeploymentCompleted && isLabStarted && !isRestarting && !statusUpdate">
+                                    <button type="button" class="btn-info btn" *ngIf="!showExistingLabMessage"
+                                        (click)="launchVm(true)">{{constants.startLab}}</button>
+                                    <button type="button" class="btn-info btn" *ngIf="showExistingLabMessage"
+                                        (click)="launchVm(true)">{{constants.launchLab}}</button>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <span>
+                                        <button *ngIf="restartGuestOs" class="btn btn-info btn"
+                                            [disabled]="isRestarting"
+                                            (click)="updateLabStatus(5)">{{constants.rebootGuestOS}}</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="vmError" class="note-message d-flex justify-content-center">
+                                <span class="note-message mr-16">{{errorMessage}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="connectionFailed === false" id="parent-div">
+                    <div id="display" [ngClass]="vmStarted ? 'display-div' : 'display-none'"></div>
+                </div>
+                <div *ngIf="connectionFailed === true && isRefreshVM === false">
+                    <div class="danger-div">
+                        <i class="fas fa-exclamation-triangle danger-color"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #EnvironmentInstructions>
+        <div #EnvironmentInstructions>
+            <h5 class="heading">Introduction</h5>
+            <p class="inst">This is a project-based assessment, in which you will be provided with a template code to
+                work. You will
+                be
+                provided with a pre-configured Virtual Machine (VM) to develop the case study.</p>
+
+            <h5 class="heading">Launch</h5>
+            <p class="inst">You can launch VM by clicking "Launch Assessment Environment". It will take around <span
+                    class="b"> 5-10 mins to launch the
+                    VM.</span></p>
+
+            <h5 class="heading">Configuration</h5>
+            <p class="inst">Once launched, if you see <span class="b">any configuration screen, skip it.</span></p>
+
+            <h5 class="heading">Cloning </h5>
+            <p class="inst">Once VM is up, it will take another <span class="b">30 sec-1 min to clone your project
+                    template on desktop</span> of your VM.Please wait till then.</p>
+
+            <h5 class="heading">Document</h5>
+            <p class="inst">The project will be cloned in a folder, named same as your email ID. The folder contains
+                template code
+                and case
+                study document. You are required to open the case study document and <span class="b"> thoroughly go
+                    through it to
+                    understand
+                    project and mandatory process.</span></p>
+
+            <h5 class="heading">Development</h5>
+            <p class="inst">To develop use case all<span class="b"> IDEs, Database required are available in VM.</span>
+                There
+                is a README file
+                on desktop
+                containing
+                any credentials you need.</p>
+
+            <h5 class="heading">Submission</h5>
+            <p class="inst">Before you do final submission of your code there are 2 mandatory things you have
+                to follow,
+                else you
+                evaluation result would be affected</p>
+            <ol class="b">
+                <li>RUN TEST CASE (AS MENTIONED IN DOCUMENT)</li>
+                <li>PUSH CODE TO GIT (AS MENTIONED IN DOCUMENT)</li>
+            </ol>
+        </div>
+    </ng-template>
+</ng-container>

@@ -1,0 +1,33 @@
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    h5 {
+        font-size: 17px;
+    }
+
+    h6 {
+        font-size: 15px;
+    }
+}
+
+.modal-footer {
+    border-top: none;
+    padding   : 5px;
+}
+
+.btn-text-secondary {
+    color: #3e5569;
+}
+
+.btn-text-info {
+    color: #009efb;
+}
+
+.modal-header {
+    display: block;
+}
+
+button[aria-label="leave"]:focus {
+    outline: 0;
+    box-shadow: none;
+}

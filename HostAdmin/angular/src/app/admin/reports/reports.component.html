@@ -1,0 +1,282 @@
+<div [class]="(isSuperAdmin) ? 'row justify-content-center m-b-20' : 'row m-b-20'">
+    <div class="col-md-3">
+        <h3 class="page-title m-0">{{constants.reports}}</h3>
+    </div>
+    <div class="col-md-6 text-right">
+        <button type="button" class="btn btn-info button-width-full button-custom" (click)="getMasterReport()"
+            *ngIf="isSuperAdmin && !wheeboxTableView">
+            {{constants.downloadMasterReport}}
+        </button>
+    </div>
+    <div class="col-md-3 reportcustom">
+        <ng-multiselect-dropdown [(ngModel)]="tenantDetails" (onSelect)="tenantSelection($event)" (onDeSelect)="reset()"
+            [placeholder]="constants.selectTenant" [settings]="singleDropdownSettings" [data]="tenantDetailsList"
+            [ngModelOptions]="{standalone: true}" *ngIf="isSuperAdmin && !wheeboxTableView">
+        </ng-multiselect-dropdown>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="m-r-20 d-flex justify-content-between">
+            <div>
+                <label class="m-b-0 font-weight-bold">{{constants.reportType}}</label>
+                <select class="custom-select report-type-margin" #reportTypeddl (change)="onReportTypeChange($event)">
+                    <option [value]=reportType.MCQ>{{constants.mcqType}}</option>
+                    <option [value]=reportType.SFA>{{constants.codingType}}</option>
+                    <option [value]=reportType.Stack>{{constants.stackType}}</option>
+                    <option [value]=reportType.Collaborative>{{constants.collaborative}}</option>
+                    <!-- <option [value]=reportType.Adaptive>{{constants.adaptive}}</option> -->
+                    <option [value]=reportType.Cloud>{{constants.cloudBased}}</option>
+                    <option *ngIf="isSuperAdmin" [value]=reportType.Wheebox>{{constants.wheebox}}</option>
+                    <option *ngIf="isSuperAdmin" [value]=reportType.Aeye>{{constants.aeye}}</option>
+                    <option *ngIf="!isSuperAdmin" [value]=reportType.AssessmentReview>{{constants.assessmentReview}}
+                    </option>
+                    <option [value]=reportType.Assignment *ngIf="ltiMindtreeTenantId==selectedTenantId">
+                        {{constants.assignment}}</option>
+                </select>
+            </div>
+            <div *ngIf="!assignmentReportSelected && (stackTableView || mcqFilterView)" class="align-self-end">
+                <button class="btn btn-info" (click)="showMoreFilter()">{{viewFilter ? constants.hideAdditionalFilters :
+                    constants.showAdditionalFilters}}</button>
+            </div>
+            <div *ngIf="showRegisterDownload" class="align-self-end">
+                <button class="btn btn-info"
+                    (click)="downloadUserRegistration()">{{constants.getUserRegistration}}</button>
+            </div>
+        </div>
+        <form [formGroup]="filterForm" class="d-flex flex-wrap align-items-center button-margin-top-25"
+            *ngIf="!assignmentReportSelected">
+            <i class="fas fa-filter text-info m-r-20 mt-20" *ngIf="stackTableView || mcqFilterView"></i>
+            <div [class]="mcqFilterView ? 'm-r-20 w-26 p-10' : 'm-r-20 w-26 p-10'"
+                *ngIf="stackTableView || mcqFilterView">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.assessmentName}}
+                    <span class="text-danger"
+                        *ngIf="((stackTableView || mcqFilterView) && filterForm.get('assessmentName').value) || isExportCloudBasedReport">*</span></label>
+                <div class="assessmentname-dropdown">
+                    <ng-multiselect-dropdown formControlName="assessmentName" [(ngModel)]="assessmentDetails"
+                        (onSelect)="assessmentSelection($event)" (onDeSelect)="assessmentDeSelection($event)"
+                        [placeholder]="constants.assessmentName" [settings]="singleDropdownSettings"
+                        [data]="assessmentDetailsList" [ngModelOptions]="{standalone: true}"
+                        *ngIf="(isSuperAdmin || isTenantAdmin) && !wheeboxTableView">
+                    </ng-multiselect-dropdown>
+                    <button class="btn btn-info search-btn" (click)="getAssessmentsBySearchString()"><i
+                            class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div class="m-r-20 w-26 p-10 testpurpose-dropdown"
+                *ngIf="(stackTableView || mcqFilterView )&& filterForm.get('assessmentName').value">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.testPurpose}} <span class="text-danger"
+                        *ngIf="stackTableView || mcqFilterView">*</span></label>
+                <ng-multiselect-dropdown formControlName="testPurpose" (onSelect)="purposeSelection($event)"
+                    (onDeSelect)="purposeDeSelection($event)" (onSelectAll)="onSelectAllPurpose($event)"
+                    (onDeSelectAll)="onDeSelectAllPurpose()" [placeholder]="constants.selectTestPurpose"
+                    [settings]="purposeDropDownSettings" [data]="testPurposeList">
+                </ng-multiselect-dropdown>
+            </div>
+
+            <div [class]="mcqFilterView ? 'm-r-20 w-26 p-10' : 'm-r-20 w-26 p-10'"
+                *ngIf="(stackTableView || mcqFilterView) && viewFilter">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.userEmail}}
+                    <span class="text-danger" *ngIf="stackTableView"></span></label>
+                <input type="email" formControlName="userName" placeholder="{{constants.userEmail}}"
+                    class="form-control">
+            </div>
+            <div class="m-r-20 w-26 p-10" [ngClass]="filterForm.get('assessmentName').value ? 'm-l-36':''"
+                *ngIf="(mcqFilterView && !isAdaptiveAssessmentReport) && viewFilter">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.assessmentStatus}}</label>
+                <select formControlName="assessmentStatus" class="custom-select">
+                    <option selected value=0>{{constants.all}}</option>
+                    <option value=20>{{constants.pass}}</option>
+                    <option value=30>{{constants.notCleared}}</option>
+                </select>
+            </div>
+            <div [class]="mcqFilterView && !isAdaptiveAssessmentReport ? 'form-group m-r-20 m-b-0 w-26 p-10' : 'form-group m-r-20 m-b-0 w-26 p-10'"
+                [ngClass]="filterForm.get('assessmentName').value ? '':'m-l-36'"
+                *ngIf="((stackTableView || mcqFilterView) && viewFilter && !isAssessmentReviewReport) || ( wheeboxTableView || isAssessmentReviewReport)">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.assessmentFrom}}
+                    <span class="text-danger" *ngIf="wheeboxTableView">*</span>
+                </label>
+                <div class=" input-group">
+                    <input class="form-control" [maxDate]="currentDate" placeholder="yyyy-mm-dd"
+                        name="assessmentStartDate" formControlName="assessmentStartDate" ngbDatepicker
+                        #assessmentStartDate="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary no-shadow" (click)="assessmentStartDate.toggle()"
+                            type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group m-r-20 m-b-0 w-26 p-10"
+                [class]="(mcqFilterView && !isAdaptiveAssessmentReport) && viewFilter ? '' :'m-l-36'"
+                *ngIf="((stackTableView || mcqFilterView) && viewFilter && !isAssessmentReviewReport) || (wheeboxTableView || isAssessmentReviewReport)">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.assessmentTo}}
+                    <span class="text-danger" *ngIf="wheeboxTableView">*</span>
+                </label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="assessmentEndDate"
+                        [maxDate]="currentDate" formControlName="assessmentEndDate" ngbDatepicker
+                        #assessmentEndDate="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary no-shadow" (click)="assessmentEndDate.toggle()"
+                            type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button *ngIf="mcqFilterView || stackTableView || wheeboxTableView || isAssessmentReviewReport"
+                class="btn btn-info button-margin-top-25 mr-2" id="download-report" type="button"
+                (click)="getReportData(false)">
+                <i class="fa fa-download"></i>
+            </button>
+            <button *ngIf="stackTableView" class="btn btn-info button-margin-top-25" id="search-report" type="button"
+                (click)="getStackSubmittedData()">
+                <i class="fa fa-search"></i>
+            </button>
+            <button class="btn btn-secondary button-margin-top-25 m-l-10" type="button" (click)="reset()">
+                <i class="fa fa-undo"></i>
+            </button>
+        </form>
+        <!-- Assignment Report start -->
+        <form [formGroup]="filterForm" class="d-flex flex-wrap align-items-center button-margin-top-25"
+            *ngIf="assignmentReportSelected">
+            <div [class]="'m-r-20 w-26 p-10'">
+                <label for="" class="m-b-0 font-weight-bold">{{constants.userEmail}} </label>
+                <input type="email" formControlName="userName" placeholder="{{constants.userEmail}}"
+                    class="form-control">
+            </div>
+            <div class="form-group m-r-20 m-b-0 w-26 p-10" [class]='m-l-36'>
+                <label for="" class="m-b-0 font-weight-bold">{{constants.assessmentFrom}}
+                </label>
+                <div class=" input-group">
+                    <input class="form-control" [maxDate]="currentDate" placeholder="yyyy-mm-dd"
+                        name="assessmentStartDate" formControlName="assessmentStartDate" ngbDatepicker
+                        #assessmentStartDate="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary no-shadow" (click)="assessmentStartDate.toggle()"
+                            type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group m-r-20 m-b-0 w-26 p-10" [class]='m-l-36'>
+                <label for="" class="m-b-0 font-weight-bold">{{constants.assessmentTo}}
+                </label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="assessmentEndDate"
+                        [maxDate]="currentDate" formControlName="assessmentEndDate" ngbDatepicker
+                        #assessmentEndDate="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary no-shadow" (click)="assessmentEndDate.toggle()"
+                            type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-info button-margin-top-25 mr-2" id="download-report" type="button"
+                (click)="getAssignmentReportData()">
+                <i class="fa fa-download"></i>
+            </button>
+            <button class="btn btn-secondary button-margin-top-25 m-l-10" type="button" (click)="reset()">
+                <i class="fa fa-undo"></i>
+            </button>
+        </form>
+        <!-- Assignment Report end -->
+    </div>
+</div>
+<div class="card" *ngIf="isSearchTriggered">
+    <div class="card-body">
+        <div *ngIf="stackTableView && stackReports && stackReports.length > 0">
+            <table class="table table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th sortable="Email">{{constants.email}}</th>
+                        <th sortable="name">{{constants.assessmentName}}</th>
+                        <th sortable="unit">{{constants.attemptNumberStr}}</th>
+                        <th sortable="name">{{constants.status}}</th>
+                        <th sortable="name">{{constants.score}}</th>
+                        <th sortable="name">{{constants.templateType}}</th>
+                        <th>{{constants.actions}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of stackReports">
+                        <td>
+                            <ngb-highlight [result]="user.emailAddress"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="user.assessmentName"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="user.attemptNumber"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="user.status"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="user.scorePercentage"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight *ngIf="user.isStackDetails" [result]="user.templateType"></ngb-highlight>
+                            <ngb-highlight *ngIf="!user.isStackDetails"
+                                [result]="constants.notApplicable"></ngb-highlight>
+                        </td>
+                        <td>
+                            <i class="far fa-file-alt pointer button-margin-right-25 pointer font-size-20"
+                                *ngIf="user.isStackDetails" [ngbTooltip]="constants.viewReport"
+                                (click)="viewReport(user.userId, user.userAssessmentAttemptId, user.assessmentName, user.assessmentScheduleId,user.emailAddress)">
+                            </i>
+                            <ng-container *ngIf="stackTableView && user.isStackDetails">
+                                <ng-container *ngFor="let dashboard of user.userAssessmentStack">
+                                    <i class="fa fa-external-link-alt button-margin-right-25 pointer font-size-20"
+                                        [ngbTooltip]="dashboard.toolTip"
+                                        (click)="viewDashboard(dashboard.projectName)"></i>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="stackTableView && user.isStackDetails">
+                                <i class="fa fa-download button-margin-right-25 pointer font-size-20"
+                                    [ngbTooltip]="constants.downloadReport"
+                                    (click)="downloadStackPdf(user.userId, user.emailAddress, user.userAssessmentAttemptId, user.assessmentName, user.assessmentScheduleId)">
+                                </i></ng-container>
+                            <ng-container *ngIf="stackTableView && !user.isStackDetails">
+                                {{constants.notApplicable}}
+                            </ng-container>
+
+                        </td>
+                    </tr>
+                    <div class="result pt-4">
+                        <p></p>
+                    </div>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between p-2">
+                <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="stackReportTotalCount"
+                    (pageChange)="loadPage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                    [boundaryLinks]="true">
+                </ngb-pagination>
+                <select class="custom-select width-auto" (change)="changePageSize()" [(ngModel)]="pageSize">
+                    <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">
+                        {{pageSize}}
+                        {{constants.itemsPerPage}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div *ngIf="stackTableView && isSearchTriggered && stackReports.length === 0" class="text-align-center">
+            {{constants.noDataFound}}</div>
+    </div>
+</div>
+<mat-expansion-panel [hideToggle]="true" [disabled]="true">
+    <mat-expansion-panel-header>
+        <div style="width: 100%;">
+        </div>
+    </mat-expansion-panel-header>
+    <div id="stackContentToConvert" *ngIf="isClicked">
+        <app-stack-report [data]="data" (pdfData)="getPDF()"></app-stack-report>
+    </div>
+</mat-expansion-panel>

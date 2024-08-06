@@ -1,0 +1,50 @@
+#book-slot{
+
+    header {
+        background: #004c80;
+        .w-65 {
+            width: 65%;
+            max-width: 65%;
+        }
+    
+        .w-35 {
+            width: 35%;
+            max-width: 35%;
+        }
+    
+        .logo {
+            img {
+                max-width: 115px !important;
+                height: 45px;
+            }
+        }
+        .registration-section{
+            margin: 20px auto;
+        }
+        .assessment-title{
+            word-break: break-word;
+        }
+    }
+    .w-48{
+        width: 48%;
+    }
+    .m-b-35{
+        margin-bottom: 35px;
+    }
+    .register-completed{
+        background-color: white;
+        width:50%;
+        margin: 0 auto;
+        text-align: center;
+        padding:20px;
+        .user-email{
+            color:red;
+        }
+    }
+    .h-100vh{
+        height: 100vh;
+    }
+    .text-right{
+        text-align: right;
+    }
+}

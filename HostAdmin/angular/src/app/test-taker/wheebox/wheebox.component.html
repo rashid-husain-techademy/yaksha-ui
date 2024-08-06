@@ -1,0 +1,75 @@
+
+<video id="videoScreen" style="display: none;" class="video" autoplay></video>
+<input type="hidden" name="instanceid" id="instanceid" value="{{wheeboxInstance}}">
+<input type="hidden" name="appURL" id="appURL" value={{wheeboxAppUrl}}>
+<div class="display-none">
+    <canvas id="canvas"></canvas>
+</div>
+<input type="hidden" name="chatid" id="chatid" value="">
+<div id="chatURL" class="display-none">{{wheeboxChatUrl}}</div>
+<input type="hidden" name="key_sno" id="key_sno" [(ngModel)]="key_sno">
+
+<input type="hidden" name="fname" id="fname" [(ngModel)]="fname">
+
+<div class="footerchat" id="chatBoxMainDiv">
+    <div id="divChat" style="display: none;">
+        <div id="nmag"></div>
+        <div id="chatHeader" class="chatHeader">{{constants.chatHeader}}</div>
+        <div id="showchat" class="display-none">
+            <div id="chat-area">
+                <font class="chatHistory">{{constants.chatHistory}}</font>
+            </div>
+            <form id="send-message-area" class="msg-area-lineheight">
+                <textarea id="msg" class="msg-area" placeholder={{constants.typeMessage}}></textarea>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+<input type="hidden" name="msgReader" id="msgReader" value="">
+
+<div id="WBcameraCercleBox" style="display: none;">
+    <div id="streaming-camera-circle" class="icon">
+        <div class="icon-3">
+            <div class="camera-icon">
+                <div class="camera-circle"></div>
+                <div class="camera-btn"></div>
+            </div>
+        </div>
+    </div>
+    <div class="streaming-box">
+        <div class="streaming-box-header">
+            <span class="streaming-box-toggle streaming-width" align="right">
+                <i class="material-icons streaming-box-hyphen">&#45;</i></span>
+        </div>
+        <div class="streaming-box-body">
+            <div class="streaming-box-overlay">
+            </div>
+            <div class="streaming-logs">
+
+                <div class="video-form-container">
+                    <div class="video-container" id="videos-container"></div>
+                </div>
+            </div>
+        </div>
+        <div class="streaming-box-footer display-none" id="subjective_doc_upload_using_webcam">
+            <button type="button" class="btn btn-blue"
+                onclick="takeSubjectiveDocumentPhoto();">{{constants.takePhoto}}</button>
+        </div>
+    </div>
+</div>
+<label class="display-none"><input type="checkbox" [checked]="isVideoRecording" id="record-entire-conference">{{constants.recordConference}}</label>
+<span id="recording-status" class="display-none"></span>
+<button id="btn-stop-recording" class="display-none">{{constants.stopRecording}}</button>
+
+<div class="display-none">
+    <input type="text" id="room-id" autocorrect=off autocapitalize=off size=20 [(ngModel)]="roomId">
+    <button id="open-room">{{constants.openRoom}}</button>
+</div>
+
+<button id="join-room" class="display-none">{{constants.joinRoom}}</button>
+<button id="open-or-join-room" class="display-none">{{constants.autoOpenOrJoinRoom}}</button>
+<div id="room-urls" class="room-style"></div>
+<div id="metervalue" class="display-none"></div>

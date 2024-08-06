@@ -1,0 +1,652 @@
+<div class="card">
+    <div class="card-body">
+        <div id="contentToConvert">
+            <div *ngIf="stackCodeQualityMetrics.length">
+                <div class="row background-white avoid-page-break">
+                    <div class="col-6 top-space">
+                        <div class="row avoid-page-break">
+                            <div class="col margin">
+                                <p class="mb-0 font-size-12"><span
+                                        class="header-section-title">{{constants.testName}}:</span> <span
+                                        class="font-weight-bold"><strong>{{assessmentName}}</strong></span>
+                                </p>
+                                <p class="mb-0 font-size-12"><span
+                                        class="header-section-title">{{constants.testSpecifications}}:</span> <span
+                                        class="font-weight-bold"><strong><a href="javascript:void(0)"
+                                                (click)="downloadDocument()">{{constants.clickHere}}
+                                            </a>{{constants.toDownloadTheProjectSpecifications}}</strong></span></p>
+                                <p class="mb-0 font-size-12"><span
+                                        class="header-section-title">{{constants.status}}:</span> <span
+                                        class="font-weight-bold"><strong>{{stackCodeQualityMetrics[0]?.status}}</strong></span>
+                                </p>
+                                <p class="mb-0 font-size-12"><span
+                                        class="header-section-title">{{constants.candidateName}}:</span>
+                                    <span
+                                        class="font-weight-bold"><strong>{{stackCodeQualityMetrics[0]?.username}}</strong></span>
+                                </p>
+                                <p class="mb-0 font-size-12"><span
+                                        class="header-section-title">{{constants.candidateEmail}}:</span>
+                                    <span
+                                        class="font-weight-bold"><strong>{{stackCodeQualityMetrics[0]?.emailAddress}}</strong></span>
+                                </p>
+                                <p *ngFor="let customFieldItem of assessmentScheduleCustomFieldCollectionDto.customField"
+                                    class="mb-0 font-size-12"><span
+                                        class="header-section-title">{{customFieldItem.fieldLabel}}:</span>
+                                    <span
+                                        class="font-weight-bold"><strong>{{customFieldItem.fieldValue}}</strong></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 top-space avoid-page-break">
+                        <div class="col-md-12">
+                            <div>
+                                <img alt="homepage" class="light-logo logo" src="assets/images/yaksha-logo.png">
+                            </div>
+                            <div class="logo-name">
+                                <p class="mb-0 font-size-12"><span
+                                        class="font-weight-bold"><strong>{{constants.yakshaAssessmentReport}}</strong></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <ng-container *ngFor="let stackCodeQualityMetric of stackCodeQualityMetrics">
+                <ng-container *ngIf="stackCodeQualityMetrics.length">
+                    <div class="overallStatus avoid-page-break">
+                        <h4 class="text-bold-center">{{constants.overallStatus}} - {{stackCodeQualityMetric.language}}
+                        </h4>
+                    </div>
+                    <div class="row avoid-page-break">
+                        <div class="col-6 top-space">
+                            <div class="display-flex test-case-chart avoid-page-break">
+                                <div class="col border border-radius-5 width-grid-4"
+                                    *ngIf="stackCodeQualityMetric.testCaseStatusChart">
+                                    <p class="font-weight-bold mb-0 font-size-12 test-case-status">
+                                        {{constants.testCaseStatus}}</p>
+                                    <div id="chart1" *ngIf="stackCodeQualityMetric.testCaseStatusChart.series.length">
+                                        <apx-chart [series]="stackCodeQualityMetric.testCaseStatusChart.series"
+                                            [chart]="stackCodeQualityMetric.testCaseStatusChart.chart"
+                                            [dataLabels]="stackCodeQualityMetric.testCaseStatusChart.dataLabels"
+                                            [plotOptions]="stackCodeQualityMetric.testCaseStatusChart.plotOptions"
+                                            [yaxis]="stackCodeQualityMetric.testCaseStatusChart.yaxis"
+                                            [legend]="stackCodeQualityMetric.testCaseStatusChart.legend"
+                                            [fill]="stackCodeQualityMetric.testCaseStatusChart.fill"
+                                            [stroke]="stackCodeQualityMetric.testCaseStatusChart.stroke"
+                                            [tooltip]="stackCodeQualityMetric.testCaseStatusChart.tooltip"
+                                            [xaxis]="stackCodeQualityMetric.testCaseStatusChart.xaxis"></apx-chart>
+                                    </div>
+                                    <h4 class="text-center no-data"
+                                        *ngIf="!stackCodeQualityMetric.testCaseStatusChart.series.length">
+                                        {{constants.noDataFound}}</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 top-space">
+                            <div class="display-flex test-case-chart">
+                                <div class="col border border-radius-5 width-grid-4"
+                                    *ngIf="stackCodeQualityMetric.codeQualityChartOptions">
+                                    <p class="font-weight-bold mb-0 font-size-12 test-case-status">
+                                        {{constants.codeQualityStatus}}</p>
+                                    <div id="chart" class="avoid-page-break"
+                                        *ngIf="stackCodeQualityMetric.codeQualityChartOptions.series.length">
+                                        <apx-chart [series]="stackCodeQualityMetric.codeQualityChartOptions.series"
+                                            [chart]="stackCodeQualityMetric.codeQualityChartOptions.chart"
+                                            [dataLabels]="stackCodeQualityMetric.codeQualityChartOptions.dataLabels"
+                                            [plotOptions]="stackCodeQualityMetric.codeQualityChartOptions.plotOptions"
+                                            [yaxis]="stackCodeQualityMetric.codeQualityChartOptions.yaxis"
+                                            [legend]="stackCodeQualityMetric.codeQualityChartOptions.legend"
+                                            [fill]="stackCodeQualityMetric.codeQualityChartOptions.fill"
+                                            [stroke]="stackCodeQualityMetric.codeQualityChartOptions.stroke"
+                                            [tooltip]="stackCodeQualityMetric.codeQualityChartOptions.tooltip"
+                                            [xaxis]="stackCodeQualityMetric.codeQualityChartOptions.xaxis">
+                                        </apx-chart>
+                                    </div>
+                                    <h4 class="text-center no-data"
+                                        *ngIf="!stackCodeQualityMetric.codeQualityChartOptions?.series.length">
+                                        {{constants.noDataFound}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row avoid-page-break">
+                        <div class="col-md-12 top-space">
+                            <div class="display-flex">
+                                <div class="col border border-radius-5 width-grid">
+                                    <p class="font-weight-bold mb-0 font-size-12"> {{constants.maintainabilityRating}}
+                                        <span
+                                            class="tag-size"><strong>{{stackCodeQualityMetric.maintainabilityRating}}</strong></span>
+                                    </p>
+                                </div>
+                                <div class="col border border-radius-5 width-grid">
+                                    <p class="font-weight-bold mb-0 font-size-12">{{constants.securityRating}} <span
+                                            class="tag-size text-success"><strong>{{stackCodeQualityMetric.securityRating}}</strong></span>
+                                    </p>
+                                </div>
+                                <div class="col border border-radius-5 width-grid">
+                                    <p class="font-weight-bold mb-0 font-size-12">{{constants.reliablityRating}} <span
+                                            class="tag-size text-danger"><strong>{{stackCodeQualityMetric.reliabilityRating}}</strong></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 top-space avoid-page-break">
+                            <div class="display-flex">
+                                <div class="col border border-radius-5 width-grid-4">
+                                    <p class="font-weight-bold mb-0 font-size-12">{{constants.duplicatedLines}} <span
+                                            class="tag-black"><strong>{{stackCodeQualityMetric.duplicatedLines}}</strong></span>
+                                    </p>
+                                </div>
+                                <div class="col border border-radius-5 width-grid-4">
+                                    <p class="font-weight-bold mb-0 font-size-12">{{constants.duplicatedFiles}} <span
+                                            class="tag-black"><strong>{{stackCodeQualityMetric.duplicatedFiles}}</strong></span>
+                                    </p>
+                                </div>
+                                <div class="col border border-radius-5 width-grid-4">
+                                    <p class="font-weight-bold mb-0 font-size-12">{{constants.duplicatedBlocks}} <span
+                                            class="tag-black"><strong>{{stackCodeQualityMetric.duplicatedBlocks}}</strong></span>
+                                    </p>
+                                </div>
+                                <div class="col border border-radius-5 width-grid-4">
+                                    <p class="font-weight-bold mb-0 font-size-12">{{constants.commentLines}} <span
+                                            class="tag-black"><strong>{{stackCodeQualityMetric.commentLines}}</strong></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="test-case-summary avoid-page-break">
+                        <h4 class="text-bold-center">{{constants.testCaseSummary}} - {{stackCodeQualityMetric.language}}
+                        </h4>
+                    </div>
+
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th>{{constants.testCaseType}}</th>
+                                <th>{{constants.nameLabel}}</th>
+                                <th>{{constants.status}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break"
+                                *ngFor="let testCase of stackCodeQualityMetric.testCaseResultsReport">
+                                <td>
+                                    {{testCase.methodType.charAt(0).toUpperCase()}}{{testCase.methodType.slice(1)}}
+                                </td>
+                                <td>
+                                    <span class="line-break-anywhere">
+                                        {{testCase.methodName}}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{testCase.status}}
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break" *ngIf="!stackCodeQualityMetric.testCaseResultsReport?.length">
+                                <td class="text-center" colspan="4">
+                                    <p>{{constants.noDataFound}}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="issues-with-code avoid-page-break">
+                        <h4 class="text-bold-center">{{constants.issuesWithTheCode}} -
+                            {{stackCodeQualityMetric.language}}</h4>
+                    </div>
+
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th sortable="Name">{{constants.fileName}}</th>
+                                <th sortable="UserName">{{constants.issue}}</th>
+                                <th sortable="Csm">{{constants.type}}</th>
+                                <th sortable="Csm">{{constants.lineNo}}</th>
+                                <th sortable="Csm">{{constants.severity}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break" *ngFor="let issue of stackCodeQualityMetric.analyticsReport">
+                                <td>
+                                    <span class="line-break-anywhere">
+                                        {{issue.fileName}}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{issue.message}}
+                                </td>
+                                <td>
+                                    {{issueType[issue.type]}}
+                                </td>
+                                <td>
+                                    {{issue.lineNumber}}
+                                </td>
+                                <td>
+                                    {{issueSeverity[issue.severity]}}
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break" *ngIf="!stackCodeQualityMetric.analyticsReport?.length">
+                                <td class="text-center" colspan="5">
+                                    <p>{{constants.noDataFound}}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="user-test-case" *ngIf="stackCodeQualityMetric.userTestCaseResults?.length">
+                        <h4 class="text-bold-center">{{constants.userTestCaseResults}}</h4>
+                        <div class="row avoid-page-break">
+                            <div class="col-6 top-space"
+                                *ngFor="let userTestCaseResult of stackCodeQualityMetric.userTestCaseResults">
+                                <div class="display-flex test-case-chart avoid-page-break">
+                                    <div class="col border border-radius-5 width-grid-4">
+                                        <p class="font-weight-bold mb-0 font-size-12 test-case-status">
+                                            {{constants.testCaseStatus}} - {{userTestCaseResult.emailAddress}}</p>
+                                        <div id="chart1"
+                                            *ngIf="userTestCaseResult.userTestCaseStatusChart.series.length">
+                                            <apx-chart [series]="userTestCaseResult.userTestCaseStatusChart.series"
+                                                [chart]="userTestCaseResult.userTestCaseStatusChart.chart"
+                                                [dataLabels]="userTestCaseResult.userTestCaseStatusChart.dataLabels"
+                                                [plotOptions]="userTestCaseResult.userTestCaseStatusChart.plotOptions"
+                                                [yaxis]="userTestCaseResult.userTestCaseStatusChart.yaxis"
+                                                [legend]="userTestCaseResult.userTestCaseStatusChart.legend"
+                                                [fill]="userTestCaseResult.userTestCaseStatusChart.fill"
+                                                [stroke]="userTestCaseResult.userTestCaseStatusChart.stroke"
+                                                [tooltip]="userTestCaseResult.userTestCaseStatusChart.tooltip"
+                                                [xaxis]="userTestCaseResult.userTestCaseStatusChart.xaxis">
+                                            </apx-chart>
+                                        </div>
+                                        <h4 class="text-center no-data"
+                                            *ngIf="!userTestCaseResult.userTestCaseStatusChart.series.length">
+                                            {{constants.noDataFound}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="isCollaborative">
+                <div class="issues-with-code avoid-page-break">
+                    <h4 class="text-bold-center">{{constants.commitHistory}}</h4>
+                </div>
+
+                <table class="table table-striped mar-table mt-4">
+                    <thead>
+                        <tr>
+                            <th>{{constants.commitMessage}}</th>
+                            <th>{{constants.authorName}}</th>
+                            <th>{{constants.time}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="avoid-page-break" *ngFor="let history of gitCommitHistory">
+                            <td>
+                                <span class="line-break-anywhere">
+                                    {{history.commitMessage}}
+                                </span>
+                            </td>
+                            <td>
+                                {{history.authorName}}
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="formattedDateTime(history.commitTime)"></ngb-highlight>
+                            </td>
+                        </tr>
+                        <tr class="avoid-page-break" *ngIf="!gitCommitHistory?.length">
+                            <td class="text-center" colspan="5">
+                                <p>{{constants.noDataFound}}</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+
+            <div class="glossary-section">
+                <div class="glossary avoid-page-break">
+                    <p class="text-bold-center">Glossary</p>
+                </div>
+                <div class="issue-types avoid-page-break">
+                    <h5 class="sub-title">Issue Types</h5>
+
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th class="w-20">Issue Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    Bug
+                                </td>
+                                <td>
+                                    A coding mistake that can lead to an error or unexpected behavior at runtime
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    Vulnerability
+                                </td>
+                                <td>
+                                    A point in your code that's open to attack
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    Code Smell
+                                </td>
+                                <td>
+                                    A maintainability issue that makes your code confusing and difficult to
+                                    maintain
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="issue-severity avoid-page-break">
+                    <h5 class="sub-title">Issue Severity</h5>
+
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th class="w-20">Severity Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    BLOCKER
+                                </td>
+                                <td>
+                                    Bug with a high probability to impact the behavior of the application in
+                                    production:
+                                    memory leak, unclosed JDBC connection, .... The code MUST be fixed
+                                    immediately.
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    CRITICAL
+                                </td>
+                                <td>
+                                    Either a bug with a low probability to impact the behavior of the
+                                    application in
+                                    production or an issue which represents a security flaw: empty catch block,
+                                    SQL
+                                    injection, ... The code MUST be immediately reviewed.
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    MAJOR
+                                </td>
+                                <td>
+                                    Quality flaw which can highly impact the developer productivity: uncovered
+                                    piece of
+                                    code, duplicated blocks, unused parameters, ...
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    MINOR
+                                </td>
+                                <td>
+                                    Quality flaw which can slightly impact the developer productivity: lines
+                                    should not
+                                    be
+                                    too long, "switch" statements should have at least 3 cases, ...
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    INFO
+                                </td>
+                                <td>
+                                    Neither a bug nor a quality flaw, just a finding.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="maintainability-rating avoid-page-break">
+                    <h5 class="sub-title">Maintainability Rating</h5>
+                    <p>Rating given to your project related to the value of your Technical Debt Ratio (Technical
+                        Debt is
+                        the
+                        measure of effort required to fix all Code Smells and the ratio between cost to develop
+                        the
+                        software
+                        and the cost to fix it is Technical Debt Ratio). </p>
+                    <p>
+                        The default Maintainability Rating grid is:
+                        <b>A=0-0.05, B=0.06-0.1, C=0.11-0.20, D=0.21-0.5, E=0.51-1</b>
+                        The Maintainability Rating scale can be alternately stated by saying that if the
+                        outstanding
+                        remediation cost is:
+                    </p>
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th class="w-20">Maintainability Rating</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    A
+                                </td>
+                                <td>
+                                    <=5% of the time that has already gone into the application </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    B
+                                </td>
+                                <td>
+                                    between 6 to 10%
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    C
+                                </td>
+                                <td>
+                                    between 11 to 20%
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    D
+                                </td>
+                                <td>
+                                    between 21 to 50%
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    E
+                                </td>
+                                <td>
+                                    anything over 50%
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="security-rating avoid-page-break">
+                    <h5 class="sub-title">Security Rating</h5>
+                    <p>Security rating is based on the number of vulnerabilities detected</p>
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th class="w-20">Security Rating</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    A
+                                </td>
+                                <td>
+                                    0 Vulnerabilities
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    B
+                                </td>
+                                <td>
+                                    at least 1 Minor Vulnerability
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    C
+                                </td>
+                                <td>
+                                    at least 1 Major Vulnerability
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    D
+                                </td>
+                                <td>
+                                    at least 1 Critical Vulnerability
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    E
+                                </td>
+                                <td>
+                                    at least 1 Blocker Vulnerability
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="reliability-rating avoid-page-break">
+                    <h5 class="sub-title">Reliability Rating</h5>
+                    <p>Reliability rating is based on the number of bugs detected</p>
+                    <table class="table table-striped mar-table mt-4">
+                        <thead>
+                            <tr>
+                                <th class="w-20">Reliability Rating</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    A
+                                </td>
+                                <td>
+                                    0 Bugs
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    B
+                                </td>
+                                <td>
+                                    at least 1 Minor Bug
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    C
+                                </td>
+                                <td>
+                                    at least 1 Major Bug
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    D
+                                </td>
+                                <td>
+                                    at least 1 Critical Bug
+                                </td>
+                            </tr>
+                            <tr class="avoid-page-break">
+                                <td>
+                                    E
+                                </td>
+                                <td>
+                                    at least 1 Blocker Bug
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="duplicated-blocks avoid-page-break">
+                    <h5 class="sub-title">Duplicated Blocks</h5>
+                    <p>Number of duplicated blocks of lines.</p>
+                    <p>For a block of code to be considered as duplicated:</p>
+
+                    <p class="sub-title-1">
+                        Non-Java projects:
+                    </p>
+
+                    <ul>
+                        <li>There should be at least 100 successive and duplicated tokens.</li>
+                        <li>Those tokens should be spread at least on:</li>
+                        <li>30 lines of code for COBOL</li>
+                        <li>20 lines of code for ABAP</li>
+                        <li>10 lines of code for other languages</li>
+                    </ul>
+
+                    <p class="sub-title-1">
+                        Java projects:
+                    </p>
+
+                    <p>There should be at least 10 successive and duplicated statements whatever the number of
+                        tokens
+                        and
+                        lines. Differences in indentation and in string literals are ignored while detecting
+                        duplications.
+                    </p>
+                </div>
+                <div class="duplicated-files avoid-page-break">
+                    <h5 class="sub-title">Duplicated Files</h5>
+                    <p>Number of files involved in duplications.</p>
+                </div>
+                <div class="duplicated-lines avoid-page-break">
+                    <h5 class="sub-title">Duplicated Lines</h5>
+                    <p>Number of lines involved in duplications.</p>
+                </div>
+                <div class="comment-lines avoid-page-break">
+                    <h5 class="sub-title">Comment Lines</h5>
+                    <p>Number of lines containing either comment or commented-out code.</p>
+                    <p>Non-significant comment lines (empty comment lines, comment lines containing only special
+                        characters,
+                        etc.) do not increase the number of comment lines.</p>
+                    <p>Example: The following piece of code contains 9 comment lines:</p>
+                    <img src="assets/images/commented-code.jpg">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center mt-2">
+            <button type="button" class="btn btn-info button-width-full button-custom" (click)="downloadStackReport()"
+                [disabled]="isReportDownloading">
+                {{constants.downloadStackReport}}
+            </button>
+        </div>
+    </div>
+</div>

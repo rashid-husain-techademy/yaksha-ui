@@ -1,0 +1,92 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-b-48">
+                <h4 class="card-title mb-0"><span class="lstick"></span>{{constants.userAttemptDetails}}</h4>
+
+                <table class="table table-striped border mt-4 ">
+                    <thead>
+                        <tr>
+                            <th sortable="Name">{{constants.nameLabel}}</th>
+                            <th sortable="Email">{{constants.email}}</th>
+                            <th>{{constants.assessment}}</th>
+                            <th>{{constants.testPurpose}}</th>
+                            <th>{{constants.maxAttempt}}</th>
+                            <th>{{constants.availedAttempt}}</th>
+                            <th>{{constants.status}}</th>
+
+                            <th class="text-center">{{constants.actions}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let userAttemptDetail of userAttemptDetailsDto; let i=index">
+                            <td class="text-wrap-10">
+
+                                <ngb-highlight [result]="userAttemptDetail.name"></ngb-highlight>
+                            </td>
+
+                            <td class="text-wrap-15">
+                                <ngb-highlight [result]="userAttemptDetail.emailAddress"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-15">
+                                <ngb-highlight [result]="userAttemptDetail.assessment"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-15">
+                                <ngb-highlight [result]="userAttemptDetail.testPurpose"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-5">
+                                <ngb-highlight [result]="userAttemptDetail.maxAttempt"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-5">
+                                <ngb-highlight [result]="userAttemptDetail.availedAttempt"></ngb-highlight>
+                            </td>
+                            <td class="text-wrap-5">
+                                <div *ngIf="userAttemptDetail.status === status.Failed">
+                                    {{constants.failed}}
+                                </div>
+                                <div *ngIf="userAttemptDetail.status === status.Passed">
+                                    {{constants.passed}}
+                                </div>
+                                <div *ngIf="userAttemptDetail.status === status.Completed">
+                                    {{constants.completed}}
+                                </div>
+                            </td>
+
+                            <td class="text-wrap-25">
+                                <div class="d-flex w-100">
+                                    <button class="btn btn-info m-l-15" type="button"
+                                        [disabled]="checkAttemptIncrease(userAttemptDetail, i)"
+                                        (click)="updateUserAttemptCount(userAttemptDetail,i)">Increase Attempt
+                                        By</button>
+                                    <input type="number" placeholder="{{constants.Attempt}}" [value]="increaseAttemptBy"
+                                        class="form-control input-field" (input)="increaseUserAttemptBy($event,i)"
+                                        min="1" max="9" [disabled]="checkAttemptIncrease(userAttemptDetail, i)" />
+
+                                </div>
+                            </td>
+                        </tr>
+                        <div *ngIf="!userAttemptDetailsDto" class="result pt-4">
+                            <p>{{constants.noUsersFound}}</p>
+                        </div>
+                    </tbody>
+                </table>
+
+                <!--  <div class="d-flex justify-content-between p-2" *ngIf="userList?.totalCount">
+                    <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="userList?.totalCount"
+                        (pageChange)="loadPage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                        [(ngModel)]="pageSize">
+                        <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                            {{constants.itemsPerPage}}</option>
+                    </select>
+                </div>-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary"
+                        (click)="close()">{{constants.close}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

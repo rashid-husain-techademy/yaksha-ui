@@ -1,0 +1,128 @@
+.w-20 {
+    width: 20%;
+    min-width: 55%;
+    max-width: 128%;
+}
+
+
+.w-30 {
+    width: 30%;
+}
+
+.container {
+    max-width: 1360px;
+}
+
+.question-height {
+
+    min-width: 55%;
+    max-width: 128%;
+    margin-bottom: 0px;
+
+}
+
+.question-height .card-body {
+    height: calc(100vh - 100px);
+    overflow: hidden;
+}
+
+.ide-label {
+    margin: auto 61px auto 0;
+    font-weight: 600;
+}
+
+.password-label {
+    margin: auto 1rem auto 0;
+    font-weight: 600;
+}
+
+.username-label {
+    margin: auto 1rem auto 0;
+    font-weight: 600;
+}
+
+.input-group {
+    width: 95%;
+}
+
+.mt-100 {
+    margin-top: 100px;
+}
+
+.note {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.test-cases {
+    .title {
+        margin: 5px 5px 10px 5px;
+    }
+
+    .collapse.show .card-body {
+        background-color: #efefef !important;
+    }
+
+    .content {
+        .tags p {
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 0.5rem;
+        }
+
+        .execute {
+            margin: 0.5rem 0.2rem 0.2rem 0.2rem;
+        }
+
+        .input-output {
+            position: relative;
+            top: 22px;
+        }
+
+    }
+
+    .table-borderless {
+        th {
+            padding: 0px 0 5px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0;
+        }
+
+        thead {
+            th {
+                font-weight: 400;
+                font-style: italic;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .btn:focus {
+        box-shadow: none !important;
+    }
+
+    .btn-link {
+        color: #009efb !important;
+    }
+
+    .success {
+        color: #30a63e;
+    }
+
+    .danger {
+        color: #f62d51;
+    }
+}
+
+::ng-deep p .indentaion img {
+    width: auto  !important;
+}
+
+::ng-deep div .indentaion img {
+    width: auto  !important;
+}

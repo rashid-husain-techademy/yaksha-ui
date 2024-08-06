@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="login" datatype="html">
+        <source>Log in</source>
+        <target>Log in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/login/login.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/login/login.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="username" datatype="html">
+        <source>User Name Or Email</source>
+         <target>User Name Or Email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/login/login.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      
+      <trans-unit id="signup" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Have not account yet? <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/> Signup<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>Have not account yet? <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/> Signup<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/login/login.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register" datatype="html">
+        <source>Register</source>
+        <target>Register</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="name" datatype="html">
+        <source>Name</source>
+        <target>Name</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/edit-tenant/edit-tenant-dialog.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="surname" datatype="html">
+        <source>Surname</source>
+         <target>Surname</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="email" datatype="html">
+        <source>emailAddress</source>
+        <target>emailAddress</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="userName" datatype="html">
+        <source>UserName</source>
+        <target>UserName</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="back" datatype="html">
+        <source>
+                    Back
+            </source>
+            <target>
+                    Back
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="submit" datatype="html">
+        <source>
+                    Submit
+            </source>
+            <target>
+                    Submit
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="changeTenant" datatype="html">
+        <source>ChangeTenant</source>
+        <target>ChangeTenant</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change-dialog.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tenancyName" datatype="html">
+        <source>Tenant Name</source>
+        <target>Tenant Name</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/edit-tenant/edit-tenant-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leaveEmptyToSwitchToHost" datatype="html">
+        <source>LeaveEmptyToSwitchToHost</source>
+         <target>LeaveEmptyToSwitchToHost</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change-dialog.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cancel" datatype="html">
+        <source>Cancel</source>
+         <target>Cancel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change-dialog.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/edit-user/edit-user-dialog.component.html</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/reset-password/reset-password.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/edit-tenant/edit-tenant-dialog.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="save" datatype="html">
+        <source>Save</source>
+        <target>Save</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change-dialog.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/edit-user/edit-user-dialog.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/reset-password/reset-password.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/edit-tenant/edit-tenant-dialog.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/change-password/change-password.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="currentTenant" datatype="html">
+        <source>CurrentTenant</source>
+        <target>CurrentTenant</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="notSelected" datatype="html">
+        <source>NotSelected</source>
+        <target>NotSelected</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="change" datatype="html">
+        <source>Change</source>
+        <target>Change</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/tenant/tenant-change.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createNewUser" datatype="html">
+        <source>CreateNewUser</source>
+         <target>CreateNewUser</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="isActive" datatype="html">
+        <source>
+              IsActive
+              </source>
+               <target>
+              IsActive
+              </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/edit-user/edit-user-dialog.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/edit-tenant/edit-tenant-dialog.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="confirmPassword" datatype="html">
+        <source>ConfirmPassword</source>
+        <target>ConfirmPassword</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="userDetails" datatype="html">
+        <source>UserDetails</source>
+        <target>UserDetails</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="userRoles" datatype="html">
+        <source>UserRoles</source>
+        <target>UserRoles</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/edit-user/edit-user-dialog.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editUser" datatype="html">
+        <source>EditUser</source>
+         <target>EditUser</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/edit-user/edit-user-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="userdetails" datatype="html">
+        <source>UserDetails</source>
+         <target>UserDetails</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/edit-user/edit-user-dialog.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="password" datatype="html">
+        <source>Password</source>
+        <target>Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">account/register/register.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/create-user/create-user-dialog.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="resetPassword" datatype="html">
+        <source>ResetPassword</source>
+         <target>ResetPassword</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/reset-password/reset-password.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="adminPassword" datatype="html">
+        <source>AdminPassword</source>
+        <target>AdminPassword</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/reset-password/reset-password.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="users" datatype="html">
+        <source>Users</source>
+         <target>Users</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="refresh" datatype="html">
+        <source>Refresh</source>
+         <target>Refresh</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="all" datatype="html">
+        <source>All</source>
+         <target>All</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="yes" datatype="html">
+        <source>Yes</source>
+        <target>Yes</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="no" datatype="html">
+        <source>No</source>
+        <target>No</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="search" datatype="html">
+        <source>Search</source>
+        <target>Search</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fullName" datatype="html">
+        <source>FullName</source>
+        <target>FullName</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="actions" datatype="html">
+        <source>Actions</source>
+        <target>Actions</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="edit" datatype="html">
+        <source>Edit</source>
+        <target>Edit</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="delete" datatype="html">
+        <source>Delete</source>
+         <target>Delete</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/users.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="create_NewTenant" datatype="html">
+        <source>CreateNewTenant</source>
+         <target>CreateNewTenant</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="databaseConnectionString" datatype="html">
+        <source>DatabaseConnectionString</source>
+        <target>DatabaseConnectionString</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="adminEmailAddress" datatype="html">
+        <source>AdminEmailAddress</source>
+        <target>AdminEmailAddress</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="defaultPassword" datatype="html">
+        <source>DefaultPasswordIs</source>
+         <target>DefaultPasswordIs</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/create-tenant/create-tenant-dialog.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editTenant" datatype="html">
+        <source>EditTenant</source>
+         <target>EditTenant</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/edit-tenant/edit-tenant-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tenants" datatype="html">
+        <source>Tenants</source>
+        <target>Tenants</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/tenants/tenants.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createNewRole" datatype="html">
+        <source>CreateNewRole</source>
+         <target>CreateNewRole</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="displayname" datatype="html">
+        <source>DisplayName</source>
+         <target>DisplayName</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="roledescription" datatype="html">
+        <source>RoleDescription</source>
+         <target>RoleDescription</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="details" datatype="html">
+        <source>Details</source>
+         <target>Details</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="permissions" datatype="html">
+        <source>Permissions</source>
+         <target>Permissions</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/create-role/create-role-dialog.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editRole" datatype="html">
+        <source>EditRole</source>
+         <target>EditRole</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="description" datatype="html">
+        <source>RoleDescription</source>
+         <target>RoleDescription</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/edit-role/edit-role-dialog.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="roles" datatype="html">
+        <source>Roles</source>
+        <target>Roles</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="roleName" datatype="html">
+        <source>RoleName</source>
+         <target>RoleName</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/roles/roles.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="welcome" datatype="html">
+        <source>WELCOME TO</source>
+        <target>WELCOME TO</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/landing/landing.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="headline" datatype="html">
+        <source>Integrated learning solution that allows you to complete the learning life cycle with
+              rich Digital Content, VM based Cloud Labs, Knowledge Based Assessments, Skill Based Assignments and built-in Virtual Mentor-Led sessions.</source>
+         <target>Integrated learning solution that allows you to complete the learning life cycle with
+              rich Digital Content, VM based Cloud Labs, Knowledge Based Assessments, Skill Based Assignments and built-in Virtual Mentor-Led sessions.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/landing/landing.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="updatePassword" datatype="html">
+        <source>UpdatePassword</source>
+         <target>UpdatePassword</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/change-password/change-password.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="currentPassword" datatype="html">
+        <source>Current Password</source>
+         <target>Current Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/change-password/change-password.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newPassword" datatype="html">
+        <source>New Password</source>
+        <target>New Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/change-password/change-password.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="repeatNewPassword" datatype="html">
+        <source>Confirm New Password</source>
+         <target>Confirm New Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/users/change-password/change-password.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="courseImportExport" datatype="html">
+        <source>Course Import/Export</source>
+         <target>Course Import/Export</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/catalog/catalog.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit> 
+       <trans-unit id="enrollCourses" datatype="html">
+        <source>Enroll Courses</source>
+        <target>Enroll Courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-enroll/course-enroll.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="remove" datatype="html">
+        <source>Remove</source>
+        <target>Remove</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-enroll/course-enroll.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="confirm" datatype="html">
+        <source>Confirm</source>
+        <target>Confirm</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-enroll/course-enroll.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addCourse" datatype="html">
+        <source>Add Course</source>
+         <target>Add Course</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-enroll/course-enroll.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addMore" datatype="html">
+        <source>Add More</source>
+        <target>Add More</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-enroll/course-enroll.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="courseContent" datatype="html">
+        <source><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Course Content<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/></source>
+        <target><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Course Content<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-player/course-player.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="expandAll" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ allExpandState ? &quot;Collapse All&quot; : &quot;Expand All&quot; }}"/></source>
+        <target><x id="INTERPOLATION" equiv-text="{{ allExpandState ? &quot;Collapse All&quot; : &quot;Expand All&quot; }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/course-player/course-player.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      
+      <trans-unit id="logout" datatype="html">
+        <source><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/>input<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Logout</source>
+        <target><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/>input<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Logout</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/layout/sidebar-user-area.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

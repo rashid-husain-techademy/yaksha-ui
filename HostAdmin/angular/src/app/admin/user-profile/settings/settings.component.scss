@@ -1,0 +1,23 @@
+.rounded-circle {
+    background: #ededed;
+    padding   : 5px;
+    min-width : 100px;
+    min-height: 100px;
+}
+
+.image {
+    font-size: 24px;
+    z-index  : 1;
+    left     : 47px;
+    bottom   : 38px;
+    position : absolute;
+    cursor   : pointer;
+}
+
+.field-required {
+    color: rgb(225, 16, 16) !important
+}
+
+.mt-20 {
+    margin-top: 20px;
+}

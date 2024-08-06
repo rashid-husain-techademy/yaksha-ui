@@ -1,0 +1,19 @@
+.dashboard {
+    ::ng-deep iframe {
+        min-height: 700px !important;
+        border: none !important;
+        width: 100% !important;
+        margin-top: -80px;
+    }
+}
+
+.noChartFound {
+    padding-top: 80px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.title {
+    padding: 10px 20px;
+}

@@ -1,0 +1,518 @@
+.w-40 {
+    width: 40% !important;
+}
+
+::ng-deep .container-fluid {
+    padding: 0 !important;
+}
+
+.post-assessment {
+    background: #004c80;
+    min-height: 100vh;
+
+    .card {
+        .card-body {
+            h3 {
+                display: block;
+                line-height: 16px;
+            }
+        }
+    }
+
+    .questions-section .card {
+        width: 33%;
+
+        @media screen and(max-width:767px) {
+            width: 45%;
+        }
+    }
+
+    .scores {
+        height: 120px;
+        position: relative;
+
+        .score-data {
+            height: 120px;
+        }
+
+        .sections,
+        .user-score {
+            height: 10px;
+            position: relative;
+
+            .section-name,
+            .section-score {
+                position: absolute;
+                z-index: 1;
+                font-size: 0.9em;
+            }
+
+            .section-name {
+                top: -22px;
+                left: 3px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .section-score {
+                bottom: -22px;
+                left: 3px;
+                min-width: 50px;
+            }
+        }
+
+        .sections {
+            background-color: #009EFB;
+        }
+
+        .user-score {
+            background-color: #57CD64;
+        }
+    }
+
+    .score-bar {
+        position: relative;
+        height: 50px;
+        font-size: 0.8em;
+
+        &::before {
+            position: absolute;
+            top: 0;
+            left: -11px;
+            z-index: 1;
+        }
+
+        &::after {
+            position: absolute;
+            top: 0;
+            right: -40px;
+            z-index: 1;
+        }
+
+        .skill-name {
+            position: absolute;
+            top: 0;
+        }
+
+        .total {
+            height: 8px;
+            background-color: #e7e4e4;
+            position: relative;
+
+            .cut-off {
+                height: 8px;
+                background-color: #57CD64;
+                position: relative;
+
+                span {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    left: 100%;
+                    height: 50px;
+                    padding-right: 6px;
+                    padding-top: 33px;
+                }
+            }
+        }
+    }
+
+    &.custom-tenant {
+        background: #414042 !important;
+
+        .custom-tenant-logo img {
+            max-width: 200px !important;
+        }
+
+        .scores .sections.tenant {
+            background-color: #a7a9ac !important;
+        }
+
+        .scores .user-score.tenant {
+            background-color: #efb41c !important;
+        }
+
+        .score-bar .total .cut-off.tenant {
+            background-color: #efb41c !important;
+        }
+
+        .btn.btn-info.tenant {
+            color: #fff;
+            background-color: #a7a9ac !important;
+            border-color: #a7a9ac !important;
+        }
+
+    }
+}
+
+.post-assessment-abinbev {
+    background: #ffe100;
+    min-height: 100vh;
+
+    .card {
+        .card-body {
+            h3 {
+                display: block;
+                line-height: 16px;
+            }
+        }
+    }
+
+    .questions-section .card {
+        width: 33%;
+
+        @media screen and(max-width:767px) {
+            width: 45%;
+        }
+    }
+
+    .scores {
+        height: 120px;
+        position: relative;
+
+        .score-data {
+            height: 120px;
+        }
+
+        .sections,
+        .user-score {
+            height: 10px;
+            position: relative;
+
+            .section-name,
+            .section-score {
+                position: absolute;
+                z-index: 1;
+                font-size: 0.9em;
+            }
+
+            .section-name {
+                top: -22px;
+                left: 3px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .section-score {
+                bottom: -22px;
+                left: 3px;
+                min-width: 50px;
+            }
+        }
+
+        .sections {
+            background-color: #FFA500;
+        }
+
+        .user-score {
+            background-color: #FFA500;
+        }
+    }
+
+    .score-bar {
+        position: relative;
+        height: 50px;
+        font-size: 0.8em;
+
+        &::before {
+            position: absolute;
+            top: 0;
+            left: -11px;
+            z-index: 1;
+        }
+
+        &::after {
+            position: absolute;
+            top: 0;
+            right: -40px;
+            z-index: 1;
+        }
+
+        .skill-name {
+            position: absolute;
+            top: 0;
+        }
+
+        .total {
+            height: 8px;
+            background-color: #FFA500;
+            position: relative;
+            color: #000000;
+
+            .cut-off {
+                height: 8px;
+                background-color: #FFA500;
+                position: relative;
+                color: #000000;
+
+                span {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    left: 100%;
+                    height: 50px;
+                    padding-right: 6px;
+                    padding-top: 33px;
+                }
+            }
+        }
+    }
+    .custom-btn-color{
+        background-color: #FFA500;
+        color:#000000
+    }
+   
+}
+
+.post-assessment-abinbev {
+    background: #ffe100;
+    min-height: 100vh;
+
+    .card {
+        .card-body {
+            h3 {
+                display: block;
+                line-height: 16px;
+            }
+        }
+    }
+
+    .questions-section .card {
+        width: 33%;
+
+        @media screen and(max-width:767px) {
+            width: 45%;
+        }
+    }
+
+    .scores {
+        height: 120px;
+        position: relative;
+
+        .score-data {
+            height: 120px;
+        }
+
+        .sections,
+        .user-score {
+            height: 10px;
+            position: relative;
+
+            .section-name,
+            .section-score {
+                position: absolute;
+                z-index: 1;
+                font-size: 0.9em;
+            }
+
+            .section-name {
+                top: -22px;
+                left: 3px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .section-score {
+                bottom: -22px;
+                left: 3px;
+                min-width: 50px;
+            }
+        }
+
+        .sections {
+            background-color: #FFA500;
+        }
+
+        .user-score {
+            background-color: #FFA500;
+        }
+    }
+
+    .score-bar {
+        position: relative;
+        height: 50px;
+        font-size: 0.8em;
+
+        &::before {
+            position: absolute;
+            top: 0;
+            left: -11px;
+            z-index: 1;
+        }
+
+        &::after {
+            position: absolute;
+            top: 0;
+            right: -40px;
+            z-index: 1;
+        }
+
+        .skill-name {
+            position: absolute;
+            top: 0;
+        }
+
+        .total {
+            height: 8px;
+            background-color: #FFA500;
+            position: relative;
+            color: #000000;
+
+            .cut-off {
+                height: 8px;
+                background-color: #FFA500;
+                position: relative;
+                color: #000000;
+
+                span {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    left: 100%;
+                    height: 50px;
+                    padding-right: 6px;
+                    padding-top: 33px;
+                }
+            }
+        }
+    }
+    .custom-btn-color{
+        background-color: #FFA500;
+        color:#000000
+    }
+   
+}
+
+
+.m-l-94 {
+    padding-left: 77px;
+    padding-right: 35px;
+    padding-bottom: 8px;
+}
+
+.logo {
+    margin-bottom: 30px;
+
+    img {
+        max-width: 115px;
+        height: 45px;
+    }
+}
+
+.admin-message {
+    font-weight: 400;
+    font-size: 19px;
+    color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+
+.mt-25 {
+    margin-top: 25px !important;
+}
+
+.w-33 {
+    width: 33.3% !important;
+}
+
+.email-text-wrap {
+    overflow-wrap: break-word !important;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.button-section {
+    @media screen and(max-width:495px) {
+        .retry-btn {
+            margin-top: 10px;
+        }
+    }
+}
+
+.time-info {
+    @media screen and(min-width:769px) {
+        width: 25%;
+        margin-right: 40px;
+        padding-right: 40px;
+        border-right: 1px solid #e9ecef !important;
+    }
+
+    @media screen and(max-width:768px) {
+        width: 100%;
+        border-bottom: 1px solid #e9ecef !important;
+    }
+}
+
+.question-level {
+    @media screen and(min-width:768px) {
+        width: 25%;
+        margin-left: 40px;
+        padding-left: 40px;
+        border-left: 1px solid #e9ecef !important;
+    }
+
+    @media screen and(max-width:767px) {
+        padding-top: 20px;
+        width: 100%;
+        border-top: 1px solid #e9ecef !important;
+    }
+}
+
+.question-card {
+    @media screen and(min-width:768px) {
+        margin-right: 20px;
+    }
+}
+#apex-chart-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.adaptive-time{
+    @media screen and(min-width:768px){
+        width:25%;
+        border-right: 1px solid #e9ecef !important;
+        padding-right: 40px;
+        margin-right: 40px;
+    }
+
+    @media screen and (max-width:767px) {
+        width:100%;
+        border-bottom: 1px solid #e9ecef !important;
+        padding-bottom: 20px
+    }
+}
+.adaptive-question-type{
+    @media screen and(min-width:768px){
+        width: 25%;
+        margin-left: 40px;
+        padding-left: 40px;
+        border-left: 1px solid #e9ecef !important;
+    }
+
+    @media screen and (max-width:767px){
+        width:100%;
+        border-top: 1px solid #e9ecef !important;
+        padding-top: 20px;
+    }
+}
+.adaptive-question-card{
+    @media screen and(min-width:768px){
+        margin-right: 20px;
+    }
+    @media screen and (max-width:767px){
+        margin-right: 0px;
+    }
+}
+.hackathon-table{
+    @media only screen and (max-width:767px) {
+        overflow-x: scroll;
+    }
+}

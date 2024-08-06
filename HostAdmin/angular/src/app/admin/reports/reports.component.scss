@@ -1,0 +1,143 @@
+.pointer {
+    cursor: pointer !important;
+}
+
+.button-margin-top-25 {
+    margin-top: 25px;
+}
+
+.button-width-full {
+    width: 100%;
+}
+
+input::-webkit-input-placeholder {
+    font-size: 14px;
+}
+
+.button-custom {
+    width: 250px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.testpurpose-dropdown ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item{
+    white-space: nowrap;
+    max-width: 210px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;  
+} 
+
+.reportcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 210px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.reportcustom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 41px;
+    top: 6px;
+    font-weight: bolder;
+}
+
+.card {
+    .card-body {
+        h3 {
+            display: block;
+            line-height: 16px;
+        }
+    }
+}
+
+.reports-table-cust {
+    margin-left: 1rem
+}
+
+.button-margin-right-25 {
+    margin-right: 25px;
+}
+
+.report-type-margin {
+    width: 12rem;
+    margin-left: 1rem;
+}
+
+.error {
+    color: red;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.font-size-20 {
+    font-size: 20px !important;
+}
+
+.width-auto {
+    width: auto
+}
+
+.search-btn {
+    border-radius: 0px 2px 2x 0px;
+    margin-right: 0px;
+}
+
+.w-30 {
+    width: 100%;
+
+    @media screen and (min-width:767px) {
+        width: 30%;
+    }
+}
+
+.w-28 {
+    width: 100%;
+
+    @media screen and (min-width:767px) {
+        width: 26%;
+
+    }
+}
+
+.m-l-36 {
+    @media screen and (min-width:767px) {
+        margin-left: 36px;
+    }
+}
+
+.w-26 {
+    width: 26.5%;
+}
+
+.btn {
+    margin-right: 0px;
+}
+
+.assessmentname-dropdown{
+    display: flex;
+    align-items: center;
+}
+
+.assessmentname-dropdown ng-multiselect-dropdown{
+    width: 100%;
+}
+.assessmentname-dropdown ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item{
+    white-space: nowrap;
+    max-width: 190px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;  
+} 
+.assessmentname-dropdown::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 41px;
+    top: 6px;
+    font-weight: bolder;
+}

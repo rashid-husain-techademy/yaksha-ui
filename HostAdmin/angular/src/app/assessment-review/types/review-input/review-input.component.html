@@ -1,0 +1,54 @@
+<ng-container [formGroup]="group">
+    <div class="card">
+        <div>
+            <div class="ribbon ribbon-top-left beginner-color" *ngIf="field.proficiencyId === constants.beginnerId">
+                <span>{{constants.beginner}}</span>
+            </div>
+            <div class="ribbon ribbon-top-left intermediate-color"
+                *ngIf="field.proficiencyId === constants.intermediateId">
+                <span>{{constants.intermediate}}</span>
+            </div>
+            <div class="ribbon ribbon-top-left advanced-color" *ngIf="field.proficiencyId === constants.advancedId">
+                <span>{{constants.advanced}}</span>
+            </div>
+        </div>
+        <div class="action">
+            <i *ngIf="enableAttemptDetails" class="fas fa-info-circle text-info m-r-10 pointer"
+            (click)="attemptDetails(); isInfoClicked = true;"></i>
+            <i *ngIf="field.isEnableQuestionEdit" class="ti-pencil text-info m-r-10 pointer"
+                (click)="navigateToEditQuestion()"></i>
+            <i *ngIf="field.isEnableQuestionDelete" class="ti-trash text-danger text-info m-r-10 pointer"
+                (click)="removeQuestion()"></i>
+        </div>
+        <div class="card-body card-question">
+            <input type="text" *ngIf="formControlName" [formControlName]="formControlName" hidden>
+            <div [innerHTML]="convertedQuestionText" #inputLabel id="inputLabel" class="indentaion">
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="m-r-20" *ngIf="field.skillName">
+                    <div class="text-info m-0"><strong class="text-muted">{{constants.skill}}:
+                        </strong>{{field.skillName}}</div>
+                </div>
+                <div class="m-r-20" *ngIf="isInfoClicked">
+                    <div class="text-info m-0"><strong class="text-muted">{{constants.correctAttempts}}:
+                        </strong>{{correctAttempts}}</div>
+                </div>
+                <div class="m-r-20" *ngIf="isInfoClicked">
+                    <div class="text-info m-0"><strong class="text-muted">{{constants.incorrectAttempts}}:
+                        </strong>{{incorrectAttempts}}</div>
+                </div>
+                <div class="m-r-20" *ngIf="field.subSkillName">
+                    <div class="text-info m-0"><strong class="text-muted">{{constants.subSkill}}:
+                        </strong>{{field.subSkillName}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card align-items-initial" *ngIf="field.isReviewerLogin && answers?.length > 0">
+        <ol class="in ans-max-width">
+            <li><strong>{{constants.answer}}:</strong> <a class="m-l-10" *ngFor="let answer of answers">{{answer}}</a>
+            </li>
+        </ol>
+    </div>
+</ng-container>

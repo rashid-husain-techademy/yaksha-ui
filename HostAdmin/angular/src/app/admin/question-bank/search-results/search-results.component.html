@@ -1,0 +1,60 @@
+<div class="card card-body m-b-10">
+    <h3>Search result for - {{searchString}}</h3>
+</div>
+<div class="card w-100">
+    <div class="card-body">
+        <table class="table table-striped border search-results disable-text-selection">
+            <thead>
+                <tr>
+                    <th>{{constants.questions}}</th>
+                    <th class="text-center">{{constants.type}}</th>
+                    <th class="text-center">{{constants.proficiency}}</th>
+                    <th class="text-center">{{constants.questionSKU}}</th>
+                    <th class="text-center">
+                        {{constants.action}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let question of questionsData">
+                    <td class="w-60">
+                        <div [innerHTML]="question.questionText" class="name"></div>
+                    </td>
+                    <td class="text-center">
+                        {{question.questionTypeName}}
+                    </td>
+                    <td class="text-center">
+                        {{question.proficiencyName}}
+                    </td>
+                    <td class="text-center">
+                        {{question.questionIdNumber}}
+                        <button class="text-info btn" ngbTooltip={{constants.copyQuestionSKU}}
+                            (click)="copyText(question.questionIdNumber)">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </td>
+                    <td class="text-center actions">
+                        <button ngbTooltip="View question"
+                            (click)="viewQuestion(question.questionText,question.choices,question.skillName,question.categoryName,question.questionTypeId)"
+                            class="btn">
+                            <i class="far fa-file-alt pointer"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                <tr *ngIf="!questionsData?.length">
+                    <td class="text-center" colspan="6">
+                        <p>{{constants.noQuestionsFound}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div>
+    <div class="border-left p-l-20 m-r-20" style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" [disabled]="disableBackButton" class="btn btn-outline-info "
+            (click)="back()">{{constants.back}}</button>
+        <button type="button" [disabled]="disableLoadMoreButton" class="btn btn-outline-info"
+            (click)="loadMore()">{{constants.loadMore}}</button>
+    </div>
+</div>

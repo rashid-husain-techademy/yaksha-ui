@@ -1,0 +1,43 @@
+<form [formGroup]="catalogForm" novalidate autocomplete="off">
+    <div class="modal-header">
+        <h4 class="modal-title">{{constants.createOrEditCatalog}}</h4>
+        <span class="cursor-pointer" aria-hidden="true" aria-label="Close" (mousedown)="closeMouseDown()"
+            (click)="closeBtnClick()">&times;</span>
+    </div>
+    <div class="modal-body">
+        <div class="m-b-20">
+            <div class="m-b-10">
+                <label for="" class="font-weight-bold">{{constants.catalogName}} <span
+                        class="text-danger">*</span></label>
+                <input type="text" class="form-control" [placeholder]="constants.catalogName" maxlength="500"
+                    formControlName="catalogName">
+                <small class="form-text text-danger"
+                    *ngIf="!isFormValid('catalogName')">{{constants.pleaseEnterCatalogName}}</small>
+            </div>
+            <div class="m-b-10">
+                <label for="" class="font-weight-bold">{{constants.assignTo }} <span
+                        class="text-danger">*</span></label>
+                <select name="" class="form-control" id="" *ngIf="tenantDetailsList" formControlName="selectedTenantId"
+                    [ngModelOptions]="{standalone: true}">
+                    <option [ngValue]="tenant.id" *ngFor="let tenant of tenantDetailsList">{{tenant.tenancyName}}
+                    </option>
+                </select>
+                <small class="form-text text-danger"
+                    *ngIf="!isFormValid('selectedTenantId')">{{constants.pleaseSelectTenantId}}</small>
+            </div>
+            <div class="m-b-10">
+                <div class="input-group">
+                    <mat-slide-toggle class="mat-slide-toggle-content" formControlName="isActive">
+                    </mat-slide-toggle>
+                    <label for="" class="font-weight-bold labelactive">{{constants.active}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (mousedown)="closeMouseDown()"
+            (click)="closeBtnClick()">{{constants.cancel}}</button>
+        <button [disabled]="!catalogForm.dirty" type="button" class="btn btn-info" (click)="createCatalog()">
+            {{!catalogDetails ? constants.create : constants.update}}</button>
+    </div>
+</form>

@@ -1,0 +1,189 @@
+<div id="assessment-detail" appDisableCopy appDisablePaste appDisableRightClick>
+
+    <div class="card">
+        <div class="card-body">
+            <h3 class="assessment-label">{{assessment?.assessmentDetails.assessmentName}}</h3>
+            <h5>{{assessment?.assessmentDetails.categoryName}}</h5>
+            <div class="text-muted m-b-10">{{assessment?.assessmentDetails.authorName}}</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="border d-inline-flex">
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-info m-0">{{assessment?.assessmentDetails.noOfAttempts}}</h5>
+                        <small class="text-muted">{{constants.attempts}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-info m-0">{{formattedDateTime(assessment?.assessmentDetails.startTime)}}</h5>
+                        <small class="text-muted">{{constants.startTime}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-info m-0">{{formattedDateTime(assessment?.assessmentDetails.endTime)}}</h5>
+                        <small class="text-muted">{{constants.endTime}}</small>
+                    </div>
+                    <div class="border-right p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-success m-0">{{assessment?.assessmentDetails.totalSubmissions}}</h5>
+                        <small class="text-muted">{{constants.totalSubmissions}}</small>
+                    </div>
+                    <div class="p-t-10 p-b-10 p-l-20 p-r-20">
+                        <h5 class="text-info m-0">{{assessment?.assessmentDetails.totalReviewed}}</h5>
+                        <small class="text-muted">{{constants.totalReviewed}}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
+                <li [ngbNavItem]="1" (click)="getCandidateDetails()">
+                    <a ngbNavLink>{{constants.candidates}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-filter text-info m-r-10"></i>
+                                    <div class="input-group w-50">
+                                        <input [(ngModel)]="candidate_searchString" (keyup.enter)="search()" type="text"
+                                            placeholder="{{constants.search}}" class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="search()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-outline-secondary" (click)="reset()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-20">
+                            <table class="table table-striped border m-b-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="w-25 font-weight-bold">{{constants.candidateName}}</th>
+                                        <th scope="col" class="w-25 font-weight-bold">{{constants.email}}</th>
+                                        <th scope="col" class="text-center font-weight-bold">
+                                            {{constants.submissionDate}}
+                                        </th>
+                                        <th scope="col" class="text-center font-weight-bold">{{constants.attempt}}
+                                        </th>
+                                        <th scope="col" class="text-center font-weight-bold">{{constants.status}}
+                                        </th>
+                                        <th scope="col" class="text-right font-weight-bold">{{constants.actions}}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let candidate of assessment?.assessmentCandidateDetails">
+                                        <td>{{candidate.firstName}} {{candidate.lastName}}</td>
+                                        <td>{{candidate.emailAddress}}</td>
+                                        <td class="text-center">{{formattedDateTime(candidate.submissionDate)}}</td>
+                                        <td class="text-center">{{candidate.attempt}}</td>
+                                        <td class="text-center">
+                                            <span class="text-warning"
+                                                *ngIf="candidate.evaluationStatus === reviewStatus.Pending">{{constants.pending}}</span>
+                                            <span class="text-success"
+                                                *ngIf="candidate.evaluationStatus === reviewStatus.Completed">{{constants.reviewed}}</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <button *ngIf="candidate.evaluationStatus === reviewStatus.Pending"
+                                                class="btn btn-outline-info"
+                                                (click)="reviewQuestions(candidate)">{{constants.review}}</button>
+                                            <button *ngIf="candidate.evaluationStatus === reviewStatus.Completed"
+                                                class="btn btn-outline-info"
+                                                (click)="reviewQuestions(candidate)">{{constants.view}}</button>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!candidateTotalCount">
+                                        <td td colspan="7" class="text-center">
+                                            {{constants.noSubmissionsAvailable}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-between p-2">
+                                <ngb-pagination [(page)]="candidatePageIndex" [pageSize]="candidatePageSize"
+                                    [collectionSize]="candidateTotalCount" (pageChange)="pageChange()"
+                                    [maxSize]="candidateMaxSize" [rotate]="true" [ellipses]="false"
+                                    [boundaryLinks]="true">
+                                </ngb-pagination>
+                                <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                                    [(ngModel)]="candidatePageSize">
+                                    <option [ngValue]="pageSize" *ngFor="let pageSize of  candidatePageSizes">
+                                        {{pageSize}}
+                                        {{constants.itemsPerPage}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                    <a ngbNavLink>Description</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <h5>{{constants.description}}</h5>
+                            <div class="p-b-10 border-bottom m-b-10">
+                                <span [innerHTML]="assessment?.assessmentDetails.description"></span>
+                            </div>
+                            <h5>Instructions</h5>
+                            <div>
+                                <span [innerHTML]="assessment?.assessmentDetails.instructions"></span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="3" (click)="getSectionDetails()">
+                    <a ngbNavLink>{{constants.questions}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <div *ngFor="let section of assessmentSectionDetails" class="border p-t-10 m-b-30">
+                                <div class="p-l-10 p-r-10 d-flex justify-content-between align-items-center m-b-10">
+                                    <h5 class="font-weight-bold m-0">{{constants.sectionName}}</h5>
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        <div class="m-r-20">
+                                            <span class="text-muted">{{constants.totalSkills}}: </span>
+                                            <strong class="text-info">{{section.totalSkills}}</strong>
+                                        </div>
+                                        <div class="m-r-20">
+                                            <span class="text-muted">{{constants.totalQuestions}}: </span>
+                                            <strong class="text-info">{{section.totalQuestions}}</strong>
+                                        </div>
+                                        <div>
+                                            <span class="text-muted">{{constants.totalDuration}}: </span>
+                                            <strong class="text-info">{{section.duration}}
+                                                <small>{{constants.mins}}</small></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-striped m-b-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="w-25">{{constants.skillName}}</th>
+                                            <th scope="col" class="text-center">{{constants.mcq}}
+                                            </th>
+                                            <th scope="col" class="text-center">{{constants.coding}}
+                                            </th>
+                                            <th scope="col" class="text-center">{{constants.stack}}
+                                            </th>
+                                            <th scope="col" class="text-center">{{constants.duration}}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let skill of section.sectionSkills">
+                                            <td>{{skill.skillName}}</td>
+                                            <td class="text-center">{{skill.totalMCQQuestions}}</td>
+                                            <td class="text-center">{{skill.totalCodingQuestions}}</td>
+                                            <td class="text-center">{{skill.totalStackQuestions}}</td>
+                                            <td class="text-center">{{skill.duration}} {{constants.mins}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </ng-template>
+                </li>
+            </ul>
+            <div [ngbNavOutlet]="nav"></div>
+        </div>
+    </div>
+
+</div>

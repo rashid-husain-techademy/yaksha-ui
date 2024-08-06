@@ -1,0 +1,159 @@
+pre {
+    color: #3E5569;
+    font: 16px Muli, sans-serif
+}
+
+.line {
+    white-space: pre-line;
+}
+
+.indentaion {
+    white-space: pre-wrap;
+    ::ng-deep p{
+        margin-bottom: 0px !important;
+    }
+}
+
+a {
+    color: unset;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.card {
+    flex-direction: row;
+    align-items: center;
+
+    p {
+        margin-bottom: 0;
+    }
+
+    .ribbon {
+        width: 79px;
+        height: 79px;
+        overflow: hidden;
+        position: absolute;
+        top: -7px;
+        left: -7px;
+        z-index: 1;
+        cursor: pointer;
+
+        &::before,
+        &::after {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            display: block;
+            border: 3px solid #2980b9;
+            border-top-color: transparent;
+            border-left-color: transparent;
+        }
+
+        &::before {
+            top: 0;
+            right: 0;
+        }
+
+        &::after {
+            bottom: 0;
+            left: 0;
+        }
+
+        span {
+            position: absolute;
+            display: block;
+            width: 225px;
+            padding: 2px 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 500;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+            text-transform: uppercase;
+            text-align: center;
+            right: -67px;
+            top: 25px;
+            transform: rotate(-45deg);
+        }
+
+        &.beginner-color {
+
+            &::before,
+            &::after {
+                border: 3px solid #2980b9;
+            }
+
+            span {
+                background-color: #3498db;
+            }
+        }
+
+        &.intermediate-color {
+
+            &::before,
+            &::after {
+                border: 3px solid #9b6504;
+            }
+
+            span {
+                background-color: #fca304;
+            }
+        }
+
+        &.advanced-color {
+
+            &::before,
+            &::after {
+                border: 3px solid #506417;
+            }
+
+            span {
+                background-color: #87b409;
+            }
+        }
+    }
+}
+
+.card-question {
+    padding: 2rem !important;
+    margin-bottom: 0 !important;
+}
+
+.text-info {
+    margin-left: 10px;
+}
+
+.action {
+    margin: 15px 15px 0 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.ans-max-width {
+    max-width: 95%;
+}
+
+.align-items-initial {
+    align-items: initial !important;
+}
+
+.w-80 {
+    width: 80% !important;
+}
+
+.w-90 {
+    width: 90% !important;
+}
+
+::ng-deep code {
+    color:#5d7081 !important;
+    background-color: transparent !important;
+  }
+  
+::ng-deep a[href] {
+    color:#5d7081 !important;
+    background-color: transparent !important;
+}

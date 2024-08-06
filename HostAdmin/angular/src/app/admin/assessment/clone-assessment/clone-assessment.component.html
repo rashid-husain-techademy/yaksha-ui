@@ -1,0 +1,19 @@
+<form [formGroup]="cloneForm" novalidate autocomplete="off" class="invitation-form">
+    <div class="modal-header">
+      <h4 class="modal-title">{{constants.assessmentTitle}}</h4>
+      <input type="text" id="cloneName" formControlName="cloneName" class="form-control" /><br>
+      <div> <small class="form-text text-danger"
+        *ngIf="isFormSubmitTriggered && cloneForm.get('cloneName').hasError('required')"> 
+        {{createAssessmentFormValidationMessages.cloneName}}
+</small>
+</div>
+    </div>
+   
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cancelClone()">{{constants.cancel}}</button>
+      <button type="button" class="btn btn-info" (click)="cloneAssessment()" [disabled]="!isSubmit">{{constants.clone}}</button>
+    </div>
+  </form>
+  
+  
+  

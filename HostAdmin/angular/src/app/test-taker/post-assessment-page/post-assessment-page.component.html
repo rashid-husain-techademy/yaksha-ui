@@ -1,0 +1,112 @@
+<div *ngIf="!isABInBev" [ngClass]="isCustomThemeEnabled ? 'post-assessment custom-tenant':'post-assessment'"
+    class="p-30 text-white d-flex justify-content-center flex-column" appDisableCopy appDisablePaste
+    appDisableRightClick appDisableSelect>
+    <h4 class="m-b-40 text-center">{{constants.youHaveCompleted}}</h4>
+    <h3 class="m-b-40 text-center assessment-label" style="word-break: break-word;">
+        {{postAssessmentResult.assessmentTitle}}</h3>
+    <div class="d-flex w-100 justify-content-center m-b-40">
+        <div class="d-flex w-75 justify-content-between">
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.userAssessmentDuration}} {{constants.mins}}</strong>
+                <small class="text-muted">{{constants.timeUtilization}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>
+                    <span
+                        [ngClass]="isUserFailed ? 'text-pink': 'text-green'">{{postAssessmentResult.userEarnedScore}}</span>
+                    /{{postAssessmentResult.assessmentTotalScore}}
+                </strong>
+                <small class="text-muted">{{constants.score}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.totalAnswered}}</strong>
+                <small class="text-muted">{{constants.questionsAttempted}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.questionsSkipped}}</strong>
+                <small class="text-muted">{{constants.questionsSkipped}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.totalMarkedForReview}}</strong>
+                <small class="text-muted">{{constants.questionsMarkedforReview}}</small>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center w-100 m-b-40 m-t-40">
+        <div class="score-bar border-left border-right d-flex justify-content-center w-75 flex-column">
+            <div class="total">
+                <div class="cut-off" [ngStyle]="{'width': postAssessmentResult.cutOffPercentage + '%'}">
+                    <span class="border-right">
+                        {{postAssessmentResult.cutOffPercentage}}%
+                    </span>
+                </div>
+                <div class="user-score"
+                    [ngStyle]="{'width': postAssessmentResult.earnedPercentage + '%', 'background-color': isUserFailed ? '#39c449': '#f62d51'}">
+                    <span class="border-right">
+                        {{postAssessmentResult.earnedPercentage}}%
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 class="text-center m-b-40">{{resultMessage}}</h3>
+    <div class="text-center" *ngIf="postAssessmentResult.remainingAttempts > 0">
+        <button class="btn btn-info" (click)="navigateToRetryAttempt()">{{constants.retry}}</button>
+    </div>
+</div>
+
+<div *ngIf="isABInBev" class="p-30 post-assessment-abinbev  d-flex justify-content-center flex-column" appDisableCopy
+    appDisablePaste appDisableRightClick appDisableSelect>
+    <h4 class="m-b-40 text-center">{{constants.youHaveCompleted}}</h4>
+    <h3 class="m-b-40 text-center assessment-label" style="word-break: break-word;">
+        {{postAssessmentResult.assessmentTitle}}</h3>
+    <div class="d-flex w-100 justify-content-center m-b-40">
+        <div class="d-flex w-75 justify-content-between">
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.userAssessmentDuration}} {{constants.mins}}</strong>
+                <small class="text-muted">{{constants.timeUtilization}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>
+                    <span
+                        [ngClass]="isUserFailed ? 'text-pink': 'text-green'">{{postAssessmentResult.userEarnedScore}}</span>
+                    /{{postAssessmentResult.assessmentTotalScore}}
+                </strong>
+                <small class="text-muted">{{constants.score}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.totalAnswered}}</strong>
+                <small class="text-muted">{{constants.questionsAttempted}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.questionsSkipped}}</strong>
+                <small class="text-muted">{{constants.questionsSkipped}}</small>
+            </div>
+            <div class="d-flex flex-column">
+                <strong>{{postAssessmentResult.totalMarkedForReview}}</strong>
+                <small class="text-muted">{{constants.questionsMarkedforReview}}</small>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center w-100 m-b-40 m-t-40">
+        <div class="score-bar border-left border-right d-flex justify-content-center w-75 flex-column">
+            <div class="total">
+                <div class="cut-off" [ngStyle]="{'width': postAssessmentResult.cutOffPercentage + '%'}">
+                    <span class="border-right">
+                        {{postAssessmentResult.cutOffPercentage}}%
+                    </span>
+                </div>
+                <div class="user-score"
+                    [ngStyle]="{'width': postAssessmentResult.earnedPercentage + '%', 'background-color': isUserFailed ? '#39c449': '#f62d51'}">
+                    <span class="border-right">
+                        {{postAssessmentResult.earnedPercentage}}%
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 class="text-center m-b-40">{{resultMessage}}</h3>
+    <div class="text-center" *ngIf="postAssessmentResult.remainingAttempts > 0">
+        <button class="btn custom-btn-color" (click)="navigateToRetryAttempt()">{{ constants.retry }}</button>
+    </div>
+</div>

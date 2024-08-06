@@ -1,0 +1,29 @@
+<div *ngIf="!isABInBev" [ngClass]="isCustomThemeEnabled ? 'post-assessment custom-tenant' : 'post-assessment'"
+    class="p-30 text-white d-flex justify-content-center flex-column" appDisableCopy appDisablePaste
+    appDisableRightClick appDisableSelect>
+    <div class="w-100 text-center logo" *ngIf="isTenantLogoLoaded">
+        <img [src]="logoUrl" alt="logo" class="yaksha">
+    </div>
+    <div [ngClass]="isCustomThemeEnabled ? 'success-message custom-tenant' : 'success-message'"
+        class=" d-flex align-items-center justify-content-center">
+        <div class="text-center">
+            <p class="message-size">
+                {{constants.YourTestHasBeenSuccessfullySubmittedOnceTheEvaluationIsDoneTheResultWillBeGenerated}}</p>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isABInBev"
+    class="p-30 post-assessment-abinbev d-flex justify-content-center flex-column" appDisableCopy appDisablePaste
+    appDisableRightClick appDisableSelect>
+    <div class="w-100 text-center logo" *ngIf="isTenantLogoLoaded">
+        <img [src]="logoUrl" alt="logo" class="yaksha">
+    </div>
+    <div [ngClass]="isCustomThemeEnabled ? 'success-message custom-tenant' : 'success-message'"
+        class=" d-flex align-items-center justify-content-center">
+        <div class="text-center">
+            <p class="message-size">
+                {{constants.YourTestHasBeenSuccessfullySubmittedOnceTheEvaluationIsDoneTheResultWillBeGenerated}}</p>
+        </div>
+    </div>
+</div>

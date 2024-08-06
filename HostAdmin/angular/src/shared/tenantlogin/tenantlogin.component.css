@@ -1,0 +1,19 @@
+#intermediate-page {
+    background-color: #42464F;
+    width: 100%;
+    height: 100vh;
+    cursor: wait;
+}
+
+.vertical-horizontal-center {
+    position: absolute;
+    left: 50%;
+    top: 50%
+}
+
+.logo-bottom {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+}

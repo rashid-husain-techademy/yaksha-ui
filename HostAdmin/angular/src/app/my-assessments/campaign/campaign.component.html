@@ -1,0 +1,93 @@
+<div class="m-l-10 d-flex justify-content-between align-items-center ">
+    <h3 class="page-title m-b-20">{{constants.driveAssessments}}</h3>
+    <button class="btn btn-secondary m-r-20" (click)="close()">{{constants.back}}</button>
+</div>
+
+<div class="flex-wrap assessments">
+    <div class="card m-b-20 m-l-10 m-r-10 m-b-20">
+        <div class="card-body d-flex flex-column">
+            <div class="col-12 d-flex justify-content-between align-items-center ">
+                <div class="col-8">
+                    <Label class="title text-info title-custom">{{campaignAssessmentResult?.campaignName}}</Label>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-outline-info m-r-20" [disabled]="!campaignAssessmentResult?.description"
+                        (click)="viewModel(invitation , true)">{{constants.viewDescription}}</button>
+                    <button class="btn btn-outline-info" [disabled]="!campaignAssessmentResult?.instructions"
+                        (click)="viewModel(invitation , false)">{{constants.viewInstructions}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-text text-danger m-l-10" *ngIf="driveInActiveMessage"><span class="text-danger">*</span>
+        {{driveInActiveMessage}}
+    </div>
+    <div class="card m-b-20 m-l-10 m-r-10 m-b-20">
+        <div class="card-body d-flex flex-column"
+            *ngIf="campaignAssessmentResult && campaignAssessments && campaignAssessments?.length > 0">
+            <div *ngFor="let assessment of campaignAssessments let i = index" class="m-b-20">
+                <div>
+                    <div class="circle"><i>{{i+1}}</i></div>
+                </div>
+                <div>
+                    <div style="margin-left: inherit;"
+                        class=" d-flex justify-content-between align-items-center col-12">
+                        <div class="keywords d-flex align-items-center col-10">
+                            <div class="col-5">
+                                <h4 class="title text-info m-0 assessment-label">{{assessment.assessmentName}}
+                                </h4>
+                                <small class=" caption text-muted">{{constants.assessmentName}}</small>
+                            </div>
+                            <ng-container *ngIf="campaignAssessmentResult && campaignAssessmentResult.isScheduleActive">
+                                <div class=" col-2">
+                                    <h6 class="m-0">{{assessment.isScheduleActive ? assessment.passPercentage : 'N/A'}}
+                                    </h6>
+                                    <small class="text-muted">{{constants.passPercentage}}</small>
+                                </div>
+                                <div class=" col-3">
+                                    <h6 class="m-0">{{assessment.isScheduleActive ?
+                                        (assessment.startDateTime | date:'d, MMM y - h:mm a') : 'N/A'}}</h6>
+                                    <small class="text-muted">{{constants.startDate}}</small>
+                                </div>
+                                <div class=" col-3">
+                                    <h6 class="m-0">{{assessment.isScheduleActive ?
+                                        (assessment.endDateTime | date:'d, MMM y - h:mm a') : 'N/A'}}</h6>
+                                    <small class="text-muted">{{constants.endDate}}</small>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <button class="btn" [ngClass]="'btn-outline-info'" type=" button" *ngIf="assessment.isScheduleActive && (assessment.userAssessmentStatus === null || 
+                            assessment.userAssessmentStatus === userAssessmentStatus.InProgress)"
+                            [disabled]="i !== enableStartIndex || (campaignAssessmentResult && !campaignAssessmentResult.isScheduleActive)"
+                            (click)="startAssessment(assessment.assessmentScheduleIdNumber)">{{constants.start}}</button>
+                        <button class="btn" type="button"
+                            [ngClass]="assessment.userAssessmentStatus === userAssessmentStatus.Passed ? 'info-sucess btn-outline-success' : 'info-warning btn-outline-warning'"
+                            *ngIf="assessment.userAssessmentStatus !== null && assessment.userAssessmentStatus !== userAssessmentStatus.InProgress">
+                            {{getUserAssessmentStatus(assessment.userAssessmentStatus)}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #invitation let-modal>
+    <form action="" class="invitation-form" appDisableCopy appDisablePaste appDisableRightClick appDisableSelect>
+        <div class="modal-header">
+            <h4 *ngIf="!isDescription" class="modal-title">{{constants.instructions}}</h4>
+            <h4 *ngIf="isDescription" class="modal-title">{{constants.description}}</h4>
+            <button class="btn" type="button" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div *ngIf="!isDescription" [innerHTML]="campaignAssessmentResult?.instructions"></div>
+            <div *ngIf="isDescription" [innerHTML]="campaignAssessmentResult?.description"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+                {{constants.close}}
+            </button>
+        </div>
+    </form>
+</ng-template>

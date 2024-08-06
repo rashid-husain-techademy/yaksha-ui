@@ -1,0 +1,792 @@
+<div id="pre-assessment" [ngClass]="(isCustomThemeEnabled) ? 'custom-tenant' : '' "
+    *ngIf="(assessmentDetails && !isABInBev)" appDisableCopy appDisablePaste appDisableRightClick appDisableSelect>
+
+    <div class="d-flex justify-content-between align-items-center" style="word-break: break-word;"
+        *ngIf="isCustomThemeEnabled">
+        <div class="text-white w-65 m-0 assessment-label text-tenant">
+            <img src="assets/images/NSEIT-DeX-logo.png" alt="Logo" class="width-200 ml-15-per">
+        </div>
+    </div>
+    <header class="p-20">
+        <div class="d-flex justify-content-between align-items-center" style="word-break: break-word;">
+            <h3 class="text-white w-65 m-0 assessment-label text-tenant">
+                <span *ngIf="assessmentDetails.campaignDetails.name">{{assessmentDetails.campaignDetails.name}}
+                    :</span>
+                {{assessmentDetails.assessmentName}}
+            </h3>
+            <div class="logo text-center w-35 m-0" *ngIf="!isCustomThemeEnabled && isTenantLogoLoaded">
+                <img [src]="logoUrl" alt="Logo" class="width-150">
+            </div>
+        </div>
+        <div class="d-flex justify-content-between m-t-20 assessment-registration-section">
+            <div class="w-65 p-r-20 assessment-details-section">
+                <div class="d-flex flex-wrap text-muted keywords">
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10">
+                        <i class="fas fa-hourglass-end m-r-10"></i>
+                        <span>{{assessmentDetails.duration}} {{constants.mins}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10" *ngIf="!isGurukashi">
+                        <i class="fas fa-th-large m-r-10"></i>
+                        <span>{{assessmentDetails.sections.length}} {{constants.sections}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10" *ngIf="!isGurukashi">
+                        <i class="fas fa-cubes m-r-10"></i>
+                        <span>{{assessmentDetails.totalSkills}} {{constants.skills}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10" *ngIf="!showAdaptive">
+                        <i class="fas fa-question m-r-10"></i>
+                        <span>{{assessmentDetails.totalQuestions}} {{constants.questions}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10" *ngIf="!isGurukashi">
+                        <i class="fas fa-bars m-r-10"></i>
+                        <span>{{assessmentDetails.totalAttempts}} {{constants.totalAttempts}}</span>
+                    </div>
+
+
+                </div>
+                <div *ngIf="!isGurukashi">
+                    <div class="marks" *ngIf="(!showAdaptive && !isHideResultStatus)">
+                        <div class="cut-off tenant"
+                            [ngStyle]="{'width': assessmentDetails.assessmentPassThreshold + '%'}">
+                            <span class="border-right">{{assessmentDetails.assessmentPassThreshold}}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!isGurukashi">
+                    <div class="section-score d-flex" *ngIf="!isStack && !showAdaptive">
+                        <ng-container *ngFor="let section of assessmentDetails.sections; let i = index">
+                            <div class="cut-off prog tenant" [ngStyle]="{'width': section.sectionPercent + '%'}"
+                                [ngbTooltip]="section.sectionName + ' (' + section.totalQuestions + ' Questions)'">
+                                <span class="total-questions">
+                                    {{section.totalQuestions}} {{constants.questions}}
+                                </span>
+                                <span class="section-name">
+                                    {{section.sectionName}}
+                                </span>
+                            </div>
+                        </ng-container>
+
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between text-white requirement-details">
+                    <div class="w-100">
+                        <h4 class="m-b-10">{{constants.systemRequirements}}</h4>
+                        <ul class="p-l-20">
+                            <li>{{constants.recommendedBrowser}}</li>
+                            <li>{{constants.javaScriptShouldBeEnabledInTheBrowser}}</li>
+                            <li *ngIf="assessmentDetails.enableProctoring || assessmentDetails.proctorType">
+                                {{constants.webcamMicShouldBeEnabled}}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="w-100 link-validity-container" *ngIf="assessmentDetails.startTime !== null">
+                        <h4 class="m-b-10">{{constants.linkValidityandCutOffDetails}}</h4>
+                        <ul class="p-l-20">
+                            <li>
+                                {{constants.linkValidityStartDateandTime}} -
+                                {{
+                                helper.convertUTCDateToLocalDate(assessmentDetails?.startTime) |
+                                date: 'd/M/yyyy, h:mm a'
+                                }}
+                            </li>
+                            <li>
+                                {{constants.cutOffDateandTime}} - {{
+                                helper.convertUTCDateToLocalDate(cutOffTime) |
+                                date: 'd/M/yyyy, h:mm a'
+                                }}
+                            </li>
+                            <li *ngIf="slotStartTime && slotEndTime">
+                                {{constants.slotStartDateTime}} - {{ slotStartTime | date: 'd/M/yyyy, h:mm a'}}
+                                {{constants.andEndDateTime}} - {{ slotEndTime | date: 'd/M/yyyy, h:mm a'}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="note" *ngIf="assessmentDetails?.negativeMarking">
+                    {{constants.thisAssessmentHasNegativeMarkingForEveryIncorrectQuestion}}<span>{{assessmentDetails?.negativeMarking}}%</span>
+                    {{constants.marksWillBeDeducted}}</div>
+            </div>
+
+            <div class="w-35 registration-section">
+                <form [formGroup]="assessmentRegisterForm" novalidate autocomplete="off">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            {{constants.registrationDetails}}
+                        </div>
+                        <div class="card-body">
+                            <div class="row" *ngIf="isNewUser">
+                                <div class="col-md-6 m-b-10">
+                                    <label for="firstName" class="font-weight-bold">
+                                        {{constants.firstName}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('firstName') || assessmentRegisterForm.get('firstName').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="firstName"
+                                        placeholder={{constants.firstName}} formControlName="firstName">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('firstName')">
+                                        {{constants.firstNameCannotbeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('firstName').errors?.pattern">
+                                        {{constants.pleaseEnterValidFirstName}}
+                                    </small>
+                                </div>
+                                <div class="col-md-6 m-b-10">
+                                    <label for="lastName" class="font-weight-bold">
+                                        {{constants.lastName}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('lastName') || assessmentRegisterForm.get('lastName').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="lastName"
+                                        placeholder={{constants.lastName}} formControlName="lastName">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('lastName')">
+                                        {{constants.lastNameCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('lastName').errors?.pattern">
+                                        {{constants.pleaseEnterValidLastName}}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex m-b-10" *ngIf="isAiApprove">
+                                <div class="w-50">
+                                    <label for="nameOnIdCard" class="font-weight-bold">
+                                        {{constants.nameOnIdCard}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('nameOnIdCard') || assessmentRegisterForm.get('nameOnIdCard').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="nameOnIdCard"
+                                        placeholder={{constants.nameOnIdCard}} formControlName="nameOnIdCard">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('nameOnIdCard')">
+                                        {{constants.nameOnIdCardCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('nameOnIdCard').errors?.pattern">
+                                        {{constants.pleaseEnterValidNameOnIdCard}}
+                                    </small>
+                                </div>
+                                <div class="w-50">
+                                    <label for="fatherName" class="font-weight-bold">
+                                        {{constants.fatherName}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('fatherName') || assessmentRegisterForm.get('fatherName').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="fatherName"
+                                        placeholder={{constants.fatherName}} formControlName="fatherName">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('fatherName')">
+                                        {{constants.fatherNameCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('fatherName').errors?.pattern">
+                                        {{constants.pleaseEnterValidFatherName}}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="row ">
+                                <div class="m-b-10" [ngClass]="isNewUser ? 'w-100 col-md-6': 'w-100 col-md-12'">
+                                    <label for="eMail" class="font-weight-bold">
+                                        {{constants.email}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('email') || assessmentRegisterForm.get('email').errors?.pattern )? '':'input-error'"
+                                        class="form-control" type="email" id="email" placeholder={{constants.email}}
+                                        formControlName="email"
+                                        pattern="^[\w']+([\.'-]?[\w']+)*@\w+([\.-]?\w+)*(\.\w{1,}\w+)+$">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('email')">
+                                        {{constants.emailCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('email').errors?.email || assessmentRegisterForm.get('email').errors?.pattern">
+                                        {{constants.pleaseEnterValidEmailAddress}}
+                                    </small>
+                                </div>
+
+                                <div class="col-md-6" *ngIf="isNewUser">
+                                    <label for="phone" class="font-weight-bold">
+                                        {{constants.phone}}
+                                        ({{constants.optional}})
+                                    </label>
+                                    <input class="form-control" type="text" id="phoneNumber"
+                                        formControlName="phoneNumber" placeholder={{constants.phone}}>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('phoneNumber').errors?.pattern">
+                                        {{constants.pleaseEnterValidPhoneNumber}}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex" *ngIf="isAiApprove">
+                                <div class="w-100">
+                                    <label for="dateOfBirth" class="font-weight-bold">
+                                        {{constants.dateOfBirth}} <small class="text-danger">*</small>
+                                    </label>
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="yyyy-mm-dd" name="dp1"
+                                            formControlName="dateOfBirth" ngbDatepicker #d1="ngbDatepicker"
+                                            [dayTemplate]="t" [minDate]="{year: 1950, month:1, day: 1}"
+                                            [maxDate]="{year: 2021, month:12, day: 31}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary no-shadow" (click)="d1.toggle()"
+                                                type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('dateOfBirth')">
+                                        {{constants.dateOfBirthCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('dateOfBirth').errors?.date">
+                                        {{constants.pleaseEnterValidDateOfBirth}}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div *ngIf="showCustomFields && assessmentDetails.assessmentScheduleCustomField">
+                                <div class="d-flex flex-wrap m-b-10" formArrayName="customFields">
+                                    <div class="w-50"
+                                        *ngFor="let customField of this.assessmentDetails.assessmentScheduleCustomField; let i = index;">
+                                        <div [formGroupName]="i">
+                                            <label for="phone" class="font-weight-bold">
+                                                {{customField.fieldLabel}}
+                                                <small *ngIf="customField.isMandatory" class="text-danger">*</small>
+                                                <small *ngIf="!customField.isMandatory">
+                                                    ({{constants.optional}})
+                                                </small>
+                                            </label>
+                                            <input class="form-control" type="text" id="customField"
+                                                formControlName="customField" placeholder={{customField.fieldLabel}}>
+
+                                        </div>
+                                        <small class="form-text text-danger" *ngIf="isFormArrayGroupValid(i)">
+                                            {{constants.pleaseEnterValue}}
+                                        </small>
+                                        <small class="form-text text-danger"
+                                            *ngIf="isFormArrayGroupValidRegularExpresson(i)">
+                                            {{constants.pleaseEnterValidValue}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Displaying captcha only for new user and not Displaying for IRIS integration -->
+                            <div *ngIf="isNewUser && !isIrisIntegrated && !disableCaptcha" class="captcha-container">
+                                <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" [size]="size" [hl]="lang"
+                                    [theme]="theme" [type]="type" formControlName="recaptcha">
+                                </ngx-recaptcha2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-info tenant start-btn" (click)="start()"
+                            [disabled]="isAssessmentProcessing">
+                            {{ constants.start }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="d-flex justify-content-between flex-column text-white requirement-details-mobile">
+                <div class="w-100 link-validity-container">
+                    <h4 class="m-b-10">{{constants.systemRequirements}}</h4>
+                    <ul class="p-l-20">
+                        <li>{{constants.recommendedBrowser}}</li>
+                        <li>{{constants.javaScriptShouldBeEnabledInTheBrowser}}</li>
+                        <li *ngIf="assessmentDetails.enableProctoring || assessmentDetails.proctorType">
+                            {{constants.webcamMicShouldBeEnabled}}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="w-100 link-validity-container" *ngIf="assessmentDetails.startTime !== null">
+                    <h4 class="m-b-10">{{constants.linkValidityandCutOffDetails}}</h4>
+                    <ul class="p-l-20">
+                        <li>
+                            {{constants.linkValidityStartDateandTime}} -
+                            {{
+                            helper.convertUTCDateToLocalDate(assessmentDetails?.startTime) |
+                            date: 'd/M/yyyy, h:mm a'
+                            }}
+                        </li>
+                        <li>
+                            {{constants.cutOffDateandTime}} - {{
+                            helper.convertUTCDateToLocalDate(cutOffTime) |
+                            date: 'd/M/yyyy, h:mm a'
+                            }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="instruction p-20 d-flex flex-column flex-md-row w-100 mt-25">
+        <div class="p-r-10 assessment-description" *ngIf="assessmentDetails">
+            <div class="card">
+                <div class="card-body skill">
+                    <div class="d-flex align-items-top justify-content-between m-b-20">
+                        <h4 class="m-b-20">{{constants.description}}</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" [innerHTML]="assessmentDetails.campaignDetails.description"
+                            *ngIf="isHtml(assessmentDetails.campaignDetails.description) && assessmentDetails.campaignDetails.description">
+                        </div>
+                        <div class="col-md-12" [innerHTML]="assessmentDetails.description"
+                            *ngIf="isHtml(assessmentDetails.description)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" assessment-leaderboard p-l-10" *ngIf="assessmentDetails.type === assessmentType.Hackathon">
+            <div class="card">
+                <div class="card-body skill">
+                    <div class="d-flex align-items-top justify-content-between">
+                        <h4 class="m-b-10">{{constants.leaderBoard}}</h4>
+                    </div>
+                    <div class="d-flex align-items-top justify-content-between m-b-20">
+                        <div class="w-100">
+                            <table class="table table-striped border mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold">{{constants.rank}}</th>
+                                        <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                        <th class="font-weight-bold">{{constants.timeTaken}}</th>
+                                        <th class="font-weight-bold">{{constants.points}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                    <tr *ngFor="let userResult of hackathonLeaderBoard.leaderBoardDetails">
+                                        <td>
+                                            {{userResult.rank}}
+                                        </td>
+                                        <td>
+                                            {{userResult.firstName}} {{userResult.lastName}}
+                                        </td>
+                                        <td>
+                                            {{userResult.convertedDuration}}
+                                        </td>
+                                        <td>
+                                            {{userResult.score}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length" class="text-center">
+                                {{constants.noDataFound}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div [ngClass]="(!isCustomThemeEnabled && isABInBev) ? 'abinbev-theme' : '' " *ngIf="(assessmentDetails && isABInBev)"
+    appDisableCopy appDisablePaste appDisableRightClick appDisableSelect>
+    <header class="p-20">
+        <div class="d-flex justify-content-between align-items-center" style="word-break: break-word;">
+            <h3 class="text-black w-65 m-0 assessment-label text-tenant">
+                <span *ngIf="assessmentDetails.campaignDetails.name">{{assessmentDetails.campaignDetails.name}}
+                    :</span>
+                {{assessmentDetails.assessmentName}}
+            </h3>
+            <div class="logo text-center w-35 m-0" *ngIf="!isCustomThemeEnabled && isTenantLogoLoaded">
+                <img [src]="logoUrl" alt="Logo" class="width-150">
+            </div>
+        </div>
+        <div class="d-flex justify-content-between m-t-20 assessment-registration-section">
+            <div class="w-65 p-r-20 assessment-details-section">
+
+                <div class="d-flex flex-wrap text-muted keywords">
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10">
+                        <i class="fas fa-hourglass-end m-r-10"></i>
+                        <span>{{assessmentDetails.duration}} {{constants.mins}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10">
+                        <i class="fas fa-th-large m-r-10"></i>
+                        <span>{{assessmentDetails.sections.length}} {{constants.sections}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10">
+                        <i class="fas fa-cubes m-r-10"></i>
+                        <span>{{assessmentDetails.totalSkills}} {{constants.skills}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10" *ngIf="!showAdaptive">
+                        <i class="fas fa-question m-r-10"></i>
+                        <span>{{assessmentDetails.totalQuestions}} {{constants.questions}}</span>
+                    </div>
+
+                    <div class="d-flex tenant-box tenant align-items-center p-10 m-10">
+                        <i class="fas fa-bars m-r-10"></i>
+                        <span>{{assessmentDetails.totalAttempts}} {{constants.totalAttempts}}</span>
+                    </div>
+
+
+                </div>
+
+                <div class="marks" *ngIf="!showAdaptive && !isHideResultStatus">
+                    <div class="cut-off tenant" [ngStyle]="{'width': assessmentDetails.assessmentPassThreshold + '%'}">
+                        <span class="border-right">{{assessmentDetails.assessmentPassThreshold}}%</span>
+                    </div>
+                </div>
+
+                <div class="section-score d-flex" *ngIf="!isStack && !showAdaptive">
+                    <ng-container *ngFor="let section of assessmentDetails.sections; let i = index">
+                        <div class="cut-off prog tenant" [ngStyle]="{'width': section.sectionPercent + '%'}"
+                            [ngbTooltip]="section.sectionName + ' (' + section.totalQuestions + ' Questions)'">
+                            <span class="total-questions">
+                                {{section.totalQuestions}} {{constants.questions}}
+                            </span>
+                            <span class="section-name">
+                                {{section.sectionName}}
+                            </span>
+                        </div>
+                    </ng-container>
+
+                </div>
+
+                <div class="d-flex justify-content-between text-black">
+                    <div class="w-100">
+                        <h4 class="m-b-10">{{constants.systemRequirements}}</h4>
+                        <ul class="p-l-20">
+                            <li>{{constants.recommendedBrowser}}</li>
+                            <li>{{constants.javaScriptShouldBeEnabledInTheBrowser}}</li>
+                            <li *ngIf="assessmentDetails.enableProctoring || assessmentDetails.proctorType">
+                                {{constants.webcamMicShouldBeEnabled}}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="w-100 link-validity-container text-black" *ngIf="assessmentDetails.startTime !== null">
+                        <h4 class="m-b-10">{{constants.linkValidityandCutOffDetails}}</h4>
+                        <ul class="p-l-20">
+                            <li>
+                                {{constants.linkValidityStartDateandTime}} -
+                                {{
+                                helper.convertUTCDateToLocalDate(assessmentDetails?.startTime) |
+                                date: 'd/M/yyyy, h:mm a'
+                                }}
+                            </li>
+                            <li>
+                                {{constants.cutOffDateandTime}} - {{
+                                helper.convertUTCDateToLocalDate(cutOffTime) |
+                                date: 'd/M/yyyy, h:mm a'
+                                }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="note text-black" *ngIf="assessmentDetails?.negativeMarking">
+                    {{constants.thisAssessmentHasNegativeMarkingForEveryIncorrectQuestion}}<span>{{assessmentDetails?.negativeMarking}}%</span>
+                    {{constants.marksWillBeDeducted}}</div>
+            </div>
+
+            <div class="w-35 registration-section">
+                <form [formGroup]="assessmentRegisterForm" novalidate autocomplete="off">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            {{constants.registrationDetails}}
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex m-b-10" *ngIf="isNewUser">
+                                <div class="w-50">
+                                    <label for="firstName" class="font-weight-bold">
+                                        {{constants.firstName}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('firstName') || assessmentRegisterForm.get('firstName').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="firstName"
+                                        placeholder={{constants.firstName}} formControlName="firstName">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('firstName')">
+                                        {{constants.firstNameCannotbeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('firstName').errors?.pattern">
+                                        {{constants.pleaseEnterValidFirstName}}
+                                    </small>
+                                </div>
+                                <div class="w-50">
+                                    <label for="lastName" class="font-weight-bold">
+                                        {{constants.lastName}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('lastName') || assessmentRegisterForm.get('lastName').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="lastName"
+                                        placeholder={{constants.lastName}} formControlName="lastName">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('lastName')">
+                                        {{constants.lastNameCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('lastName').errors?.pattern">
+                                        {{constants.pleaseEnterValidLastName}}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex m-b-10" *ngIf="isAiApprove">
+                                <div class="w-50">
+                                    <label for="nameOnIdCard" class="font-weight-bold">
+                                        {{constants.nameOnIdCard}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('nameOnIdCard') || assessmentRegisterForm.get('nameOnIdCard').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="nameOnIdCard"
+                                        placeholder={{constants.nameOnIdCard}} formControlName="nameOnIdCard">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('nameOnIdCard')">
+                                        {{constants.nameOnIdCardCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('nameOnIdCard').errors?.pattern">
+                                        {{constants.pleaseEnterValidNameOnIdCard}}
+                                    </small>
+                                </div>
+                                <div class="w-50">
+                                    <label for="fatherName" class="font-weight-bold">
+                                        {{constants.fatherName}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('fatherName') || assessmentRegisterForm.get('fatherName').errors?.pattern )? '':'input-error'"
+                                        type="text" class="form-control" id="fatherName"
+                                        placeholder={{constants.fatherName}} formControlName="fatherName">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('fatherName')">
+                                        {{constants.fatherNameCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('fatherName').errors?.pattern">
+                                        {{constants.pleaseEnterValidFatherName}}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex m-b-10">
+                                <div class="w-50" [ngClass]="isNewUser ? 'w-50': 'w-100'">
+                                    <label for="eMail" class="font-weight-bold">
+                                        {{constants.email}} <small class="text-danger">*</small>
+                                    </label>
+                                    <input
+                                        [ngClass]="(isFormValid('email') || assessmentRegisterForm.get('email').errors?.pattern )? '':'input-error'"
+                                        class="form-control" type="email" id="email" placeholder={{constants.email}}
+                                        formControlName="email"
+                                        pattern="^[\w']+([\.'-]?[\w']+)*@\w+([\.-]?\w+)*(\.\w{1,}\w+)+$">
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('email')">
+                                        {{constants.emailCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('email').errors?.email || assessmentRegisterForm.get('email').errors?.pattern">
+                                        {{constants.pleaseEnterValidEmailAddress}}
+                                    </small>
+                                </div>
+
+                                <div class="w-50" *ngIf="isNewUser">
+                                    <label for="phone" class="font-weight-bold">
+                                        {{constants.phone}}
+                                        ({{constants.optional}})
+                                    </label>
+                                    <input class="form-control" type="text" id="phoneNumber"
+                                        formControlName="phoneNumber" placeholder={{constants.phone}}>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('phoneNumber').errors?.pattern">
+                                        {{constants.pleaseEnterValidPhoneNumber}}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex" *ngIf="isAiApprove">
+                                <div class="w-100">
+                                    <label for="dateOfBirth" class="font-weight-bold">
+                                        {{constants.dateOfBirth}} <small class="text-danger">*</small>
+                                    </label>
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="yyyy-mm-dd" name="dp1"
+                                            formControlName="dateOfBirth" ngbDatepicker #d1="ngbDatepicker"
+                                            [dayTemplate]="t" [minDate]="{year: 1950, month:1, day: 1}"
+                                            [maxDate]="{year: 2021, month:12, day: 31}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary no-shadow" (click)="d1.toggle()"
+                                                type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-danger" *ngIf="!isFormValid('dateOfBirth')">
+                                        {{constants.dateOfBirthCannotBeEmpty}}
+                                    </small>
+                                    <small class="form-text text-danger"
+                                        *ngIf="assessmentRegisterForm.get('dateOfBirth').errors?.date">
+                                        {{constants.pleaseEnterValidDateOfBirth}}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div *ngIf="showCustomFields && assessmentDetails.assessmentScheduleCustomField">
+                                <div class="d-flex" formArrayName="customFields">
+                                    <div class="w-50"
+                                        *ngFor="let customField of this.assessmentDetails.assessmentScheduleCustomField; let i = index;">
+                                        <div [formGroupName]="i">
+                                            <label for="phone" class="font-weight-bold">
+                                                {{customField.fieldLabel}}
+                                                <small *ngIf="customField.isMandatory" class="text-danger">*</small>
+                                                <small *ngIf="!customField.isMandatory">
+                                                    ({{constants.optional}})
+                                                </small>
+                                            </label>
+                                            <input class="form-control" type="text" id="customField"
+                                                formControlName="customField" placeholder={{customField.fieldLabel}}>
+
+                                        </div>
+                                        <small class="form-text text-danger" *ngIf="isFormArrayGroupValid(i)">
+                                            {{constants.pleaseEnterValue}}
+                                        </small>
+                                        <small class="form-text text-danger"
+                                            *ngIf="isFormArrayGroupValidRegularExpresson(i)">
+                                            {{constants.pleaseEnterValidValue}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Displaying captcha only for new user and not Displaying for IRIS integration -->
+                            <div *ngIf="isNewUser && !isIrisIntegrated && !disableCaptcha" class="captcha-container">
+                                <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" [size]="size" [hl]="lang"
+                                    [theme]="theme" [type]="type" formControlName="recaptcha">
+                                </ngx-recaptcha2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-info tenant" (click)="start()"
+                            [disabled]="isAssessmentProcessing">
+                            {{
+                            assessmentDetails.sourceOfSchedule ===
+                            constants.techademy ? constants.start : constants.startAssessment
+                            }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="instruction p-20 d-flex flex-column flex-md-row w-100 mt-25">
+        <div class="p-r-10 assessment-description" *ngIf="assessmentDetails">
+            <div class="card">
+                <div class="card-body skill">
+                    <div class="d-flex align-items-top justify-content-between m-b-20">
+                        <h4 class="m-b-20">{{constants.description}}</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" [innerHTML]="assessmentDetails.campaignDetails.description"
+                            *ngIf="isHtml(assessmentDetails.campaignDetails.description) && assessmentDetails.campaignDetails.description">
+                        </div>
+                        <div class="col-md-12" [innerHTML]="assessmentDetails.description"
+                            *ngIf="isHtml(assessmentDetails.description)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" assessment-leaderboard p-l-10" *ngIf="assessmentDetails.type === assessmentType.Hackathon">
+            <div class="card">
+                <div class="card-body skill">
+                    <div class="d-flex align-items-top justify-content-between">
+                        <h4 class="m-b-10">{{constants.leaderBoard}}</h4>
+                    </div>
+                    <div class="d-flex align-items-top justify-content-between m-b-20">
+                        <div class="w-100">
+                            <table class="table table-striped border mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold">{{constants.rank}}</th>
+                                        <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                        <th class="font-weight-bold">{{constants.timeTaken}}</th>
+                                        <th class="font-weight-bold">{{constants.points}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                    <tr *ngFor="let userResult of hackathonLeaderBoard.leaderBoardDetails">
+                                        <td>
+                                            {{userResult.rank}}
+                                        </td>
+                                        <td>
+                                            {{userResult.firstName}} {{userResult.lastName}}
+                                        </td>
+                                        <td>
+                                            {{userResult.convertedDuration}}
+                                        </td>
+                                        <td>
+                                            {{userResult.score}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length" class="text-center">
+                                {{constants.noDataFound}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #proctoringModal let-modal>
+    <div appDisableCopy appDisablePaste appDisableRightClick>
+        <div class="modal-header justify-content-between align-items-center">
+            <h4 class="modal-title">{{constants.instructions}}</h4>
+        </div>
+        <div class="modal-body" appCustomScroll #appScrollElement="appCustomScroll" #scroll>
+            <div class="proctoring-settings border p-30" *ngIf="isHtml(proctoringMessage)">
+                <h4 class="modal-title text-center m-b-20">{{constants.proctoring}}</h4>
+                <div class="m-b-20">
+                    <div [innerHTML]="proctoringMessage"></div>
+                </div>
+            </div>
+            <div class="p-b-20"
+                *ngIf="isHtml(assessmentDetails.campaignDetails.instructions) && assessmentDetails.campaignDetails.instructions ">
+                <div class="instruction" [innerHTML]="assessmentDetails.campaignDetails.instructions"></div>
+            </div>
+            <div class="p-b-20" *ngIf="isHtml(assessmentDetails.instructions)">
+                <div class="instruction" [innerHTML]="assessmentDetails.instructions"></div>
+            </div>
+        </div>
+        <div
+            [ngClass]="isGurukashi ?  'modal-footer justify-content-end align-items-center' : 'modal-footer justify-content-between align-items-center'">
+            <div class="footer-container" *ngIf="!isGurukashi">
+                <p class="font-size-14 m-b-5">{{constants.pleaseReadTheAboveInstructionsToEnableCheckbox}}</p>
+                <div class="d-flex align-items-top">
+                    <input type="checkbox" id="customCheck" class="m-r-10" [disabled]="appScrollElement.disableBtn"
+                        [(ngModel)]="isInstructionsRead" [ngModelOptions]="{standalone: true}">
+                    <label for="customCheck" class="font-weight-bold m-0"
+                        style="line-height: 14px;">{{constants.iHaveReadAndAcceptTheInstructions}}</label>
+                </div>
+            </div>
+            <div class="footer-container">
+                <button type="button" class="btn btn-info" [disabled]="appScrollElement.disableBtn && !isGurukashi"
+                    (click)="startAssessment()">
+                    {{constants.continue}}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+                    {{constants.cancel}}
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,50 @@
+.invalid-message {
+  background-color: #004c80 !important;
+  height: 100vh;
+  color: white;
+}
+
+.invalid-message-abinbev {
+  background-color: #ffe100 !important;
+  height: 100vh;
+  color: #000000;
+}
+
+.text-height {
+  height: calc(100vh - 20vh);
+}
+
+.logo {
+  max-width: 115px;
+  height:45px;
+}
+
+.logo-padding {
+  padding: 10px 10px 0 0;
+}
+
+.text-email {
+  margin-right: 10px;
+  text-decoration: underline;
+  color: #44aaef;
+}
+
+.custom-theme {
+  background-color: #414143 !important;
+  height: 100vh;
+  color: white;
+
+  .logo {
+    max-width: 200px !important;
+  }
+
+  .text-height {
+    height: calc(100vh - 20vh);
+  }
+
+  .text-email {
+    margin-right: 10px;
+    text-decoration: underline;
+    color: #44aaef;
+  }
+}

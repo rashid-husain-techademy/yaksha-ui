@@ -1,0 +1,156 @@
+<!-- Navbar Header for horizontal only -->
+<div class="navbar-header d-none d-lg-block">
+    <!-- This is for the sidebar toggle which is visible on mobile only -->
+    <a (click)="showMobileMenu = !showMobileMenu" class="nav-toggler waves-effect waves-light d-block d-lg-none"
+        href="javascript:void(0)">
+        <i [ngClass]="(showMobileMenu)?'ti-close':'ti-menu'"></i>
+    </a>
+    <!-- ============================================================== -->
+    <!-- Logo -->
+    <!-- ============================================================== -->
+    <a class="navbar-brand" (click)="goToMain()">
+        <!-- Logo text -->
+        <span class="logo-text" *ngIf="isTenantLogoLoaded">
+            <!-- dark Logo text -->
+            <img [src]="logoUrl" alt="homepage" class="dark-logo" />
+            <!-- Light Logo text -->
+            <img [src]="logoUrl" [ngClass]="isCustomThemeEnabled? 'light-logo custom-logo': 'light-logo'" alt="homepage"
+                class="logo-size" />
+        </span>
+    </a>
+    <!-- ============================================================== -->
+    <!-- End Logo -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Toggle which is visible on mobile only -->
+    <!-- ============================================================== -->
+    <a class="topbartoggler d-block d-lg-none waves-effect waves-light" href="javascript:void(0)"
+        (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent">
+        <i class="ti-more"></i>
+    </a>
+</div>
+
+<!-- ============================================================== -->
+<!-- toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-left mr-auto">
+    <li class="nav-item d-none d-lg-block">
+        <a (click)="toggleSidebar.emit()" class="nav-link sidebartoggler waves-effect waves-light"
+            href="javascript:void(0)">
+            <i class="icon-arrow-left-circle font-18"></i>
+        </a>
+    </li>
+</ul>
+
+
+<ul class="navbar-nav float-left mr-auto" *ngIf="enableSearch">
+    <input type="text" placeholder="Search for questions" [(ngModel)]="searchString"
+        (keyup.enter)="searchQuestionBank(searchString)" class="search-bar" />
+    <button class="btn search-btn" type="button" *ngIf="searchString!=''" (click)="searchQuestionBank(searchString)"><i
+            class="fas fa-search"></i></button>
+</ul>
+<!-- ============================================================== -->
+<!-- Right side toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-right">
+    <!-- <li class="nav-item d-md-block d-none">
+        <form class="app-search">
+            <input type="text" class="form-control" placeholder="Search for...">
+            <a class="srh-btn">
+                <i class="ti-search"></i>
+            </a>
+        </form>
+    </li> -->
+    <!-- ============================================================== -->
+    <!-- User profile and search -->
+    <!-- ============================================================== -->
+    <li class="nav-item" ngbDropdown placement="bottom-right">
+        <a ngbDropdownToggle class="nav-link text-muted waves-effect waves-dark pro-pic" href="javascript:void(0)"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="../../assets/images/profile.png" *ngIf="!dataService.userProfile?.profilePicture" alt="user"
+                class="rounded-circle navprofilepicture" width="31" (click)="profileList()">
+            <img [src]="dataService.userProfile?.profilePicture" *ngIf="dataService.userProfile?.profilePicture"
+                alt="user" class="rounded-circle" width="31" (click)="profileList()">
+        </a>
+        <div class="dropdown-menu-right user-dd" ngbDropdownMenu>
+            <div class="d-flex no-block align-items-center p-15 bg-info text-white m-b-10">
+                <div class="">
+                    <img src="../../assets/images/profile.png" *ngIf="!dataService.userProfile?.profilePicture"
+                        alt="user" class="rounded-circle profilepicture" width="60">
+                    <img [src]="dataService.userProfile?.profilePicture" *ngIf="dataService.userProfile?.profilePicture"
+                        alt="user" class="rounded-circle" width="31">
+                </div>
+                <div class="m-l-10">
+                    <h4 class="m-b-0">{{dataService.userProfile?.name}} {{dataService.userProfile?.surname}}</h4>
+                    <p class=" m-b-0">{{dataService.userProfile?.emailAddress}}</p>
+                </div>
+            </div>
+
+            <!-- <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-wallet m-r-5 m-l-5"></i> My Balance</a>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-email m-r-5 m-l-5"></i> Inbox</a>
+            <div class="dropdown-divider"></div> -->
+            <!-- <a class="dropdown-item" href="default/app/my-assessments">
+                <i class="mdi mdi-adjust m-r-5 m-l-5"></i> My Assessments</a>
+            <div class="dropdown-divider"></div> -->
+            <a class="dropdown-item cursor-pointer" *ngIf="authUser && !isGuruKashiTenant && !isCognizantYakshaTenant"
+                (click)="myProfile()"><i class="ti-user m-r-5 m-l-5"></i>
+                {{constants.myProfile}}</a>
+            <a class="dropdown-item cursor-pointer" *ngIf="authUser" (click)="logout()">
+                <i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- User profile and search -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Comment -->
+    <!-- ============================================================== -->
+    <!-- <li class="nav-item dropdown" ngbDropdown>
+        <a ngbDropdownToggle class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="mdi mdi-message font-18"></i>
+        </a>
+        <div class="dropdown-menu mailbox" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-primary"></span>
+            </span>
+            <ul class="list-style-none">
+                <li>
+                    <div class="drop-title bg-primary text-white">
+                        <h4 class="m-b-0 m-t-5">4 New</h4>
+                        <span class="font-light">Notifications</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="message-center notifications" [perfectScrollbar]="config"> -->
+    <!-- Message -->
+    <!-- <a href="javascript:void(0)" class="message-item" *ngFor="let notification of notifications">
+                            <span class="btn btn-circle {{notification.btn}}">
+                                <i class="{{notification.icon}}"></i>
+                            </span>
+                            <span class="mail-contnet">
+                                <h5 class="message-title">{{notification.title}}</h5>
+                                <span class="mail-desc">{{notification.subject}}</span>
+                                <span class="time">{{notification.time}}</span>
+                            </span>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <a class="nav-link text-center m-b-5 text-muted" href="javascript:void(0);">
+                        <strong>Check all notifications</strong>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li> -->
+    <!-- ============================================================== -->
+    <!-- End Comment -->
+    <!-- ============================================================== -->
+</ul>

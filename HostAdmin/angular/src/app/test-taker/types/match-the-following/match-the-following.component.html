@@ -1,0 +1,28 @@
+<ng-container [formGroup]="group">
+    <div class="card">
+        <div class="card-body indentaion" [innerHTML]="questionText | safeHtml">
+        </div>
+    </div>
+    <h4 class="m-b-20 text-center">{{constants.matchTheFollowing}}</h4>
+    <div class="card">
+        <div class="card-body d-flex">
+            <input type="text" [formControlName]="formControlName" hidden>
+            <div class="w-50 p-10">
+                <div class="m-b-10 border p-10" *ngFor="let leftOption of leftOptions">
+                    <h6 class="m-b-0 line">{{leftOption}}</h6>
+                </div>
+            </div>
+            <div class="w-50 p-10">
+                <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="rightOptions" class="todo"
+                    (cdkDropListDropped)="onDrop($event)">
+                    <div class="cursor-pointer d-flex align-items-center border m-b-10 p-10"
+                        *ngFor="let rightOption of rightOptions" cdkDrag>
+                        <i class="fas fa-ellipsis-v"></i> <i class="fas fa-ellipsis-v"></i>
+                        <span class="todo-border"></span>
+                        <h6 class="m-l-20 m-b-0 line">{{rightOption}}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

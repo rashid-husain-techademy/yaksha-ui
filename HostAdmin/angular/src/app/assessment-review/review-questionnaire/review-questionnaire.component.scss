@@ -1,0 +1,48 @@
+::ng-deep .multiselect-dropdown {
+    .dropdown-btn {
+        .selected-item {
+            color: #fff;
+            background-color: #009efb !important;
+            border-color: #009efb !important;
+            max-width: fit-content !important;
+            margin-bottom: 5px;
+        }
+
+        .selected-item a {
+            color: #ffffff !important;
+        }
+    }
+}
+
+.ng2-multiselect .fadeIn {
+    animation-name: none !important;
+    -webkit-animation-name: none !important;
+}
+
+::ng-deep .selected-list .c-btn {
+    width: 100%;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    font-size: medium !important;
+    color: #708090 !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .clear-all {
+    width: 8px;
+    position: absolute;
+    display: none !important;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+}
+
+.w-60 {
+    width: 60%;
+}
+
+.position-abs {
+    position: absolute;
+}

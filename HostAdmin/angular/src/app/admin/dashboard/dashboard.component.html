@@ -1,0 +1,373 @@
+<h3 class="m-b-20">{{constants.dashboard}}</h3>
+<div class="card">
+    <div class="card-body d-flex flex-wrap">
+        <div class="w-50 p-r-10">
+            <h4 class="m-b-20">{{constants.yakshaAssessments}}</h4>
+            <div class="d-flex">
+                <div class="m-r-40">
+                    <h3 class="text-success m-b-0">{{dashboardAssessmentData?.yakshaAssessmentsCount}}</h3>
+                    <small class="text-muted">{{constants.totalAssessments}}</small>
+                </div>
+                <div class="m-r-40">
+                    <h3 class="text-warning m-b-0">{{dashboardAssessmentData?.yakshaCategories}}</h3>
+                    <small class="text-muted">{{constants.totalCategories}}</small>
+                </div>
+                <div>
+                    <h3 class="text-danger m-b-0">{{dashboardAssessmentData?.yakshaSkills}}</h3>
+                    <small class="text-muted">{{constants.totalSkills}}</small>
+                </div>
+            </div>
+
+        </div>
+        <div class="w-50 p-l-10 border-left">
+            <div class="p-l-40">
+                <div class="row">
+                    <div class="col-6">
+                        <h4 class="m-b-20 m-r-20 m-t-5">{{this.tenantAssessmentText}}</h4>
+                    </div>
+                    <div class="col-6">
+                        <div *ngIf="userRole === userRoles[1]" class="dashboardcustom">
+                            <ng-multiselect-dropdown (onSelect)="tenantSelection($event)"
+                                (onDeSelect)="tenantDeSelection()" [placeholder]="constants.selectTenant"
+                                [settings]="singleDropdownSettings" [data]="tenants">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="m-r-40">
+                        <h3 class="text-success m-b-0">{{tenantAssessmentsCount}}</h3>
+                        <small class="text-muted">{{constants.totalAssessments}}</small>
+                    </div>
+                    <div class="m-r-40">
+                        <h3 class="text-warning m-b-0">{{tenantCategories}}</h3>
+                        <small class="text-muted">{{constants.totalCategories}}</small>
+                    </div>
+                    <div>
+                        <h3 class="text-danger m-b-0">{{tenantSkills}}</h3>
+                        <small class="text-muted">{{constants.totalSkills}}</small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex">
+    <div class="w-50 p-r-10">
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="yakshaQuestionForm" class="custom-height">
+                    <h4 class="m-t-5 m-b-33">{{constants.yakshaQuestions}}</h4>
+                    <div class="row dashboardcustom">
+                        <div class="col-md-4 m-b-72">
+                            <ng-multiselect-dropdown (onSelect)="searchYakshaQuestions()"
+                                placeholder={{constants.selectCategory}} formControlName="selectedCategoryId"
+                                (onDeSelect)="deSelectYakshaQuestions()" [settings]="singleDropdownSettings"
+                                [data]="categories">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-md-4">
+                            <ng-multiselect-dropdown (onSelect)="searchYakshaQuestions()"
+                                (onDeSelect)="deSelectYakshaQuestions()" placeholder={{constants.selectSkill}}
+                                formControlName="selectedSkillId" [settings]="singleDropdownSettings" [data]="skills">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-md-4">
+                            <ng-multiselect-dropdown (onSelect)="searchYakshaQuestions()"
+                                (onDeSelect)="deSelectYakshaQuestions()" placeholder={{constants.selectProficiency}}
+                                formControlName="selectedProficiencyId" [settings]="singleDropdownSettings"
+                                [data]="proficiencies">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="pie-chart-container p-b-5">
+                        <ngx-charts-advanced-pie-chart *ngIf="yakshaQuestionList.length" class="chart-container"
+                            [scheme]="colorScheme" [results]="yakshaQuestionList">
+                        </ngx-charts-advanced-pie-chart>
+                        <h4 class="text-center no-question" *ngIf="!yakshaQuestionList.length">
+                            {{constants.noQuestionsFound}}</h4>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="w-50 p-l-10">
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="tenantQuestionForm">
+                    <div class="row justify-content-around">
+                        <div class="col-6">
+                            <h4 class="m-r-20 m-t-5 m-l-5 m-b-20">{{this.tenantQuestionText}}</h4>
+                        </div>
+                        <div class="col-6">
+                            <div *ngIf="userRole === userRoles[1]" class="dashboardcustom">
+                                <ng-multiselect-dropdown (onSelect)="tenantQuestionChange('tenantId',$event)"
+                                    formControlName="selectedTenantId" (onDeSelect)="deSelectTenants($event)"
+                                    (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onItemDeSelectAll()"
+                                    [placeholder]="constants.selectTenant" [settings]="dropdownSettings"
+                                    [data]="tenants">
+                                </ng-multiselect-dropdown>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row dashboardcustom  m-t-14">
+                        <div class="col-md-4">
+                            <ng-multiselect-dropdown (onSelect)="searchTenantQuestions()"
+                                (onDeSelect)="deSelectTenantQuestions()" [disabled]="tenantFormDisable"
+                                placeholder={{constants.selectCategory}} formControlName="tenantSelectedCategoryId"
+                                [settings]="singleDropdownSettings" [data]="tenantCategory">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-md-4">
+                            <ng-multiselect-dropdown (onSelect)="searchTenantQuestions()" [disabled]="tenantFormDisable"
+                                formControlName="tenantSelectedSkillId" (onDeSelect)="deSelectTenantQuestions()"
+                                placeholder={{constants.selectSkill}} [settings]="singleDropdownSettings"
+                                [data]="tenantSkill">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-md-4">
+                            <ng-multiselect-dropdown (onSelect)="searchTenantQuestions()" [disabled]="tenantFormDisable"
+                                formControlName="tenantSelectedProficiencyId"
+                                placeholder={{constants.selectProficiency}} (onDeSelect)="deSelectTenantQuestions()"
+                                [settings]="singleDropdownSettings" [data]="proficiencies">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="p-10 d-flex">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input class="form-control custom-width" [maxDate]="currentDate"
+                                        placeholder={{constants.startDate}} name="dp1" [disabled]="tenantFormDisable"
+                                        formControlName="tenantStartDate" ngbDatepicker #d3="ngbDatepicker"
+                                        (dateSelect)=onChange()>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary no-shadow" (click)="d3.toggle()"
+                                            type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-10 d-flex">
+                            <div class="form-group m-r-5">
+                                <div class="input-group">
+                                    <input class="form-control custom-width" (dateSelect)="onChange()"
+                                        [maxDate]="currentDate" [disabled]="tenantFormDisable"
+                                        placeholder={{constants.endDate}} name="dp2" formControlName="tenantEndDate"
+                                        ngbDatepicker #d4="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary no-shadow" (click)="d4.toggle()"
+                                            type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="pie-chart-container">
+                    <ngx-charts-advanced-pie-chart *ngIf="tenantQuestionList.length" class="chart-container total-value"
+                        [scheme]="colorScheme" [results]="tenantQuestionList">
+                    </ngx-charts-advanced-pie-chart>
+                    <h4 class="text-center no-question" *ngIf="!tenantQuestionList.length">
+                        {{constants.noQuestionsFound}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap">
+                    <div>
+                        <h4>{{constants.testTakerAssessmentStatus}}</h4>
+                    </div>
+                    <div class="ml-auto">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <h6 class="text-muted">
+                                    <i class="fa fa-circle m-r-5 text-success"></i>{{constants.assessmentsTaken}}
+                                </h6>
+                            </li>
+                            <li class="list-inline-item">
+                                <h6 class="text-muted">
+                                    <i class="fa fa-circle m-r-5 text-info"></i>{{constants.assessmentsScheduled}}
+                                </h6>
+                            </li>
+                        </ul>
+                        <ul>
+                            <div>
+                                <label class="m-b-0">{{constants.selectDuration}}</label>
+                                <select class="custom-select" (change)="onChangeTestTaker()"
+                                    [(ngModel)]="testTakerPeriod">
+                                    <option *ngFor="let duration of testTakerdurationDropDown" [value]="duration.value">
+                                        {{duration.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div style="height:370px;" class="d-flex flex-column" *ngIf="testTakerChartOptions?.series.length">
+                        <apx-chart [series]="testTakerChartOptions.series" [chart]="testTakerChartOptions.chart"
+                            [xaxis]="testTakerChartOptions.xaxis" [yaxis]="testTakerChartOptions.yaxis"
+                            [grid]="testTakerChartOptions.grid" [stroke]="testTakerChartOptions.stroke"
+                            [tooltip]="testTakerChartOptions.tooltip" [fill]="testTakerChartOptions.fill"
+                            [dataLabels]="testTakerChartOptions.dataLabels" [legend]="testTakerChartOptions.legend"
+                            [colors]="testTakerChartOptions.colors" [markers]="testTakerChartOptions.markers">
+                        </apx-chart>
+                        <h4 class="text-center no-question" *ngIf="!testTakerChartOptions?.series.length">
+                            {{constants.noDataFound}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card bg-info test">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div class="m-r-20 align-self-center">
+                        <h1 class="text-white">
+                            <i class="ti-user"></i>
+                        </h1>
+                    </div>
+                    <div>
+                        <h3 class="card-title text-white">
+                            {{assessmentStatus?.testTakerAssessmentType.noOfTotalTestTaken}}</h3>
+                        <h6 class="card-subtitle text-white m-t-5">{{constants.totalTestTakers}}</h6>
+                    </div>
+                </div>
+                <div class="row m-b-20">
+                    <div class="col-12 align-self-center">
+                        <h4 class="font-light text-white mb-0">
+                            {{assessmentStatus?.testTakerAssessmentType.noOfInvitedAssessments}}
+                        </h4>
+                        <small class="color">{{constants.totalInvited}}</small>
+                        <h4 class="font-light text-white mb-0">
+                            {{assessmentStatus?.testTakerAssessmentType.noOfSelfEnrolledAssessments}}
+                        </h4>
+                        <small class="color">{{constants.totalSelfEnrolled}}</small>
+                        <h4 class="font-light text-white mb-0 mt-16">
+                            {{assessmentStatus?.testTakerAssessmentType.noOfPublicAssessments}}
+                        </h4>
+                        <small class="color">{{constants.totalPublicLink}}</small>
+                    </div>
+                    <div class="col-12 chart">
+                        <div style="height: 200;width: 200px;" *ngIf="userChartOptions?.series.length"
+                            class="user-chart">
+                            <apx-chart [series]="userChartOptions.series" [chart]="userChartOptions.chart"
+                                [dataLabels]="userChartOptions.dataLabels" [legend]="userChartOptions.legends"
+                                [colors]="userChartOptions.colors" [stroke]="userChartOptions.stroke"
+                                [labels]="userChartOptions.labels" [tooltip]="userChartOptions.tooltip"
+                                [plotOptions]="userChartOptions.plotOptions"></apx-chart>
+                            <h4 class="text-center no-question" *ngIf="!userChartOptions?.series.length">
+                                {{constants.noDataFound}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-flex justify-content-between users">
+    <div class="card p-20 w-19">
+        <h3 class="text-info m-b-0">{{dashboardAssessmentData?.totalUsers}}</h3>
+        <small class="text-muted">{{constants.totalUsers}}</small>
+    </div>
+    <div class="card p-20 w-19">
+        <h3 class="text-info m-b-0">{{dashboardAssessmentData?.totalTestTakers}}</h3>
+        <small class="text-muted">{{constants.totalTestTakers}}</small>
+    </div>
+    <div class="card p-20 w-19">
+        <h3 class="text-success m-b-0">{{dashboardAssessmentData?.totalPassed}}</h3>
+        <small class="text-muted">{{constants.totalPassed}}</small>
+    </div>
+    <div class="card p-20 w-19">
+        <h3 class="text-danger m-b-0">{{dashboardAssessmentData?.totalFailed}}</h3>
+        <small class="text-muted">{{constants.totalFailed}}</small>
+    </div>
+    <div class="card p-20 w-19">
+        <h3 class="text-warning m-b-0">{{dashboardAssessmentData?.totalReattempts}}</h3>
+        <small class="text-muted">{{constants.totalReattempts}}</small>
+    </div>
+</div>
+<div class="d-flex">
+    <div class="w-45 p-r-10">
+        <div class="card">
+            <div class="card-body skill">
+                <div class="d-flex align-items-top justify-content-between m-b-20">
+                    <h4>{{constants.topUsedSkills}}</h4>
+                </div>
+                <div class="m-b-30" *ngFor="let skillDetail of topSkillAssessments">
+                    <div class="row">
+                        <div class="col-auto">
+                            <img class="custom-image" *ngIf="!skillDetail.skillImage" src="assets/images/skillimage.png"
+                                alt="" width="50px" height="50px">
+                            <img class="custom-image" *ngIf="skillDetail.skillImage" src="{{skillDetail.skillImage}}"
+                                alt="" width="50px" height="50px">
+                        </div>
+                        <div class="col-9 my-auto">
+                            <div class="row">
+                                <div class="col-10">
+                                    <h4 class="m-b-0">{{skillDetail.skillName}}</h4>
+                                </div>
+                                <div class="col-2 assessment-count">
+                                    <h4> {{skillDetail.assessmentCount}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-55 p-l-10">
+        <div class="card">
+            <div class="card-body skill">
+                <div class="d-flex align-items-top justify-content-between m-b-20">
+                    <h4 class="my-auto">{{constants.topAssessments}}</h4>
+                    <div>
+                        <label for="" class="m-b-0">{{constants.selectDuration}}</label>
+                        <select class="custom-select" (change)="onChangeTopAssessments($event)"
+                            [(ngModel)]="topAssessmentPeriod">
+                            <option *ngFor="let duration of topAssessmentDurationDropDown" [value]="duration.value">
+                                {{duration.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="m-b-30" *ngFor="let topAssessmentDetail of topAssessmentDetails">
+                    <h4 class="mb-10 assessment-label">{{topAssessmentDetail.assessmentName}}</h4>
+                    <div class="d-flex text-muted">
+                        <small class="m-r-40">
+                            <i class="fas fa-retweet m-r-10"></i> {{topAssessmentDetail.noOfAssessmentsScheduled}}
+                        </small>
+                        <small class="m-r-40">
+                            <i class="far fa-clock m-r-10"></i> {{topAssessmentDetail.assessmentsDuration}}
+                            {{constants.min}}
+                        </small>
+                        <small class="m-r-40">
+                            <i class="fas fa-users m-r-10"></i> {{topAssessmentDetail.noOfTestTakers}}
+                        </small>
+                        <small>
+                            <i class="fas fa-flag-checkered m-r-10"></i>
+                            {{topAssessmentDetail.completionPercentage}}{{constants.percentageCompletion}}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

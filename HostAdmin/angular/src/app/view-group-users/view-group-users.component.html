@@ -1,0 +1,103 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body  p-b-48">
+                <h4 class="card-title mb-0"><span class="lstick"></span>{{constants.viewUsers}} </h4>
+                <div class="d-flex justify-content-between mt-3">
+                    <input type="text" placeholder="{{constants.search}}" class="form-control w-auto"
+                        [formControl]="searchValue" (change)="search()" />
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-info ml-auto" (click)="openAddUser(addModal, null)">
+                            {{constants.addUser}}</button>
+                    </div>
+                </div>
+                <table class="table table-striped border mt-4">
+                    <thead>
+                        <tr>
+                            <th>{{constants.emailAddress}}</th>
+                            <th>{{constants.status}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of  viewUserGroupList?.groupUsers">
+                            <td>
+                                {{user.userName}}
+                            </td>
+                            <td>
+                                <mat-slide-toggle  [(ngModel)]="user.isActive"
+                                    [checked]="user.isActive" (change)="changeStatus(user,$event.checked)">
+                                    <label for="" class="label-active"
+                                        *ngIf="user.isActive">{{constants.active}}</label>
+                                    <label for="" class="label-active"
+                                        *ngIf="!user.isActive">{{constants.inActive}}</label>
+                                </mat-slide-toggle>
+                            </td>
+                        </tr>
+                        <div *ngIf="!viewUserGroupList?.totalCount" class="result pt-4">
+                            <p>{{constants.noUsersFound}}</p>
+                        </div> 
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between p-2" *ngIf="viewUserGroupList?.totalCount">
+                    <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize"
+                        [collectionSize]="viewUserGroupList?.totalCount" (pageChange)="getCatalogAssignedUsers()"
+                        [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                        [(ngModel)]="pageSize">
+                        <option [ngValue]="userGroupPageSize" *ngFor="let userGroupPageSize of userGroupPageSizes">
+                            {{userGroupPageSize}}
+                            {{constants.itemsPerPage}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #addModal let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title"> {{constants.addUser}}</h5>
+        <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="w-100 m-b-10">
+            <label for="" class="font-weight-bold">{{constants.chooseFile}} <span class="text-danger">*{{constants.makeSureUsersAvailable}}</span></label>
+            <label for="fileUpload" appDragDrop (fileDropped)="onFileChange($event)"
+                class="border d-flex flex-column file-upload justify-content-center align-items-center p-20 h-120">
+                <input type="file" id="fileUpload" hidden #fileInput (change)="onFileChange($event.target.files)"
+                    accept=".xls,.xlsx">
+                {{constants.dragAndDropFile}}
+            </label>
+            <div class="d-flex justify-content-between">
+                <small class="text-muted m-r-40">{{constants.onlyExcelFilesAreSupported}}</small>
+                <a [href]="sampleTemplate">
+                    <small><i class="fa fa-download m-r-10"></i>{{constants.sampleTemplate}}</small>
+                </a>
+            </div>
+            <div *ngIf="file">
+                <span class="label label-rounded label-primary">
+                    {{fileName}}
+                    <span aria-hidden="true" class="pointer m-l-10" (click)="removeSelectedFile()">&times;</span>
+                </span>
+            </div>
+            <div class="m-t-20" *ngIf="showErrors">
+                <h5>{{constants.errors}}</h5>
+                <div *ngIf="errorMessage.length > errorLength">
+                    <h5>#{{constants.errorCountReachedMaximum}}</h5>
+                </div>
+                <ul>
+                    <li *ngFor="let error of errorMessage">{{error}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeBtnClick()">{{constants.close}}</button>
+            <button type="button" class="btn btn-info" [disabled]="!file" (click)="save()">{{constants.save}}</button>
+        </div>
+    </div>
+</ng-template>

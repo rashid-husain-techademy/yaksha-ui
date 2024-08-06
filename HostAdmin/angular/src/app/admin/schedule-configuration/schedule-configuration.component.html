@@ -1,0 +1,150 @@
+<form>
+    <div class="card m-b-20 create-assessment-custom">
+        <div class="card-body  w-100 justify-content-between">
+            <form [formGroup]="tenantScheduleForm">
+                <div class="w-100">
+                    <label for="" class="font-weight-bold">{{constants.tenant}}<span
+                        class="text-danger">*</span>
+                    </label> 
+                    <ng-multiselect-dropdown placeholder={{constants.selectTenant}} [settings]="tenantDropDownSettings"
+                     formControlName="tenant" [data]="tenants">
+                    </ng-multiselect-dropdown>
+                </div>
+                <!-- <div class="w-44">
+                    <label for="" class="font-weight-bold">Scheduling Options <span
+                        class="text-danger">*</span>
+                    </label> 
+                    <ng-multiselect-dropdown placeholder="Select Scheduling options" [settings]="singleDropdownSettings">
+                    </ng-multiselect-dropdown>
+                </div> -->
+                <div class="mt-20">
+                    <label for="" class="font-weight-bold">{{constants.schedulingOptions}}
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class=" d-flex flex-wrap">
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="selectReviewer" id="reviewers">&nbsp;
+                            <label for="reviewers" class="font-weight-bold">{{constants.selectReviewers}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="executionCount" id="executionCount">&nbsp;
+                            <label for="executionCount" class="font-weight-bold">{{constants.executionCount}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="mockSchedule" id="mockSchedule">&nbsp;
+                            <label for="mockSchedule" class="font-weight-bold">{{constants.mockSchedule}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="enablePlagiarism" id="enablePlagiarism">&nbsp;
+                            <label for="enablePlagiarism" class="font-weight-bold">{{constants.enablePlagiarism}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="customFields" id="customField">&nbsp;
+                            <label for="customField" class="font-weight-bold">{{constants.customFields}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="public" id="domains">&nbsp;
+                            <label for="domains" class="font-weight-bold">{{constants.publicSchedule}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="invite" id="candidtaeEmail">&nbsp;
+                            <label for="candidtaeEmail" class="font-weight-bold">{{constants.inviteSchedule}}</label>
+                        </div>
+                        <div class="w-23 mb-10">
+                            <input type="checkbox" formControlName="selfEnrolment" id="candidtaeEmail">&nbsp;
+                            <label for="candidtaeEmail" class="font-weight-bold">{{constants.selfEnrolmentSchedule}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center align-self-end mt-20">
+                    <button type="button" class="btn btn-info" (click)="save()">
+                        {{constants.save}}
+                    </button>
+                </div>
+            </form>
+        </div>
+       
+    </div> 
+    <table class="table table-striped border mt-4">
+        <thead>
+            <tr>
+                <th>{{constants.tenant}}</th>
+                <th>{{constants.action}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tenantConfig of tenantConfigs">
+                <td>
+                    {{tenantConfig.tenantName}}
+                </td>
+                <td >
+                    <i class="ti-pencil text-info m-r-10 pointer action-style" (click)="openEditModal(content, tenantConfig)"></i>
+                    <i class="ti-trash text-danger pointer action-style" (click)="deleteScheduleConfiguration(tenantConfig)"></i>
+                </td>
+            </tr>
+            <div class="text-center" *ngIf="isNoTenantConfigAvailable">
+                {{constants.noTenantScheduleConfigurationAvailable}}
+            </div>     
+        </tbody>
+    </table> 
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">{{constants.options}}</h4>
+            <!-- <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"><i class="mdi mdi-close"></i></button> -->
+        </div>
+        <div class="modal-body">
+                <form [formGroup]="editTenantScheduleForm">
+                    <div class="d-flex justify-content-between mb-10">
+                        <div class="w-50">
+                            <div class="w-100">
+                                <input type="checkbox" formControlName="editSelectReviewer" id="reviewers">&nbsp;
+                                <label for="reviewers" class="font-weight-bold">{{constants.selectReviewers}}</label>
+                            </div>
+                            <div class="w-100">
+                                <input type="checkbox" formControlName="editExecutionCount" id="executionCount">&nbsp;
+                                <label for="executionCount" class="font-weight-bold">{{constants.executionCount}}</label>
+                            </div>
+                            <div class="w-100">
+                                <input type="checkbox" formControlName="editMockSchedule" id="mockSchedule">&nbsp;
+                                <label for="mockSchedule" class="font-weight-bold">{{constants.mockSchedule}}</label>
+                            </div>
+                            <div class="w-100">
+                                <input type="checkbox" formControlName="editEnablePlagiarism" id="enablePlagiarism">&nbsp;
+                                <label for="enablePlagiarism" class="font-weight-bold">{{constants.enablePlagiarism}}</label>
+                            </div>
+                        </div>
+                        <div class="w-50">
+                            <div class="w-100">
+                                <input type="checkbox" formControlName="editCustomFields" id="customField" >&nbsp;
+                                <label for="customField" class="font-weight-bold">{{constants.customFields}}</label>
+                                </div>
+                            <div class="w-100">
+                                <span>Schedule Type</span>
+                                <br>
+                                <input type="checkbox" formControlName="editPublic" id="domains">&nbsp;
+                                <label for="domains" class="font-weight-bold">{{constants.publicSchedule}}</label>
+                                <br>
+                                <input type="checkbox" formControlName="editInvite" id="candidtaeEmail">&nbsp;
+                                <label for="candidtaeEmail" class="font-weight-bold">{{constants.inviteSchedule}}</label>
+                                <br>
+                                <input type="checkbox" formControlName="editSelfEnrolment" id="candidtaeEmail">&nbsp;
+                                <label for="candidtaeEmail" class="font-weight-bold">{{constants.selfEnrolmentSchedule}}</label>
+                            </div>
+                        </div> 
+                    </div> 
+                </form>           
+            </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onModalClose()">{{constants.close}}</button>
+            <button type="button" class="btn btn-info" (click)="save()">
+                {{constants.update}}
+            </button>
+        </div>
+    </ng-template>
+    <div class="d-flex justify-content-between p-2" >
+        <ngb-pagination [collectionSize]="totalTenantCount" [(page)]="pageIndex" [pageSize]="pageSize"
+        [maxSize]="maxSize" (pageChange)="changePage()" [rotate]="true" [ellipses]="false"></ngb-pagination>
+    </div>
+</form>
+

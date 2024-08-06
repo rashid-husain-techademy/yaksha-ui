@@ -1,0 +1,33 @@
+.search-results {
+    gap: 20px;
+    img {
+        max-width: 70px;
+        max-height: 100px;
+    }
+    .card {
+        width: 100%;
+        @media screen and (min-width: 768px) {
+            width: 48%;
+        }
+        @media screen and (min-width: 1024px) {
+            width: 49%;
+        }
+        @media screen and (min-width: 1300px) {
+            width: 32%;
+        }
+    }
+}
+
+.category-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space  : nowrap;
+    max-width    : 150px !important; 
+    text-overflow: ellipsis;
+    overflow     : hidden;
+}
+
+.category-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position   : absolute;
+    right      : 40px;
+    top        : 5px;
+    font-weight: bolder;
+}

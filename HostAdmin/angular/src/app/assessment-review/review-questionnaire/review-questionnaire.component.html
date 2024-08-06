@@ -1,0 +1,112 @@
+<form [formGroup]="assignForm" novalidate autocomplete="off" class="invitation-form">
+    <div class="modal-header">
+        <h4 class="modal-title">{{title}}</h4>
+        <span class="cursor-pointer font-weight-bold" aria-hidden="true" aria-label="Close"
+            (click)="cancelQuestionnaire()">&times;</span>
+    </div>
+    <div class="modal-body">
+        <div class="m-b-20" *ngIf="userRole === userRoles[1]">
+            <label for="" class="font-weight-bold">{{constants.selectTenant}} <span class="text-danger">*</span></label>
+            <ng-multiselect-dropdown (onSelect)="onTenantChangeforReviewer($event)"
+                (onDeSelect)="resetQuestionnaireForm()" [placeholder]="constants.selectTenant"
+                [settings]="singleDropdownSettings" [data]="tenants" [disabled]="reviewQuestionnaireDto.isUpdate">
+            </ng-multiselect-dropdown>
+            <small class="text-danger" *ngIf="!isFormValid('tenantId')">{{constants.pleaseSelectTenant}}</small>
+        </div>
+        <div class="m-b-20">
+            <label class="font-weight-bold">{{constants.selectReviewerEmail}} <span class="text-danger">*</span></label>
+            <angular2-multiselect class="ng2-multiselect" [data]="reviewers" formControlName="reviewerEmail"
+                [settings]="reviewerMailDropDownSettings" (onAddFilterNewItem)="onAddNewMail($event)"
+                (ngModelChange)="getSignOffEmails()">
+            </angular2-multiselect>
+            <small class="text-danger" *ngIf="!isFormValid('reviewerEmail') && !disableQuestionaire">
+                {{constants.pleaseSelectOrEnterReviewerEmail}}</small>
+            <small class="text-danger"
+                *ngIf="this.assignForm.get('reviewerEmail').errors?.pattern && !disableQuestionaire">
+                {{constants.pleaseEnterValidEmailAddress}}
+            </small>
+        </div>
+        <div class="m-b-20">
+            <label class="font-weight-bold">{{constants.signOffReviewer}} <span class="text-danger">*</span></label>
+            <ng-multiselect-dropdown [data]="signOffMails" [placeholder]="constants.selectSignOffReviewerEmail"
+                [settings]="singleDropdownSettings" formControlName="signOffReviewerEmail"
+                [disabled]="disableQuestionaire || reviewQuestionnaireDto.isUpdate">
+            </ng-multiselect-dropdown>
+            <small class="text-danger" *ngIf="!isFormValid('signOffReviewerEmail')">
+                {{constants.pleaseSelectSignOffReviewerEmail}}</small>
+        </div>
+        <div class="m-b-20" *ngIf="isCheckBoxDisabled">
+            <fieldset class="checkbox">
+                <label class="font-weight-bold">
+                    <input type="checkbox" value="" class="m-r-10 m-t-5 position-abs" formControlName="showAnswer"><span
+                        class="m-l-20">{{constants.showAnswer}}</span>
+                </label>
+            </fieldset>
+        </div>
+        <div class="d-flex">
+            <div class="form-group m-r-20">
+                <label class="font-weight-bold">{{constants.expiryDate}}<label class="text-danger">*</label></label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp1" formControlName="expiryDate"
+                        ngbDatepicker #d3="ngbDatepicker" [disabled]="disableQuestionaire">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary no-shadow" (click)="d3.toggle()" type="button"
+                            [disabled]="disableQuestionaire">
+                            <i class="fa fa-calendar"></i></button>
+                    </div>
+                </div>
+                <small class="text-danger" *ngIf="!isFormValid('expiryDate')">
+                    {{constants.pleaseSelectExpiryDate}}</small>
+            </div>
+            <div class="form-group">
+                <label for="" class="font-weight-bold">{{constants.expiryTime}}<label
+                        class="text-danger">*</label></label>
+                <div class="input-group">
+                    <input class="form-control" type="time" id="time" formControlName="expiryTime">
+                </div>
+                <small class="text-danger" *ngIf="!isFormValid('expiryTime')">
+                    {{constants.pleaseSelectExpiryTime}}</small>
+            </div>
+        </div>
+        <div class="m-b-20">
+            <label class="font-weight-bold">{{constants.selectAdminEmails}}</label>
+            <ng-multiselect-dropdown formControlName="adminUserIds" (onSelect)="selectAdmins($event, true)"
+                [data]="adminDetails" (onDeSelect)="selectAdmins($event, false)"
+                (onSelectAll)="selectAllAdmins($event, true)" (onDeSelectAll)="selectAllAdmins($event, false)"
+                [settings]="multiDropdownSettings" [placeholder]="constants.selectAdminEmails"
+                [disabled]="disableQuestionaire || reviewQuestionnaireDto.isUpdate">
+            </ng-multiselect-dropdown>
+        </div>
+        <div class="card-body d-flex p-t-0" *ngIf="assessmentSignOffCriteriaDetails !== null">
+            <div class="w-60 m-r-20">
+                <label class="font-weight-bold">{{constants.totalQuestions}}</label>
+                <input type="text" class="form-control" [value]="assessmentSignOffCriteriaDetails?.totalQuestionsCount"
+                    [disabled]="disableSignffCriteriaDetails">
+            </div>
+            <div class="w-60 m-r-20">
+                <label class="font-weight-bold">{{constants.beginnerQuestions}}</label>
+                <input type="text" class="form-control"
+                    [value]="assessmentSignOffCriteriaDetails?.beginnerQuestionsCount"
+                    [disabled]="disableSignffCriteriaDetails">
+            </div>
+            <div class="w-60 m-r-20">
+                <label class="font-weight-bold">{{constants.intermediateQuestions}}</label>
+                <input type="text" class="form-control"
+                    [value]="assessmentSignOffCriteriaDetails?.intermediateQuestionsCount"
+                    [disabled]="disableSignffCriteriaDetails">
+            </div>
+            <div class="w-60">
+                <label class="font-weight-bold">{{constants.advancedQuestions}}</label>
+                <input type="text" class="form-control"
+                    [value]="assessmentSignOffCriteriaDetails?.advancedQuestionsCount"
+                    [disabled]="disableSignffCriteriaDetails">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelQuestionnaire()">{{constants.cancel}}</button>
+        <button type="button" class="btn btn-info"
+            (click)="reviewQuestionnaireDto.isUpdate ? updateReview() : assignReviewer()"
+            [disabled]="disableQuestionaire">{{buttonName}}</button>
+    </div>
+</form>

@@ -1,0 +1,1555 @@
+<div appDisableCopy appDisableRightClick appDisableSelect>
+    <div class="container container-1 margin-top d-flex justify-content-between">
+        <h3 *ngIf="input.userId===appSessionService.user.id">{{constants.myProfile}}</h3>
+        <h3 *ngIf="input.userId!==appSessionService.user.id">{{user?.name}}{{user?.surname}} {{constants.profile}}</h3>
+        <div class="catalogcustom w-27 m-b-5">
+            <form [formGroup]="selectCatalogForm">
+                <label>{{constants.selectCatalog}}</label>
+                <ng-multiselect-dropdown [settings]="singleDropdownSettings" [data]="catalogList"
+                    (onSelect)="getCatalogAssessments($event)" (onDeSelect)="reset()" formControlName="selectedCatalog">
+                </ng-multiselect-dropdown>
+            </form>
+        </div>
+    </div>
+    <!-- user details begin -->
+    <div id="contentToConvert">
+        <div class="container container-1">
+            <div class="row" style="background-color: white;">
+                <div class="col-4 top-space">
+                    <div class="row">
+                        <div class="">
+                            <img src="../../assets/images/profile.png" *ngIf="!user?.profilePicture" alt="person"
+                                class="custom-image" />
+                            <img [src]="user?.profilePicture" *ngIf="user?.profilePicture" alt="person"
+                                class="custom-image" />
+                        </div>
+
+                        <div class="col margin" *ngIf="user">
+                            <p class="mb-0 font-weight-bold"><strong>{{user.name}}{{user.surname}}</strong></p>
+                            <p class="mb-0 font-size-12">{{user?.aboutMe}}</p>
+                            <p class="mb-0 font-size-12 email-text-wrap">{{user.emailAddress}}</p>
+                            <p class="mb-0 font-size-12">{{user?.phoneNumber}}</p>
+                            <div class="m-t-20">
+                                <i class="fab fa-facebook-f fb-profile text-info me-2 cursor-pointer"></i>
+                                <i class="fab fa-twitter twitter-profile me-2 cursor-pointer"></i>
+                                <i class="fab fa-linkedin-in linkedin-profile me-2 cursor-pointer"></i>
+                            </div>
+                        </div>
+                        <div class="p-t-10" *ngIf="input.userId===appSessionService.user.id && showEdit"> <button
+                                type="button" class="btn btn-outline-secondary btn-rounded"
+                                [routerLink]="['../profile/settings']">
+                                <i class="fa fa-edit"></i></button></div>
+                    </div>
+
+                </div>
+
+                <div class="col-8 border-left top-space" *ngIf="user">
+                    <div class="row">
+                        <div class="col border border-radius-5">
+                            <p class="font-weight-bold mb-0">{{user.totalAssessmentsCompleted}}</p>
+                            <p class="mb-0 font-size-12">{{constants.totalAssessmentsCompleted}}</p>
+                        </div>
+                        <div class="col border border-radius-5">
+                            <p class="font-weight-bold mb-0">{{user.averageAssessmentsScore}}% </p>
+                            <p class="mb-0 font-size-12">{{constants.averageAssessmentsScore}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col border border-radius-5">
+                            <p class="font-weight-bold mb-0">{{user.totalPassedAssessments}}</p>
+                            <p class="mb-0 font-size-12">{{constants.totalPassedAssessments}}</p>
+                        </div>
+                        <div class="col border border-radius-5">
+                            <p class="font-weight-bold mb-0">{{skillChartLabels?.length}}</p>
+                            <p class="mb-0 font-size-12">{{constants.skillAchievedFromAssessments}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col border border-radius-5">
+                            <p class="font-weight-bold mb-0">{{user.totalAdaptiveAssessmentsTaken}}</p>
+                            <p class="mb-0 font-size-12">{{constants.totalAdaptiveAssessmentsTaken}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- user details end -->
+
+        <!-- Skills and Proficiencies Achieved Graph Begin -->
+        <br />
+        <div *ngIf="!(userRole === userRoles[1] && !viewUserProfile)">
+            <div class="container container-1">
+                <div class="row" style="background-color: white;">
+                    <div class="col-md-12 margin-div">
+                        <h3 style="text-align:center;">{{constants.skillsAndProficienciesAchieved}}</h3>
+                        <div *ngIf="showSkillChart">
+                            <canvas baseChart [datasets]="skillChartData" [labels]="skillChartLabels"
+                                [options]="skillChartOptions" [plugins]="skillChartPlugins" [legend]="skillChartLegend"
+                                [chartType]="skillChartType">
+                            </canvas>
+                        </div>
+                        <div *ngIf="!isSkillChartLoading && !showSkillChart" style="text-align: center;">
+                            {{constants.noDataFound}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Skills and Proficiencies Achieved Graph End -->
+
+            <!-- Questions Attempted Vs Correct Answers Graph Begin -->
+            <br />
+            <div class="container container-1">
+                <div class="row html2pdf__page-break" style="background-color: white;">
+                    <div class="col-md-12 margin-div">
+                        <h3 style="text-align:center;">{{constants.totalQuestionsVsQuestionsAttemptedVsCorrectAnswers}}
+                        </h3>
+                        <div *ngIf="showQuestionChart">
+                            <canvas baseChart [datasets]="questionChartData" [labels]="questionChartLabels"
+                                [options]="questionChartOptions" [plugins]="questionChartPlugins"
+                                [legend]="questionChartLegend" [chartType]="questionChartType">
+                            </canvas>
+                        </div>
+                        <div *ngIf="!isQuestionChartLoading && !showQuestionChart" style="text-align: center;">
+                            {{constants.noDataFound}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Questions Attempted Vs Correct Answers Graph End -->
+
+            <!-- Skill - Wise Score Begin -->
+            <br />
+            <div class="container container-1">
+                <div class="row" style="background-color: white;">
+                    <div class="col-md-12 margin-div">
+                        <h3 style="text-align:center;">{{constants.skillWiseScore}}</h3>
+                        <div *ngIf="lineBarData?.length > 0">
+                            <p *ngFor="let data of lineBarData">{{data.skillName}}<span
+                                    style="float: right;">{{data.score}}%</span>
+                                <ngb-progressbar type="warning" [value]="data.score" height="10px"></ngb-progressbar>
+                            </p>
+                        </div>
+                        <div *ngIf="!isQuestionChartLoading && !(lineBarData?.length > 0)" style="text-align: center;">
+                            {{constants.noDataFound}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Skill - Wise Score End -->
+            <div #standardAssessment>
+                <!-- Assessment Begin  -->
+                <br />
+                <div *ngIf="!isDownloadProfile" class="container p-0 background-white padding-div"
+                    style="padding-left: -10.9%; padding-right: -10.9%;">
+                    <h3 style="text-align:center;">{{constants.standardAssessmentResults}}</h3>
+                    <mat-accordion #accordion="matAccordion" [multi]="true">
+                        <div class="row"
+                            style="margin: 1px; background-color: white; font-weight: bold; padding: 10px 0px 10px 0px;">
+                            <div class="col-3 assessment-text-wrap">{{constants.assessmentName}}</div>
+                            <div class="col-2">{{constants.completionDate}}</div>
+                            <div class="col-2 p-0 text-center">{{constants.status}}</div>
+                            <div class="col-1 p-0">{{constants.score}}</div>
+                            <div class="col-1 text-center">{{constants.attempts}}</div>
+                            <div class="col-3 text-center">{{constants.action}}</div>
+                        </div>
+
+                        <div *ngIf="standardAssessmentResults?.length">
+                            <!-- Panel Start -->
+                            <mat-expansion-panel class="overflowVisible"
+                                *ngFor="let assessmentResult of standardAssessmentResults; let i = index"
+                                [expanded]="assessmentResult.isExpand" style="background: #f2f3f4;"
+                                (opened)="openStandardAssessment(assessmentResult)">
+                                <mat-expansion-panel-header style="background-color: #f2f3f4;">
+                                    <div style="width: 100%;">
+                                        <div class="row" style="background-color: #f2f3f4; padding: 10px 0px 10px 0px;">
+                                            <div class="col-3 assessment-text-wrap" style="word-wrap:break-word;">
+                                                <span>
+                                                    {{assessmentResult.assessmentTitle}}
+                                                </span>
+                                            </div>
+                                            <div class="col-2">{{assessmentResult.completionDate | date:'dd/MM/yyyy'}}
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                {{assessmentResult.userLatestAttemptStatusString.toLowerCase() ===
+                                                'notcleared' ? 'Not Cleared' :
+                                                assessmentResult.userLatestAttemptStatusString }}</div>
+                                            <div class="col-1">{{assessmentResult.userEarnedPercentage}}%</div>
+                                            <div class="col-1 text-center">{{assessmentResult.availedAttempts}}</div>
+                                            <div class="col-3 text-center">
+                                                <a class="col-0 text-center" type="button"
+                                                    (click)="downloadStandardReport(i, assessmentResult)">{{constants.downloadReport}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <div id="{{ constants.standard + i }}">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <span class="m-t-5">{{constants.username}}</span>
+                                        </div>
+                                        <div class="col-7">
+                                            <h5 class="m-t-5">{{user?.name}}{{user?.surname}}</h5>
+                                        </div>
+                                        <div class="col-3" *ngIf="assessmentResult.blobNames">
+                                            <a (click)="getRubrixZipFiles(assessmentResult.blobNames);"
+                                                style="cursor:pointer"><span class="label"><i
+                                                        class="fa fa-download"></i>
+                                                    {{constants.downloadRubrix}}
+                                                </span></a>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-info" type="button"
+                                                *ngIf="assessmentResult.showAnswers"
+                                                (click)="viewAnswers(assessmentResult.userId, assessmentResult.assessmentScheduleId)">
+                                                {{constants.viewAnswer}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <span class="m-t-5">{{constants.email}}</span>
+                                        </div>
+                                        <div class="col-10">
+                                            <h5 class="m-t-5 email-text-wrap">{{user?.emailAddress}}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <h3 class="m-t-5 assessment-text-wrap">{{assessmentResult.assessmentTitle}}</h3>
+                                    </div>
+
+
+                                    <div class="row"
+                                        style="background-color: white; border: 1px solid #9d9d9d;border-radius: 5px;">
+                                        <div [ngClass]="'col-3 border-right'">
+                                            <div>
+                                                <apx-chart [series]="assessmentResult.chartData?.series"
+                                                    [plotOptions]="assessmentResult.chartData?.plotOptions"
+                                                    [chart]="assessmentResult.chartData?.chart"
+                                                    [labels]="assessmentResult.chartData?.labels"
+                                                    [fill]="assessmentResult.chartData?.fill">
+                                                </apx-chart>
+                                                <!-- <div class="mfa-plagiarismScore m-t-m20" *ngIf="assessmentResult.mfaPlagiarismScore !== ''">{{constants.plagiarismScore}}:&nbsp;
+                                                <span [ngClass]="assessmentResult.mfaPlagiarismScore === 'N/A' ? 'mfa-plagiarismScore-yfont' : 'mfa-plagiarismScore-rfont'">&nbsp;{{assessmentResult.mfaPlagiarismScore === 'N/A' || assessmentResult.mfaPlagiarismScore === '0' ? assessmentResult.mfaPlagiarismScore : assessmentResult.mfaPlagiarismScore | number : '1.2-2'}}</span>
+                                            </div>
+                                            <div class="mfa-plagiarismScore"
+                                                *ngIf="assessmentResult.mfaPlagiarismScore !== '' && assessmentResult.mfaPlagiarismScanResult !== null">
+                                                {{constants.maxSimilarity}}:&nbsp;
+                                                <span
+                                                    class="mfa-plagiarismScore-yfont">&nbsp;{{assessmentResult.mfaPlagiarismScanResult?.UserEmail}}</span>
+                                            </div>
+                                            <div class="mfa-plagiarismScore" *ngIf="assessmentResult.mfaPlagiarismScore !== '' && assessmentResult.mfaPlagiarismScanResult !== null">{{constants.maxSimilarityScore}}:&nbsp;
+                                                <span class="mfa-plagiarismScore-rfont">&nbsp;{{assessmentResult.mfaPlagiarismScanResult?.AveragePlagiarismScore === 0 ? assessmentResult.mfaPlagiarismScanResult?.AveragePlagiarismScore : assessmentResult.mfaPlagiarismScanResult?.AveragePlagiarismScore | number : '1.2-2'}}</span>
+                                            </div> -->
+                                                <div class="progress-value1 m-b-5">
+                                                    <div *ngIf="!assessmentResult.hideResultStatus">
+                                                        <span
+                                                            *ngIf="assessmentResult.isAssessmentPassed">{{constants.cleared}}</span>
+                                                        <span
+                                                            *ngIf="!assessmentResult.isAssessmentPassed">{{constants.notCleared}}</span>
+                                                    </div>
+                                                    <div class="progress-value2"
+                                                        *ngIf="assessmentResult.hideResultStatus">
+                                                        <span>{{constants.completed}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div [ngClass]="'col-3 border-right'">
+                                            <br />
+                                            <span style="float: left;" class="hour-icon">
+                                                <i class="fas fa-hourglass me-2" style="font-size:26px"></i>
+                                            </span>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">
+                                                    {{assessmentResult.userAssessmentDurationString}}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.timeUtilized}}
+                                                </p>
+                                            </div>
+
+
+                                            <span style="float: left;" class="hour-icon">
+                                                <i class="fas fa-hourglass me-2" style="font-size:26px"></i>
+                                            </span>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">
+                                                    {{assessmentResult.averageQuestionDurationString}}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.averageTimePerQuestion}}
+                                                </p>
+                                            </div>
+
+                                            <span style="float: left;">
+                                                <i class="fa fa-question me-2" style="font-size:26px"></i>
+                                            </span>
+                                            <div>
+                                                <p
+                                                    [ngClass]="assessmentResult?.assessmentTotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult?.assessmentTotalQuestions ?
+                                                    assessmentResult.totalCorrect
+                                                    +"/"+
+                                                    assessmentResult?.assessmentTotalQuestions : constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.totalCorrectAnswers}}</p>
+                                            </div>
+                                            <span style="float: left;" *ngIf="!assessmentResult.isMFAAssessment">
+                                                <i class="fa fa-exclamation me-4" style="font-size:26px"></i>
+                                            </span>
+                                            <div *ngIf="!assessmentResult.isMFAAssessment">
+                                                <p
+                                                    [ngClass]="assessmentResult?.assessmentTotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult?.assessmentTotalQuestions ?
+                                                    (assessmentResult.totalIncorrect ? assessmentResult.totalIncorrect :
+                                                    constants.zero)
+                                                    +"/"+
+                                                    assessmentResult?.assessmentTotalQuestions : constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.totalIncorrectAnswers}}</p>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-3 border-right">
+                                            <br />
+                                            <div>
+                                                <p
+                                                    [ngClass]="assessmentResult?.totalBeginnerQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult?.totalBeginnerQuestions ?
+                                                    assessmentResult.correctBeginnerQuestions
+                                                    +"/"+ assessmentResult?.totalBeginnerQuestions :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.beginnerQuestions}}</p>
+                                            </div>
+
+                                            <div>
+                                                <p
+                                                    [ngClass]="assessmentResult?.totalIntermediateQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult?.totalIntermediateQuestions ?
+                                                    assessmentResult.correctIntermediateQuestions +"/"+
+                                                    assessmentResult?.totalIntermediateQuestions :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.intermediateQuestions}}</p>
+                                            </div>
+
+                                            <div>
+                                                <p
+                                                    [ngClass]="assessmentResult?.totalAdvancedQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult?.totalAdvancedQuestions ?
+                                                    assessmentResult.correctAdvancedQuestions
+                                                    +"/"+ assessmentResult?.totalAdvancedQuestions :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.advancedQuestions}}</p>
+                                            </div>
+
+                                        </div>
+                                        <div [ngClass]="'col-3'">
+                                            <br />
+                                            <div>
+                                                <p
+                                                    [ngClass]="assessmentResult?.assessmentTotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult?.assessmentTotalQuestions ?
+                                                    assessmentResult.totalAnswered
+                                                    +"/"+
+                                                    assessmentResult?.assessmentTotalQuestions : constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.questionsAttempted}}</p>
+                                            </div>
+
+                                            <ng-container *ngIf="!assessmentResult.totalTestCases">
+                                                <p
+                                                    [ngClass]="assessmentResult.questionsSkipped ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult.questionsSkipped ?
+                                                    assessmentResult.questionsSkipped :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+
+                                                <p style="font-size: 10px;">{{constants.questionsSkipped}}</p>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="assessmentResult.totalTestCases">
+                                                <p
+                                                    [ngClass]="assessmentResult.totalTestCases ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{assessmentResult.totalTestCases}}
+                                                </p>
+
+                                                <p style="font-size: 10px;">{{constants.totalTestCases}}</p>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="!assessmentResult.totalTestCases">
+                                                <p
+                                                    [ngClass]="assessmentResult.totalMarkedForReview ? 'font-weight-bold mb-0 question-marked' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    assessmentResult.totalMarkedForReview ?
+                                                    assessmentResult.totalMarkedForReview
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.questionsMarkedforReview}}
+                                                </p>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="assessmentResult.totalTestCases">
+                                                <p
+                                                    [ngClass]="assessmentResult.testCasesPassed ? 'font-weight-bold mb-0 question-marked' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{assessmentResult.testCasesPassed}}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.testCasesPassed}}
+                                                </p>
+                                            </ng-container>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row m-t-10"
+                                        *ngIf="assessmentResult.jobCompatibilityResult?.roleResult?.length > 0"
+                                        style="background-color: white; border: 1px solid #9d9d9d;border-radius: 5px;">
+                                        <div class="card bar-chart-container">
+                                            <h4 class="text-center m-b-30 m-t-20">{{constants.roleAnalysisChart}}</h4>
+                                            <div class="align-items-center">
+                                                <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme"
+                                                    [results]="assessmentResult.jobCompatibilityResult.roleResult"
+                                                    [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis"
+                                                    [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+                                                    [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+                                                    [yAxisLabel]="yAxisLabel" [barPadding]="barPadding"
+                                                    id="roleAnalysisChart{{i}}">
+                                                </ngx-charts-bar-vertical>
+                                            </div>
+                                            <h4 class="m-t-20 text-align-center"><span
+                                                    class="font-weight-bold">{{constants.note}}:</span>
+                                                {{constants.basedOnAssessmentAnalysis}}{{constants.candidateIsCurrentlyBestCompatibleForTheRoleOf}}
+                                                <span
+                                                    class="font-weight-bold">{{assessmentResult.jobCompatibilityResult.eligibleRole.name}}</span>
+                                            </h4>
+                                        </div>
+
+                                        <h4 class="m-l-10">{{constants.roleDescription}}</h4>
+                                        <div class="m-10 w-100 table-container">
+                                            <div class="d-flex col-md-12 b-r-5"
+                                                *ngFor="let roleDetail of assessmentResult.jobCompatibilityResult.roleResult">
+                                                <div class="col-md-4">
+                                                    <span>{{roleDetail.name}}</span>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <span>{{roleDetail.description}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Skill Based Score Begin -->
+                                    <br />
+                                    <div class="row" style="border: 1px solid #9d9d9d;border-radius: 5px;">
+                                        <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                            <h4 class="text-center m-b-30 m-t-20">{{constants.sectionBaseScore}}</h4>
+                                            <div class="col-md-12 margin-div">
+                                                <ng-container>
+                                                    <div *ngIf="assessmentResult.sectionScore?.length > 0">
+                                                        <p *ngFor="let data of assessmentResult.sectionScore">
+                                                            {{data.sectionName}}<span
+                                                                style="float: right;">{{data.earnedScorePercentage}}%</span>
+                                                            <ngb-progressbar type="warning"
+                                                                [value]="data.earnedScorePercentage"
+                                                                height="10px"></ngb-progressbar>
+                                                        </p>
+                                                    </div>
+                                                    <div *ngIf="!(assessmentResult.sectionScore?.length > 0)"
+                                                        style="text-align: center;">
+                                                        {{constants.noDataFound}}
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+
+                                    <div *ngIf="assessmentResult.questions?.length > 0">
+                                        <div class="row html2pdf__page-break"
+                                            style="border: 1px solid #9d9d9d;border-radius: 5px;">
+                                            <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                                <h4 class="text-center m-b-30 m-t-20">{{constants.skillBaseScore}}</h4>
+                                                <div class="row">
+                                                    <div class="col-md-6 m-b-40 p-r-40"
+                                                        *ngFor="let skill of assessmentResult.skillScore">
+                                                        <div
+                                                            class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                                            <span class="skill-name">{{skill.SkillName}}</span>
+                                                            <div class="total">
+                                                                <div class="cut-off"
+                                                                    [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                                                    <span class="border-left">
+                                                                        {{skill.EarnedScorePercentage}}%
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="assessmentResult.questions?.length === 0">
+                                        <div class="row" style="border: 1px solid #9d9d9d;border-radius: 5px;">
+                                            <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                                <h4 class="text-center m-b-30 m-t-20">{{constants.skillBaseScore}}</h4>
+                                                <div class="row">
+                                                    <div class="col-md-6 m-b-40 p-r-40"
+                                                        *ngFor="let skill of assessmentResult.skillScore">
+                                                        <div
+                                                            class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                                            <span class="skill-name">{{skill.SkillName}}</span>
+                                                            <div class="total">
+                                                                <div class="cut-off"
+                                                                    [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                                                    <span class="border-left">
+                                                                        {{skill.EarnedScorePercentage}}%
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngFor="let questions of assessmentResult.questions" class="row"
+                                        style="border: 1px solid #9d9d9d;border-radius: 5px; margin-top: 5x;">
+                                        {{checkIsCloud(questions.testCasesResults[0])}}
+                                        <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                            <div class="m-b-30 m-t-20 html2pdf__page-break"
+                                                [innerHtml]="questions.question"></div>
+                                            <div>{{constants.problemAreaCovered}}: {{questions.subSkill}}</div>
+                                            <br />
+                                            <div class="m-l-2">
+                                                <label
+                                                    class="plagiarism-label-font">{{constants.plagiarismScore}}:</label>
+                                                <span
+                                                    [ngClass]="questions.plagiarismScore === 'N/A' ? 'plagiarismScore-yfont' : 'plagiarismScore-rfont'">&nbsp;{{questions.plagiarismScore
+                                                    === 'N/A' || questions.plagiarismScore === '0' ?
+                                                    questions.plagiarismScore : questions.plagiarismScore | number :
+                                                    '1.2-2'}}</span>
+                                                <!-- <span class="m-l-10" *ngIf="questions.plagiarismScore !== 'N/A'">
+                                                <label class="plagiarism-label-font">{{constants.maxSimilarity}}: </label>
+                                                <span class="plagiarismScore-rfont">&nbsp;{{questions.similarityUserEmail === null ? '-' : questions.similarityUserEmail}}</span>
+                                            </span> -->
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 w-40" *ngIf="!isCloudBased">
+                                                    <div>
+                                                        <textarea *ngIf="!isDownloadClick" role="textbox" rows="10"
+                                                            readonly="false"
+                                                            class="w-100 html2pdf__page-break">{{questions.testCasesResults[0].answer}}</textarea>
+                                                        <div class="sfa-code" *ngIf="isDownloadClick">
+                                                            <pre>{{questions.testCasesResults[0].answer}}</pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12 w-40">
+                                                    <div>
+                                                        <div style="width: 100%;">
+                                                            <div class="row"
+                                                                style="margin: 1px; background-color: white; padding: 10px 10px 10px 10px;">
+                                                                <div class="w-13">Test Case Name</div>
+                                                                <div class="w-10">Test Case Status </div>
+                                                                <div class="w-13" *ngIf="!isCloudBased">
+                                                                    {{constants.cpuConsumption}}</div>
+                                                                <div class="w-13" *ngIf="!isCloudBased">
+                                                                    {{constants.memoryConsumption}}</div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{constants.warningCount}}</div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{constants.testCasePercentage}}</div>
+                                                                <div class="w-10 p-lr-1" *ngIf="!isCloudBased">
+                                                                    {{constants.cpuScorePercentage}}</div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{constants.memoryScorePercentage}}</div>
+                                                                <div class="w-10 p-lr-1" *ngIf="!isCloudBased">
+                                                                    {{constants.totalScorePercentage}}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngFor="let testCaseItem of questions.testCasesResults"
+                                                            class="row"
+                                                            style="margin: 1px; background-color: #f2f3f4;; font-weight: bold; padding: 10px 10px 10px 10px;">
+                                                            <div class="w-13">{{testCaseItem.testCaseTitle}}</div>
+                                                            <div class="w-10">{{testCaseItem.testCaseStatus}}</div>
+                                                            <div class="w-13" *ngIf="!isCloudBased">
+                                                                {{getCpuTime(testCaseItem.evaluationResultJson)}}
+                                                            </div>
+                                                            <div class="w-13" *ngIf="!isCloudBased">
+                                                                {{getMemoryUtilized(testCaseItem.evaluationResultJson)}}
+                                                            </div>
+                                                            <div class="w-10" *ngIf="!isCloudBased">
+                                                                {{testCaseItem.warningCount}}
+                                                            </div>
+                                                            <div class="w-10" *ngIf="!isCloudBased">
+                                                                {{testCaseItem.testCasePercentage}}
+                                                            </div>
+                                                            <div class="w-10" *ngIf="!isCloudBased">
+                                                                {{testCaseItem.cpuScorePercentage}}
+                                                            </div>
+                                                            <div class="w-10" *ngIf="!isCloudBased">
+                                                                {{testCaseItem.memoryScorePercentage}}
+                                                            </div>
+                                                            <div class="w-10" *ngIf="!isCloudBased">
+                                                                {{testCaseItem.totalScorePercentage}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Skill Based Score End -->
+                            </mat-expansion-panel>
+                        </div>
+                        <div *ngIf="!standardAssessmentResults?.length" style="text-align: center;">
+                            {{constants.noDataFound}}
+                        </div>
+                        <!-- Panel End -->
+                    </mat-accordion>
+                    <div *ngIf="standardAssessmentResults?.length"
+                        class="d-flex justify-content-between align-items-center m-t-10">
+                        <ngb-pagination [collectionSize]="user?.totalStandardAssessmentsTaken"
+                            [pageSize]="standardPageSize" [(page)]="standardPageIndex"
+                            class="d-flex justify-content-center" [maxSize]="maxSize"
+                            (pageChange)="changeStandardPage()" [rotate]="true" [ellipses]="false"
+                            [boundaryLinks]="true">
+                        </ngb-pagination>
+                        <select class="custom-select" style="width: auto" [(ngModel)]="standardPageSize"
+                            (change)="changeStandardPageSize()">
+                            <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                                {{constants.itemsPerPage}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skill - Wise Score End -->
+        <div #campaignAssessment *ngIf="!isCatalogFilter">
+            <!-- Assessment Begin  -->
+            <br />
+            <div *ngIf="!isDownloadProfile" class="container p-0 background-white padding-div"
+                style="padding-left: -10.9%; padding-right: -10.9%;">
+                <h3 style="text-align:center; margin-bottom: 12px;">{{constants.driveResults}}</h3>
+                <div *ngIf="campaignDataResults?.totalCount ===0">
+                    <div class="row"
+                        style="margin: 1px; background-color: white; font-weight: bold; padding: 10px 0px 10px 0px;">
+                        <div class="col-4 text-center">{{constants.assessmentName}}</div>
+                        <div class="col-4 text-center">{{constants.completionDate}}</div>
+                        <div class="col-3 text-center">{{constants.action}}</div>
+                    </div>
+                </div>
+                <div *ngFor="let campaign of campaignDataResults?.campaignData; let i = index">
+                    <mat-accordion #accordion="matAccordion" [multi]="true">
+                        <h4 class="border-bottom"
+                            style="text-align:center;font-weight: bold; margin: 0px; background-color: white; padding: 10px 0px 10px 0px; ">
+                            {{campaign.campaignName}}</h4>
+                        <div class="row"
+                            style="margin: 0px; background-color: white; font-weight: bold; padding: 10px 0px 10px 0px;">
+                            <div class="col-4 text-center">{{constants.assessmentName}}</div>
+                            <div class="col-4 text-center">{{constants.completionDate}}</div>
+                            <div class="col-3 text-center">{{constants.action}}</div>
+                        </div>
+                        <div>
+                            <!-- Panel Start -->
+                            <mat-expansion-panel class="overflowVisible"
+                                *ngFor="let campaignResult of campaign.campaignAssessmentResults; let j = index"
+                                [expanded]="campaignResult.isExpand" style="background: #f2f3f4;"
+                                (opened)="openCampaignAssessment(i,campaignResult)">
+                                <mat-expansion-panel-header style="background-color: #f2f3f4;">
+                                    <div style="width: 100%;">
+                                        <div class="row" style="background-color: #f2f3f4; padding: 10px 0px 10px 0px;">
+                                            <div *ngIf="!campaignResult.isExpand" class="col-4 text-center"
+                                                style="word-wrap:break-word;">
+                                                <span>
+                                                    {{campaignResult.assessmentName}}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="campaignResult.isExpand" class="col-4 text-center"
+                                                style="word-wrap:break-word;">
+                                                <span>
+                                                    {{campaign.campaignAssessmentResults[j]?.assessmentTitle}}
+                                                </span>
+                                            </div>
+                                            <div class="col-4 text-center">{{campaignResult.completionDate |
+                                                date:'dd/MM/yyyy'}}
+                                            </div>
+                                            <button class="col-3 text-center btn p-t-0" type="button"
+                                                (click)="downloadCampaignReport(i,campaignResult,j)">{{constants.downloadReport}}</button>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <div id="{{ constants.drive + i + j}}">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <span class="m-t-5">{{constants.username}}</span>
+                                        </div>
+                                        <div class="col-7">
+                                            <h5 class="m-t-5">{{user?.name}}{{user?.surname}}</h5>
+                                        </div>
+                                        <div class="col-3" *ngIf="campaignResult.blobNames">
+                                            <a (click)="getRubrixZipFiles(campaignResult.blobNames);"
+                                                style="cursor:pointer"><span class="label"><i
+                                                        class="fa fa-download"></i>
+                                                    {{constants.downloadRubrix}}
+                                                </span></a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <span class="m-t-5">{{constants.email}}</span>
+                                        </div>
+                                        <div class="col-10">
+                                            <h5 class="m-t-5 email-text-wrap">{{user?.emailAddress}}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <h3 class="m-tb-10 assessment-text-wrap"> {{campaign.campaignName}} :
+                                            {{campaign.campaignAssessmentResults[j]?.assessmentTitle}}</h3>
+                                    </div>
+                                    <div class="row"
+                                        style="background-color: white; border: 1px solid #9d9d9d;border-radius: 5px;">
+                                        <div
+                                            [ngClass]="campaign.campaignAssessmentResults[j]?.hideResultStatus ? 'col-4 border-right':'col-3 border-right'">
+                                            <div>
+                                                <apx-chart
+                                                    [series]="campaign.campaignAssessmentResults[j]?.chartData?.series"
+                                                    [plotOptions]="campaign.campaignAssessmentResults[j]?.chartData?.plotOptions"
+                                                    [chart]="campaign.campaignAssessmentResults[j]?.chartData?.chart"
+                                                    [labels]="campaign.campaignAssessmentResults[j]?.chartData?.labels"
+                                                    [fill]="campaign.campaignAssessmentResults[j]?.chartData?.fill">
+                                                </apx-chart>
+                                                <!-- <div class="mfa-plagiarismScore m-t-m20" *ngIf="assessmentResult.mfaPlagiarismScore !== ''">{{constants.plagiarismScore}}:&nbsp;
+                                                <span [ngClass]="assessmentResult.mfaPlagiarismScore === 'N/A' ? 'mfa-plagiarismScore-yfont' : 'mfa-plagiarismScore-rfont'">&nbsp;{{assessmentResult.mfaPlagiarismScore === 'N/A' || assessmentResult.mfaPlagiarismScore === '0' ? assessmentResult.mfaPlagiarismScore : assessmentResult.mfaPlagiarismScore | number : '1.2-2'}}</span>
+                                            </div>
+                                            <div class="mfa-plagiarismScore"
+                                                *ngIf="assessmentResult.mfaPlagiarismScore !== '' && assessmentResult.mfaPlagiarismScanResult !== null">
+                                                {{constants.maxSimilarity}}:&nbsp;
+                                                <span
+                                                    class="mfa-plagiarismScore-yfont">&nbsp;{{assessmentResult.mfaPlagiarismScanResult?.UserEmail}}</span>
+                                            </div>
+                                            <div class="mfa-plagiarismScore" *ngIf="assessmentResult.mfaPlagiarismScore !== '' && assessmentResult.mfaPlagiarismScanResult !== null">{{constants.maxSimilarityScore}}:&nbsp;
+                                                <span class="mfa-plagiarismScore-rfont">&nbsp;{{assessmentResult.mfaPlagiarismScanResult?.AveragePlagiarismScore === 0 ? assessmentResult.mfaPlagiarismScanResult?.AveragePlagiarismScore : assessmentResult.mfaPlagiarismScanResult?.AveragePlagiarismScore | number : '1.2-2'}}</span>
+                                            </div> -->
+                                                <div class="progress-value1 m-b-5">
+                                                    <div
+                                                        *ngIf="!campaign.campaignAssessmentResults[j]?.hideResultStatus">
+                                                        <span
+                                                            *ngIf="campaign.campaignAssessmentResults[j]?.isAssessmentPassed">{{constants.cleared}}</span>
+                                                        <span
+                                                            *ngIf="!campaign.campaignAssessmentResults[j]?.isAssessmentPassed">{{constants.notCleared}}</span>
+                                                    </div>
+                                                    <div class="progress-value2"
+                                                        *ngIf="campaign.campaignAssessmentResults[j]?.hideResultStatus">
+                                                        <span>{{constants.completed}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            [ngClass]="campaign.campaignAssessmentResults[j]?.hideResultStatus ? 'col-4 border-right':'col-3 border-right'">
+                                            <br />
+                                            <span style="float: left;" class="hour-icon">
+                                                <i class="fas fa-hourglass me-2" style="font-size:26px"></i>
+                                            </span>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">
+                                                    {{campaign.campaignAssessmentResults[j]?.userAssessmentDurationString}}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.timeUtilized}}
+                                                </p>
+                                            </div>
+
+                                            <span style="float: left;" class="hour-icon">
+                                                <i class="fas fa-hourglass me-2" style="font-size:26px"></i>
+                                            </span>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">
+                                                    {{campaign.campaignAssessmentResults[j]?.averageQuestionDurationString}}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.averageTimePerQuestion}}
+                                                </p>
+                                            </div>
+
+                                            <span style="float: left;">
+                                                <i class="fa fa-question me-2" style="font-size:26px"></i>
+                                            </span>
+                                            <div>
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions
+                                                    ?
+                                                    campaign.campaignAssessmentResults[j]?.totalCorrect
+                                                    +"/"+
+                                                    campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.totalCorrectAnswers}}</p>
+                                            </div>
+                                            <span style="float: left;"
+                                                *ngIf="!campaign.campaignAssessmentResults[j]?.isMFAAssessment">
+                                                <i class="fa fa-exclamation me-4" style="font-size:26px"></i>
+                                            </span>
+                                            <div *ngIf="!campaign.campaignAssessmentResults[j]?.isMFAAssessment">
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions
+                                                    ?
+                                                    (campaign.campaignAssessmentResults[j]?.totalIncorrect ?
+                                                    campaign.campaignAssessmentResults[j]?.totalIncorrect :
+                                                    constants.zero)
+                                                    +"/"+
+                                                    campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.totalIncorrectAnswers}}</p>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="!campaign.campaignAssessmentResults[j]?.hideResultStatus"
+                                            class="col-3 border-right">
+                                            <br />
+                                            <div>
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.totalBeginnerQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.totalBeginnerQuestions ?
+                                                    campaign.campaignAssessmentResults[j]?.correctBeginnerQuestions
+                                                    +"/"+
+                                                    campaign.campaignAssessmentResults[j]?.totalBeginnerQuestions
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.beginnerQuestions}}</p>
+                                            </div>
+
+                                            <div>
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.totalIntermediateQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.totalIntermediateQuestions
+                                                    ?
+                                                    campaign.campaignAssessmentResults[j]?.correctIntermediateQuestions
+                                                    +"/"+
+                                                    campaign.campaignAssessmentResults[j]?.totalIntermediateQuestions
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.intermediateQuestions}}</p>
+                                            </div>
+
+                                            <div>
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.totalAdvancedQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.totalAdvancedQuestions ?
+                                                    campaign.campaignAssessmentResults[j]?.correctAdvancedQuestions
+                                                    +"/"+
+                                                    campaign.campaignAssessmentResults[j]?.totalAdvancedQuestions
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.advancedQuestions}}</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            [ngClass]="campaign.campaignAssessmentResults[j]?.hideResultStatus ? 'col-4':'col-3'">
+                                            <br />
+                                            <div>
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions
+                                                    ?
+                                                    campaign.campaignAssessmentResults[j]?.totalAnswered
+                                                    +"/"+
+                                                    campaign.campaignAssessmentResults[j]?.assessmentTotalQuestions
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">{{constants.questionsAttempted}}</p>
+                                            </div>
+
+                                            <ng-container
+                                                *ngIf="!campaign.campaignAssessmentResults[j]?.totalTestCases">
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.questionsSkipped ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.questionsSkipped ?
+                                                    campaign.campaignAssessmentResults[j]?.questionsSkipped :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+
+                                                <p style="font-size: 10px;">{{constants.questionsSkipped}}</p>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="campaign.campaignAssessmentResults[j]?.totalTestCases">
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.totalTestCases ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{campaign.campaignAssessmentResults[j]?.totalTestCases}}
+                                                </p>
+
+                                                <p style="font-size: 10px;">{{constants.totalTestCases}}</p>
+                                            </ng-container>
+
+                                            <ng-container
+                                                *ngIf="!campaign.campaignAssessmentResults[j]?.totalTestCases">
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.totalMarkedForReview ? 'font-weight-bold mb-0 question-marked' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{
+                                                    campaign.campaignAssessmentResults[j]?.totalMarkedForReview ?
+                                                    campaign.campaignAssessmentResults[j]?.totalMarkedForReview
+                                                    :
+                                                    constants.notApplicable
+                                                    }}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.questionsMarkedforReview}}
+                                                </p>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="campaign.campaignAssessmentResults[j]?.totalTestCases">
+                                                <p
+                                                    [ngClass]="campaign.campaignAssessmentResults[j]?.testCasesPassed ? 'font-weight-bold mb-0 question-marked' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{campaign.campaignAssessmentResults[j]?.testCasesPassed}}
+                                                </p>
+                                                <p style="font-size: 10px;">
+                                                    {{constants.testCasesPassed}}
+                                                </p>
+                                            </ng-container>
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Skill Based Score Begin -->
+                                    <br />
+                                    <div class="row" style="border: 1px solid #9d9d9d;border-radius: 5px;">
+                                        <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                            <h4 class="text-center m-b-30 m-t-20">{{constants.sectionBaseScore}}
+                                            </h4>
+                                            <div class="col-md-12 margin-div">
+                                                <ng-container>
+                                                    <div
+                                                        *ngIf="campaign.campaignAssessmentResults[j]?.sectionScore?.length > 0">
+                                                        <p
+                                                            *ngFor="let data of campaign.campaignAssessmentResults[j]?.sectionScore">
+                                                            {{data.sectionName}}<span
+                                                                style="float: right;">{{data.earnedScorePercentage}}%</span>
+                                                            <ngb-progressbar type="warning"
+                                                                [value]="data.earnedScorePercentage"
+                                                                height="10px"></ngb-progressbar>
+                                                        </p>
+                                                    </div>
+                                                    <div *ngIf="!(campaign.campaignAssessmentResults[j]?.sectionScore?.length > 0)"
+                                                        style="text-align: center;">
+                                                        {{constants.noDataFound}}
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div *ngIf="campaign.campaignAssessmentResults[j]?.questions?.length > 0">
+                                        <div class="row html2pdf__page-break"
+                                            style="border: 1px solid #9d9d9d;border-radius: 5px;">
+                                            <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                                <h4 class="text-center m-b-30 m-t-20">{{constants.skillBaseScore}}
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-6 m-b-40 p-r-40"
+                                                        *ngFor="let skill of campaign.campaignAssessmentResults[j]?.skillScore">
+                                                        <div
+                                                            class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                                            <span class="skill-name">{{skill.SkillName}}</span>
+                                                            <div class="total">
+                                                                <div class="cut-off"
+                                                                    [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                                                    <span class="border-left">
+                                                                        {{skill.EarnedScorePercentage}}%
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="campaign.campaignAssessmentResults[j]?.questions?.length === 0">
+                                        <div class="row" style="border: 1px solid #9d9d9d;border-radius: 5px;">
+                                            <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                                <h4 class="text-center m-b-30 m-t-20">{{constants.skillBaseScore}}
+                                                </h4>
+                                                <div class="row">
+                                                    <div class="col-md-6 m-b-40 p-r-40"
+                                                        *ngFor="let skill of campaign.campaignAssessmentResults[j]?.skillScore">
+                                                        <div
+                                                            class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                                            <span class="skill-name">{{skill.SkillName}}</span>
+                                                            <div class="total">
+                                                                <div class="cut-off"
+                                                                    [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                                                    <span class="border-left">
+                                                                        {{skill.EarnedScorePercentage}}%
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngFor="let questions of campaign.campaignAssessmentResults[j]?.questions"
+                                        class="row"
+                                        style="border: 1px solid #9d9d9d;border-radius: 5px; margin-top: 5x;">
+                                        {{checkIsCloud(questions.testCasesResults[0])}}
+                                        <div class="col-md-12 card m-p-20" style="border-radius: 5px;">
+                                            <div class="m-b-30 m-t-20 html2pdf__page-break"
+                                                [innerHtml]="questions.question"></div>
+                                            <div>{{constants.problemAreaCovered}}: {{questions.subSkill}}</div>
+                                            <br />
+                                            <div class="m-l-2">
+                                                <label
+                                                    class="plagiarism-label-font">{{constants.plagiarismScore}}:</label>
+                                                <span
+                                                    [ngClass]="questions.plagiarismScore === 'N/A' ? 'plagiarismScore-yfont' : 'plagiarismScore-rfont'">&nbsp;{{questions.plagiarismScore
+                                                    === 'N/A' || questions.plagiarismScore === '0' ?
+                                                    questions.plagiarismScore : questions.plagiarismScore | number :
+                                                    '1.2-2'}}</span>
+                                                <!-- <span class="m-l-10" *ngIf="questions.plagiarismScore !== 'N/A'">
+                                            <label class="plagiarism-label-font">{{constants.maxSimilarity}}: </label>
+                                            <span class="plagiarismScore-rfont">&nbsp;{{questions.similarityUserEmail === null ? '-' : questions.similarityUserEmail}}</span>
+                                        </span> -->
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 w-40" *ngIf="!isCloudBased">
+                                                    <div>
+                                                        <textarea *ngIf="!isDownloadClick" role="textbox" rows="10"
+                                                            readonly="false"
+                                                            class="w-100 html2pdf__page-break">{{questions.testCasesResults[0].answer}}</textarea>
+                                                        <div class="sfa-code" *ngIf="isDownloadClick">
+                                                            <pre>{{questions.testCasesResults[0].answer}}</pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12 w-40">
+                                                    <div>
+                                                        <div style="width: 100%;">
+                                                            <div class="row"
+                                                                style="margin: 1px; background-color: white; padding: 10px 10px 10px 10px;">
+                                                                <div class="w-13">{{constants.testCaseName}}</div>
+                                                                <div class="w-10">{{constants.testCaseStatus}}
+                                                                </div>
+                                                                <div class="w-13" *ngIf="!isCloudBased">
+                                                                    {{constants.cpuConsumption}}</div>
+                                                                <div class="w-13" *ngIf="!isCloudBased">
+                                                                    {{constants.memoryConsumption}}</div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{constants.warningCount}}</div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{constants.testCasePercentage}}</div>
+                                                                <div class="w-10 p-lr-1" *ngIf="!isCloudBased">
+                                                                    {{constants.cpuScorePercentage}}</div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{constants.memoryScorePercentage}}</div>
+                                                                <div class="w-10 p-lr-1" *ngIf="!isCloudBased">
+                                                                    {{constants.totalScorePercentage}}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="html2pdf__page-break">
+                                                            <div *ngFor="let testCaseItem of questions.testCasesResults"
+                                                                class="row"
+                                                                style="margin: 1px; background-color: #f2f3f4;; font-weight: bold; padding: 10px 10px 10px 10px;">
+                                                                <div class="w-13">{{testCaseItem.testCaseTitle}}
+                                                                </div>
+                                                                <div class="w-10">{{testCaseItem.testCaseStatus}}
+                                                                </div>
+                                                                <div class="w-13" *ngIf="!isCloudBased">
+                                                                    {{getCpuTime(testCaseItem.evaluationResultJson)}}
+                                                                </div>
+                                                                <div class="w-13" *ngIf="!isCloudBased">
+                                                                    {{getMemoryUtilized(testCaseItem.evaluationResultJson)}}
+                                                                </div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{testCaseItem.warningCount}}
+                                                                </div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{testCaseItem.testCasePercentage}}
+                                                                </div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{testCaseItem.cpuScorePercentage}}
+                                                                </div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{testCaseItem.memoryScorePercentage}}
+                                                                </div>
+                                                                <div class="w-10" *ngIf="!isCloudBased">
+                                                                    {{testCaseItem.totalScorePercentage}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </mat-expansion-panel>
+                        </div>
+                        <!-- Panel End -->
+                    </mat-accordion>
+                </div>
+                <div *ngIf="campaignDataResults?.totalCount === 0" style="text-align: center;">
+                    {{constants.noDataFound}}
+                </div>
+                <div *ngIf="campaignDataResults?.totalCount !== 0"
+                    class="d-flex justify-content-between align-items-center m-t-10">
+                    <ngb-pagination [collectionSize]="campaignDataResults?.totalCount" [pageSize]="campaignPageSize"
+                        [(page)]="campaignPageIndex" class="d-flex justify-content-center" [maxSize]="maxSize"
+                        (pageChange)="changeCampaignPage()" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" [(ngModel)]="campaignPageSize"
+                        (change)="changeCampaignPageSize()">
+                        <option [ngValue]="pageSize" *ngFor="let pageSize of campaignPageSizes">{{pageSize}}
+                            {{constants.itemsPerPage}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- <div #adaptiveAssessment>
+            <br />
+            <div *ngIf="!isDownloadProfile" class="container p-0 background-white padding-div "
+                style="padding-left: -10.9%; padding-right: -10.9%;">
+                <h3 style="text-align:center;">{{constants.adaptiveAssessmentResults}}</h3>
+                <mat-accordion #adaptiveAccordion="matAccordion" [multi]="true">
+                    <div class="row"
+                        style="margin: 1px; background-color: white; font-weight: bold; padding: 10px 0px 10px 0px;">
+                        <div class="col-4 text-center">{{constants.assessmentName}}</div>
+                        <div class="col-4 text-center">{{constants.completionDate}}</div>
+                        <div class="col-3 text-center">{{constants.action}}</div>
+
+                    </div>
+                    <div *ngIf="adaptiveAssessmentResults?.length">
+                        <mat-expansion-panel class="overflowVisible background-white"
+                            *ngFor="let adaptiveAssessmentResult of adaptiveAssessmentResults;let i=index"
+                            [expanded]="adaptiveAssessmentResult.isExpand"
+                            (opened)="openAdaptiveAssessment(adaptiveAssessmentResult)">
+                            <mat-expansion-panel-header class="background-white">
+                                <div class="width-percent-100">
+                                    <div class="row title-style">
+                                        <div class="col-4 text-center word-wrap assessment-text-wrap">
+                                            <span>
+                                                {{adaptiveAssessmentResult.assessmentTitle}}
+                                            </span>
+                                        </div>
+                                        <div class="col-4 text-center">{{adaptiveAssessmentResult.completionDate |
+                                            date:'dd/MM/yyyy'}}
+                                        </div>
+                                        <button class="col-3 text-center btn p-t-0" type="button"
+                                            (click)="downloadAdaptiveReport(i, adaptiveAssessmentResult)">{{constants.downloadReport}}</button>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel-header>
+                            <div id="{{ constants.adaptive + i }}">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <span class="m-t-5">{{constants.username}}</span>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5 class="m-t-5">{{user?.name}}{{user?.surname}}</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <span class="m-t-5">{{constants.email}}</span>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5 class="m-t-5 email-text-wrap">{{user?.emailAddress}}</h5>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="m-t-5 assessment-text-wrap">{{adaptiveAssessmentResult.assessmentTitle}}
+                                    </h3>
+                                </div>
+                                <div class="html2pdf__page-break"
+                                    *ngFor="let skill of adaptiveAssessmentResult.adaptiveSkillResults">
+                                    <div class="text-center">
+                                        <h4 class="m-t-5">{{skill.SectionName}}</h4>
+                                    </div>
+                                    <div class="row left-div">
+                                        <div class="col-3 border-right">
+                                            <br />
+                                            <span class="hour-icon left-float">
+                                                <i class="fas fa-hourglass me-2 font-26"></i>
+                                            </span>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">
+                                                    {{skill.TotalSectionDuration}}
+                                                </p>
+                                                <p class="font-10">
+                                                    {{constants.timeUtilized}}
+                                                </p>
+                                            </div>
+
+
+                                            <span class="hour-icon left-float">
+                                                <i class="fas fa-hourglass me-2 font-26"></i>
+                                            </span>
+                                            <div>
+                                                <p class="font-weight-bold mb-0">
+                                                    {{skill.AverageSectionQuestionDuration}}
+                                                </p>
+                                                <p class="font-10">
+                                                    {{constants.averageTimePerQuestion}}
+                                                </p>
+                                            </div>
+
+                                            <span class="left-float">
+                                                <i class="fa fa-question me-2 font-26"></i>
+                                            </span>
+                                            <div>
+                                                <p
+                                                    [ngClass]="skill?.TotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{ skill?.TotalQuestions ? skill.TotalCorrect +"/"+
+                                                    skill?.TotalQuestions :
+                                                    constants.notApplicable }}
+                                                </p>
+                                                <p class="font-10">{{constants.totalCorrectAnswers}}</p>
+                                            </div>
+                                            <span class="left-float">
+                                                <i class="fa fa-exclamation me-4 font-26"></i>
+                                            </span>
+                                            <div>
+                                                <p
+                                                    [ngClass]="skill?.TotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{ skill?.TotalQuestions ? (skill.TotalIncorrect ?
+                                                    skill.TotalIncorrect
+                                                    : constants.zero) +"/"+
+                                                    skill?.TotalQuestions :
+                                                    constants.notApplicable }}
+                                                </p>
+                                                <p class="font-10">{{constants.totalIncorrectAnswers}}</p>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-3 align-self-center m-b-20 text-center">
+                                            <h3 class="m-0">{{skill.AchievedProficiencyName ?
+                                                skill.AchievedProficiencyName : constants.nil}}</h3>
+                                            <small>{{constants.achievedProficiency}}</small>
+                                        </div>
+
+                                        <div class="col-3 border-right">
+                                            <br />
+                                            <ng-container *ngIf="skill?.SectionProficiencies">
+                                                <div *ngFor="let proficiency of skill.SectionProficiencies">
+                                                    <p
+                                                        [ngClass]="proficiency?.TotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                        {{ proficiency?.TotalQuestions ? proficiency.TotalCorrect +"/"+
+                                                        proficiency?.TotalQuestions : constants.notApplicable }}
+                                                    </p>
+                                                    <p class="font-10">
+                                                        {{proficiency.ProficiencyName}}{{constants.questions}}</p>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                        <div class="col-3">
+                                            <br />
+                                            <div>
+                                                <p
+                                                    [ngClass]="skill?.TotalQuestions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{ skill?.TotalQuestions ? skill?.TotalAnswered +"/"+
+                                                    skill?.TotalQuestions
+                                                    : constants.notApplicable }} </p>
+                                                <p class="font-10">{{constants.questionsAttempted}}</p>
+                                            </div>
+
+                                            <ng-container>
+                                                <p
+                                                    [ngClass]="skill.questionsSkipped ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{ (skill.TotalQuestions - skill.TotalAnswered) > 0 ?
+                                                    skill.TotalQuestions -
+                                                    skill.TotalAnswered :
+                                                    constants.notApplicable }}
+                                                </p>
+
+                                                <p class="font-10">{{constants.questionsSkipped}}</p>
+                                            </ng-container>
+
+                                            <ng-container>
+                                                <p
+                                                    [ngClass]="skill.TotalMarkedForReview ? 'font-weight-bold mb-0 question-marked' : 'notapplicable font-weight-bold mb-0'">
+                                                    {{ skill.TotalMarkedForReview ? skill.TotalMarkedForReview :
+                                                    constants.notApplicable }}
+                                                </p>
+                                                <p class="font-10">
+                                                    {{constants.questionsMarkedforReview}}
+                                                </p>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    Proficiency Level Journey Chart
+                                    <div class="w-100 card proficiency-chart-height">
+                                        <div class="card-body">
+                                            <h4 class="text-center m-b-30">{{constants.proficiencyLevelJourney}}</h4>
+                                            <div class="scores d-flex border-left proficiency-level">
+                                                <canvas baseChart width="350" height="150"
+                                                    [datasets]="skill.ProficiencyChartMetrics?.resultChartData"
+                                                    [labels]="skill.ProficiencyChartMetrics?.resultChartLabels"
+                                                    [options]="skill.ProficiencyChartMetrics?.resultChartOptions"
+                                                    [chartType]="'line'"
+                                                    [legend]="skill.ProficiencyChartMetrics?.resultChartLegend">
+                                                </canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    Proficiency Based Score Percentage
+                                    <div class="w-100 card">
+                                        <div class="card-body">
+                                            <h4 class="text-center m-b-30">{{constants.proficiencyBasedScore}}</h4>
+                                            <div class="d-flex justify-content-between flex-wrap"
+                                                *ngIf="skill?.SectionRecentAttempts">
+                                                <div class="w-100 m-r-30 m-b-30"
+                                                    *ngFor="let attempts of skill.SectionRecentAttempts">
+                                                    <div
+                                                        class="score-bar-adaptive border-left border-right d-flex justify-content-center w-100 flex-column">
+                                                        <span class="skill-name">{{attempts.ProficiencyName}}</span>
+                                                        <div class="total">
+                                                            <div class="cut-off"
+                                                                [ngStyle]="{'width':attempts?.ScorePercentage + '%'}">
+                                                                <span class="border-left">
+                                                                    {{attempts?.ScorePercentage + '%'}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="skill">
+                                                            <span
+                                                                class="skill-total-percentage">{{constants.totalPercentage
+                                                                +
+                                                                '%'}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </div>
+                    <div *ngIf="!adaptiveAssessmentResults?.length" style="text-align: center;">
+                        {{constants.noDataFound}}
+                    </div>
+                </mat-accordion>
+                <div *ngIf="adaptiveAssessmentResults?.length"
+                    class="d-flex justify-content-between align-items-center m-t-10">
+                    <ngb-pagination [collectionSize]="user?.totalAdaptiveAssessmentsTaken" [pageSize]="adaptivePageSize"
+                        [(page)]="adaptivePageIndex" class="d-flex justify-content-center" [maxSize]="maxSize"
+                        (pageChange)="changeAdaptivePage()" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" [(ngModel)]="adaptivePageSize"
+                        (change)="changeAdaptivePageSize()">
+                        <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                            {{constants.itemsPerPage}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div> -->
+        <div #aiAdaptiveAssessment>
+            <br />
+            <div *ngIf="!isDownloadProfile" class="container p-0 background-white padding-div "
+                style="padding-left: -10.9%; padding-right: -10.9%;">
+                <h3 style="text-align:center;">{{constants.aiAdaptiveAssessmentResults}}</h3>
+                <mat-accordion #adaptiveAccordion="matAccordion" [multi]="true">
+                    <div class="row"
+                        style="margin: 1px; background-color: white; font-weight: bold; padding: 10px 0px 10px 0px;">
+                        <div class="col-4 text-center">{{constants.assessmentName}}</div>
+                        <div class="col-4 text-center">{{constants.completionDate}}</div>
+                        <div class="col-3 text-center">{{constants.action}}</div>
+
+                    </div>
+                    <div *ngIf="aiAdaptiveAssessmentResult?.length">
+                        <mat-expansion-panel class="overflowVisible background-white"
+                            *ngFor="let aiResult of aiAdaptiveAssessmentResult;let i=index"
+                            [expanded]="aiResult.isExpand" (opened)="openAIAdaptiveAssessment(aiResult, i)">
+                            <mat-expansion-panel-header class="background-white">
+                                <div class="width-percent-100">
+                                    <div class="row title-style">
+                                        <div class="col-4 text-center word-wrap assessment-text-wrap">
+                                            <span>
+                                                {{aiResult.assessment_name}}
+                                            </span>
+                                        </div>
+                                        <div class="col-4 text-center">{{aiResult.completionDate |
+                                            date:'dd/MM/yyyy'}}
+                                        </div>
+                                        <button class="col-3 text-center btn p-t-0" type="button"
+                                            (click)="downloadAIAdaptiveReport(i, aiResult)">{{constants.downloadReport}}</button>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel-header>
+                            <div id="{{ constants.aiAdaptive + i }}">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <span class="m-t-5">{{constants.username}}</span>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5 class="m-t-5">{{user?.name}}{{user?.surname}}</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <span class="m-t-5">{{constants.email}}</span>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5 class="m-t-5 email-text-wrap">{{user?.emailAddress}}</h5>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="m-t-5 assessment-text-wrap">{{aiResult.assessment_name}}
+                                    </h3>
+                                </div>
+                                <div class="html2pdf__page-break">
+                                    <div class="text-center">
+                                        <h4 class="m-t-5">{{aiResult.skill_name}}</h4>
+                                    </div>
+                                    
+                                        <div class="row left-div p-10 d-flex align-items-center justify-content-between">
+                                            <br />
+                                            <div class="col-4 d-flex align-items-center">
+                                                <span class="left-float">
+                                                    <i class="fas fa-hourglass me-2 font-26"></i>
+                                                </span>
+                                                <div>
+                                                    <p class="font-weight-bold mb-0">
+                                                        {{aiResult.number_of_questions}}
+                                                    </p>
+                                                    <p class="font-10">
+                                                        {{constants.totalQuestions}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-4 d-flex align-items-center">
+                                                <span class="left-float">
+                                                    <i class="fa fa-question me-2 font-26"></i>
+                                                </span>
+                                                <div>
+                                                    <p
+                                                        [ngClass]="aiResult?.number_of_questions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                        {{ aiResult.totalCorrect +"/"+ aiResult?.number_of_questions}}
+                                                    </p>
+                                                    <p class="font-10">{{constants.totalCorrectAnswers}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 d-flex align-items-center">
+                                                <span class="left-float">
+                                                    <i class="fa fa-exclamation me-4 font-26"></i>
+                                                </span>
+                                                <div>
+                                                    <p
+                                                        [ngClass]="skill?.number_of_questions ? 'font-weight-bold mb-0' : 'notapplicable font-weight-bold mb-0'">
+                                                        {{ aiResult.totalIncorrect +"/"+ aiResult?.number_of_questions}}
+                                                    </p>
+                                                    <p class="font-10">{{constants.totalIncorrectAnswers}}</p>
+                                                </div>
+                                            </div>
+                                           
+
+                                        </div>
+
+
+                                    
+                                    <br />
+                                    <!-- Proficiency Level Journey Chart -->
+                                    <div class="w-100 card proficiency-chart-height">
+                                        <div class="card-body">
+                                            <h4 class="text-center m-b-30">{{constants.proficiencyLevelJourney}}</h4>
+                                            <div class="scores d-flex border-left proficiency-level">
+                                                <canvas id="aiAdaptiveChart{{i}}" width="400" height="150"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </div>
+                    <div *ngIf="!aiAdaptiveAssessmentResult?.length" style="text-align: center;">
+                        {{constants.noDataFound}}
+                    </div>
+                </mat-accordion>
+                <div *ngIf="aiAdaptiveAssessmentResult?.length"
+                    class="d-flex justify-content-between align-items-center m-t-10">
+                    <ngb-pagination [collectionSize]="aiAdaptiveAssessmentTotalCount"
+                        [pageSize]="aiAdaptiveAssessmentPage.pagesizes" [(page)]="aiAdaptiveAssessmentPage.pageIndex"
+                        class="d-flex justify-content-center" [maxSize]="aiAdaptiveAssessmentPage.maxResultCount"
+                        (pageChange)="changeAIAdaptivePage()" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" [(ngModel)]="aiAdaptiveAssessmentPage.pagesizes"
+                        (change)="changeAIAdaptivePageSize()">
+                        <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}}
+                            {{constants.itemsPerPage}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Assessment End  -->
+    <div class="text-center mt-4"
+        *ngIf="standardAssessmentResults?.length || adaptiveAssessmentResults?.length || campaignDataResults?.totalCount">
+        <button class="btn btn-info" type="button"
+            (click)="downloadProfile()">{{constants.downloadUserProfile}}</button>
+
+    </div>
+</div>

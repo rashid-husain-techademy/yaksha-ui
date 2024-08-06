@@ -1,0 +1,20 @@
+.fib {
+    ::ng-deep {
+        .input-width-box0 {
+            display: inline-block;
+            margin: 0 10px;
+        }
+    }
+}
+
+.indentaion {
+    white-space: pre-wrap;
+}
+
+::ng-deep p .indentaion img {
+    width: auto  !important;
+}
+
+::ng-deep div .indentaion img {
+    width: auto  !important;
+}

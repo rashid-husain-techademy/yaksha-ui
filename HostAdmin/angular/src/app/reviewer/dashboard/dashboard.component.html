@@ -1,0 +1,159 @@
+<div class="row" appDisableCopy appDisablePaste appDisableRightClick>
+    <div class="col-12">
+        <div class="card-group">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="m-b-0">
+                                <i class="mdi mdi-book-multiple-variant text-info"></i>
+                            </h2>
+                            <h3 class="">{{assessmentsCount?.totalAssessment}}</h3>
+                            <h5 class="card-subtitle">{{constants.assignedAssessments}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="m-b-0">
+                                <i class="mdi mdi-checkbox-multiple-marked text-success"></i>
+                            </h2>
+                            <h3 class="">{{assessmentsCount?.totalReviewed}}</h3>
+                            <h5 class="card-subtitle">{{constants.reviewedAssessments}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="m-b-0">
+                                <i class="mdi mdi-alert-box text-warning"></i>
+                            </h2>
+                            <h3 class="">{{assessmentsCount?.totalPending}}</h3>
+                            <h5 class="card-subtitle">{{constants.unreviewedAssessments}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap m-b-30">
+                    <div>
+                        <h4 class="card-title">{{constants.assignedAssessments}}</h4>
+                    </div>
+                    <div class="ml-auto">
+                        <label class="m-b-0">{{constants.selectDuration}}</label>
+                        <select class="custom-select" (change)="onChangeTestTaker()" [(ngModel)]="testTakerPeriod">
+                            <option *ngFor="let duration of reviewerdurationDropDown" [value]="duration.value">
+                                {{duration.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <ng-container *ngIf="assignedAssessmentChartOptions?.series.length">
+                        <apx-chart [series]="assignedAssessmentChartOptions.series"
+                            [chart]="assignedAssessmentChartOptions.chart"
+                            [xaxis]="assignedAssessmentChartOptions.xaxis"
+                            [yaxis]="assignedAssessmentChartOptions.yaxis" [grid]="assignedAssessmentChartOptions.grid"
+                            [stroke]="assignedAssessmentChartOptions.stroke"
+                            [tooltip]="assignedAssessmentChartOptions.tooltip"
+                            [dataLabels]="assignedAssessmentChartOptions.dataLabels"
+                            [legend]="assignedAssessmentChartOptions.legend"
+                            [colors]="assignedAssessmentChartOptions.colors"
+                            [markers]="assignedAssessmentChartOptions.markers">
+                        </apx-chart>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap m-b-30">
+                    <div>
+                        <h4 class="card-title">{{constants.assessmentReviewProgress}}</h4>
+                    </div>
+                    <div class="ml-auto dr-width">
+                        <label class="m-b-0">{{constants.selectAssessment}}</label>
+                        <select class="custom-select assessment-label"
+                            (change)="onAssessmentReviewProgressChange($event.target.value)">
+                            <option *ngFor="let assessment of assessmentsReviewProgress"
+                                [value]="assessment?.assessmentId">
+                                {{assessment?.assessmentName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <div>
+                            <ng-container *ngIf="assessmentReviewProgressChartOptions?.series.length">
+                                <apx-chart [series]="assessmentReviewProgressChartOptions.series"
+                                    [chart]="assessmentReviewProgressChartOptions.chart"
+                                    [plotOptions]="assessmentReviewProgressChartOptions.plotOptions"
+                                    [labels]="assessmentReviewProgressChartOptions.labels"
+                                    [fill]="assessmentReviewProgressChartOptions.fill"
+                                    [stroke]="assessmentReviewProgressChartOptions.stroke"></apx-chart>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap m-b-30">
+                    <div>
+                        <h4 class="card-title">{{constants.assessmentResult}}</h4>
+                    </div>
+                    <div class="ml-auto dr-width">
+                        <label class="m-b-0">{{constants.selectAssessment}}</label>
+                        <select class="custom-select assessment-label"
+                            (change)="createAssessmentResultsChart($event.target.value)">
+                            <option *ngFor="let assessment of assessmentsReviewProgress"
+                                [value]="assessment?.assessmentId">
+                                {{assessment?.assessmentName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            <ng-container *ngIf="assessmentResultChartOptions?.series.length >= 0">
+                                <apx-chart [series]="assessmentResultChartOptions.series"
+                                    [chart]="assessmentResultChartOptions.chart"
+                                    [dataLabels]="assessmentResultChartOptions.dataLabels"
+                                    [legend]="assessmentResultChartOptions.legends"
+                                    [colors]="assessmentResultChartOptions.colors"
+                                    [stroke]="assessmentResultChartOptions.stroke"
+                                    [labels]="assessmentResultChartOptions.labels"
+                                    [tooltip]="assessmentResultChartOptions.tooltip"
+                                    [plotOptions]="assessmentResultChartOptions.plotOptions">
+                                </apx-chart>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

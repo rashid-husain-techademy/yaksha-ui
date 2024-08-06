@@ -1,0 +1,39 @@
+.mat-expansion-panel-header {
+    padding: 15px !important;
+    font-weight: bold;
+    border-bottom: 1px solid rgba($color: #000000, $alpha: 0.2);
+}
+.pointer {
+    cursor: pointer;
+}
+.white-bg {
+    background-color: white;
+}
+.keyword {
+    border-radius: 10px;
+    background-color: #e4e4e4;
+    padding: 5px 15px;
+    margin: 5px;
+}
+.autocomplete {
+    position: relative;
+    .autocompletelist {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        max-height: 200px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+}
+.skill-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item{
+    margin-bottom: 5px;
+    max-width: inherit !important;
+}
+
+.skill-custom ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a{
+   color:#fff !important;
+   font-weight: bolder;
+}

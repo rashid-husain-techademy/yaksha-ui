@@ -1,0 +1,218 @@
+<div *ngIf="assessmentDetail">
+    <div class="card">
+        <div>
+            <div *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Draft"
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Draft ? 'drafts' : ''"
+                class="ribbon ribbon-top-left">
+                <span>{{constants.draft}}</span>
+            </div>
+            <div *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published"
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Published ? 'published' : ''"
+                class="ribbon ribbon-top-left"><span>{{constants.published}}</span></div>
+            <div *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published && assessmentDetail.hasActiveSchedules"
+                [ngClass]="assessmentDetail.assessmentStatus === assessmentStatus.Published && assessmentDetail.hasActiveSchedules ? 'scheduled' : ''"
+                class="ribbon ribbon-top-left"><span>{{constants.scheduled}}</span></div>
+        </div>
+        <div class="card-body p-l-40">
+            <h3 class="page-title m-r-30 assessment-label">{{assessmentDetail.assessmentName}}</h3>
+            <div [ngSwitch]=skillType>
+                <div *ngSwitchCase="'single'">{{assessmentDetail.categoryName}} - {{assessmentDetail.skillName}} </div>
+                <div *ngSwitchCase="'multi'">{{constants.multiSkillAssessment}}</div>
+                <div *ngSwitchDefault>
+                    <h5>{{constants.categories}}</h5>
+                </div>
+            </div>
+            <div class="text-muted m-b-10">{{assessmentDetail.subSkillName}}</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="border d-inline-flex">
+                </div>
+                <div class="w-50 text-right">
+                    <button class="btn btn-success m-r-20"
+                        *ngIf="assessmentDetail.assessmentStatus === assessmentStatus.Published"
+                        (click)="schedule()">{{constants.schedule}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body p-0">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                <li [ngbNavItem]="1">
+                    <a ngbNavLink>{{constants.description}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <h5 class="font-weight-bold">{{constants.description}}</h5>
+                            <div>
+                                <span [innerHTML]="assessmentDetail.description"></span>
+                            </div>
+                            <hr>
+                            <h5 class="font-weight-bold">{{constants.instructions}}</h5>
+                            <div>
+                                <span [innerHTML]="assessmentDetail.instructions"></span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="3" (click)="getAdaptiveAssessmentSchedules()">
+                    <a ngbNavLink>{{constants.schedule}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="p-20">
+                            <table class="table table-striped border mt-4 schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold text-center">{{constants.type}}</th>
+                                        <th *ngIf="userRole === userRoles[1]" class="font-weight-bold text-center">
+                                            {{constants.tenantNameLabel}}</th>
+                                        <!-- <th class="font-weight-bold text-center">{{constants.testPurpose}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.startDateTime}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.EndDateTime}}</th> -->
+                                        <!-- TODO <th class="font-weight-bold text-center">{{constants.usages}}</th> -->
+                                        <th class="font-weight-bold text-center">{{constants.isActive}}</th>
+                                        <th class="font-weight-bold text-center">{{constants.scheduleLink}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let schedule of schedulesList">
+                                        <td class="text-center">
+                                            <ngb-highlight
+                                                [result]="schedule.schdeuleType === scheduleType.Invite ? constants.invitation : constants.publicLink ">
+                                            </ngb-highlight>
+                                        </td>
+                                        <td class="text-center overflow" *ngIf="userRole === userRoles[1]">
+                                            <ngb-highlight [ngbTooltip]="schedule?.tenancyName"
+                                                [result]="schedule?.tenancyName"></ngb-highlight>
+                                        </td>
+                                        <!-- <td class="text-center overflow">
+                                            <ngb-highlight [ngbTooltip]="schedule.testPurpose"
+                                                [result]="schedule.testPurpose" class="overflow test-purpose">
+                                            </ngb-highlight>
+                                        </td> -->
+                                        <!-- <td class="text-center">
+                                            <ngb-highlight [result]="formattedDateTime(schedule.startDateTime)">
+                                            </ngb-highlight>
+                                        </td>
+                                        <td class="text-center">
+                                            <ngb-highlight [result]="formattedDateTime(schedule.endDateTime)">
+                                            </ngb-highlight>
+                                        </td> -->
+                                        <td class="text-center">
+                                            <div class="toggle-wrapper">
+                                                <div class="toggle checkcross" (click)="onStatusChange(schedule)">
+                                                    <input type="checkbox" class="custom-check" [id]="schedule.id"
+                                                        [checked]="schedule.isActive">
+                                                    <label for="checkcross" class="toggle-item">
+                                                        <div class="check"></div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="toggle-wrapper" *ngIf="schedule.disableActivation">
+
+                                            </div> -->
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0)"
+                                                *ngIf="schedule.schdeuleType === scheduleType.Public || schedule.schdeuleType === scheduleType.SelfRegistration"
+                                                [ngbTooltip]="constants.copyScheduleLink"
+                                                (click)="copyLink(schedule.scheduleLink)">
+                                                <i class="far fa-copy"></i></a>
+                                            <span
+                                                *ngIf="schedule.schdeuleType !== scheduleType.Public && schedule.schdeuleType !== scheduleType.SelfRegistration">-</span>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!scheduleCount">
+                                        <td colspan="8" class="text-center">
+                                            {{constants.noSchedulesFound}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-20 d-flex justify-content-center align-items-center" *ngIf="scheduleCount">
+                                <ngb-pagination [(page)]="schedulePageIndex" [pageSize]="schedulePageSize"
+                                    [collectionSize]="scheduleCount" (pageChange)="loadPage()" [maxSize]="maxSize"
+                                    [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                </ngb-pagination>
+                                <select class="custom-select m-l-20 m-b-20" style="width:  auto;"
+                                    [(ngModel)]="schedulePageSize" (change)="changePageSize()">
+                                    <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">
+                                        {{pageSize}} {{constants.itemsPerPage}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </ng-template>
+                </li>
+            </ul>
+            <div [ngbNavOutlet]="nav"></div>
+            <ng-template #content let-modal>
+                <div class="modal-header">
+                    <h4>{{constants.InvitedCandidates}}</h4>
+                    <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')">&times;</span>
+                </div>
+                <div class="modal-body user-invite-modal">
+                    <p *ngFor="let user of invitedUsers">
+                        {{user}}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        (click)="modal.close('Close click')">{{constants.close}}
+                    </button>
+                </div>
+            </ng-template>
+            <ng-template #slotContent let-modal>
+                <div class="modal-header">
+                    <h4>{{constants.slots}}</h4>
+                    <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')">&times;</span>
+                </div>
+                <div class="modal-body user-invite-modal">
+                    <table class="table table-striped border">
+                        <thead>
+                            <tr>
+                                <th>
+                                    {{constants.slotStartDateAndTime}}
+                                </th>
+                                <th class="text-center">
+                                    {{constants.maximumCandidates}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let slot of slotData">
+                                <td>
+                                    {{slot.slotStartDateTime | date: 'dd-MM-yyyy HH:mm'}}
+                                </td>
+                                <td class="text-center">
+                                    {{slot.slotThreshold}}
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        (click)="modal.close('Close click')">{{constants.close}}
+                    </button>
+                </div>
+            </ng-template>
+            <ng-template #content let-modal>
+                <div class="modal-header">
+                    <h4>{{constants.InvitedCandidates}}</h4>
+                    <span class="cursor-pointer" aria-hidden="true" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')">&times;</span>
+                </div>
+                <div class="modal-body user-invite-modal">
+                    <p *ngFor="let user of invitedUsers">
+                        {{user}}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        (click)="modal.close('Close click')">{{constants.close}}
+                    </button>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

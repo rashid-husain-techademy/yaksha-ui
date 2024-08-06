@@ -1,0 +1,85 @@
+.success-message {
+  background-color: #004c80;
+  height: 100vh;
+  color: white;
+
+  &.custom-tenant {
+    background: #414143 !important;
+  }
+}
+
+.message-size {
+  font-size: xx-large;
+}
+
+.post-assessment {
+  background: #004c80;
+  height: calc(100vh);
+
+  &.custom-tenant {
+    background: #414143 !important;
+
+    .logo {
+      margin-bottom: 30px;
+
+      img {
+        max-width: 200px;
+      }
+    }
+
+  }
+}
+.post-assessment-abinbev {
+  background: #ffe100;
+  height: calc(100vh);
+  color: #000000;
+ 
+}
+.success-message-abinbev {
+  background-color: #ffe100;
+  height: 100vh;
+  color: #000000;
+
+  &.custom-tenant {
+    background: #414143 !important;
+  }
+}
+
+
+.post-assessment-abinbev {
+  background: #ffe100;
+  height: calc(100vh);
+  color: #000000;
+ 
+}
+.success-message-abinbev {
+  background-color: #ffe100;
+  height: 100vh;
+  color: #000000;
+
+  &.custom-tenant {
+    background: #414143 !important;
+  }
+}
+
+
+::ng-deep .container-fluid {
+  padding: 0;
+}
+
+.logo {
+  margin-bottom: 30px;
+
+  img {
+    max-width: 115px;
+    height:45px;
+  }
+}
+
+.yaksha {
+  top: 20px;
+  position: absolute;
+  right: 20px;
+  display: block;
+  width: 100% !important;
+}

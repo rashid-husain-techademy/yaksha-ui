@@ -1,0 +1,17 @@
+<div appDisableCopy appDisablePaste appDisableSelect appDisableRightClick>
+    <div class="modal-header">
+        <h4 class="modal-title">{{constants.hint}}</h4>
+        <button class="btn" type="button" aria-label="Close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="m-b-20">
+            <p *ngIf="!helper.isHtml(hintsData.description)">{{hintsData.description}}</p>
+            <p *ngIf="helper.isHtml(hintsData.description)" [innerHTML]="hintsData.description" class="name"></p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">{{constants.close}}</button>
+    </div>
+</div>

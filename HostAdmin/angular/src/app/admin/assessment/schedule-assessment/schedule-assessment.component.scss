@@ -1,0 +1,335 @@
+.schedule-info {
+    margin: 0 -15px;
+    padding: 5px;
+    background-color: #f7f7f7;
+}
+
+.file-upload {
+    cursor: pointer;
+    background-color: #f7f7f7 !important;
+}
+
+.m-l-35 {
+    margin-left: 35px;
+
+    &.shuffle-options {
+        position: relative;
+        top: 12px;
+    }
+}
+
+.cut-off {
+    position: relative;
+    bottom: 12px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.collaborative {
+    position: relative;
+    top: 29px;
+}
+
+.test-link {
+    position: relative;
+
+    .far {
+        position: absolute;
+        z-index: 1;
+        cursor: pointer;
+        right: 15px;
+        bottom: 12px;
+    }
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.reviewer {
+    min-width: 25%;
+    max-width: 35%;
+}
+
+.error-text {
+    max-width: fit-content;
+}
+
+@media screen and (min-width:1024px) {
+    ::ng-deep .modal-md {
+        max-width: calc(100vw - 25%) !important;
+    }
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.custom-width {
+    width: 100% !important;
+}
+
+.help-text-width {
+    width: max-content;
+}
+
+::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 170px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.custom-width ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    white-space: nowrap;
+    max-width: 500px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+::ng-deep .multiselect-dropdown .dropdown-btn .selected-item a {
+    position: absolute;
+    right: 60px;
+    top: 6px;
+    font-weight: bolder;
+}
+
+.custom-size {
+    width: 125px;
+}
+
+.custom-text {
+    font-size: 11px !important;
+    margin-left: 7px;
+}
+
+.approver {
+    border-style: solid
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.m-l-15 {
+    margin-left: 15px;
+}
+
+.w-30 {
+    width: 30% !important;
+}
+
+.mrtl-8 {
+    margin: 0px 8px 15px;
+}
+
+.pmapping {
+    display: block;
+}
+
+.liveproctoringsubset {
+    margin-left: 15px;
+}
+
+.screenSharingLimit {
+    width: 70px;
+}
+
+.on-assessment-setting {
+    min-width: 350px;
+}
+
+.fixed-row-position {
+    display: inherit;
+    margin-bottom: 1rem;
+    height: 90px;
+    width: 100%;
+}
+
+.m-b-22 {
+    margin-bottom: 22px;
+}
+
+.mw-100 {
+    min-width: 48% !important;
+    max-width: 48% !important;
+    margin: 12px !important;
+}
+
+.tile-box {
+    padding: 0em !important;
+    margin-bottom: 0 !important;
+}
+
+.w-50 {
+    width: 50% !important;
+}
+
+.w-40 {
+    width: 40% !important;
+}
+
+.input-group-w50 {
+    width: 50% !important;
+    display: inline !important;
+}
+
+.levels {
+    position: relative;
+
+    small {
+        position: relative;
+        top: -10px;
+    }
+
+    .add-del-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1;
+    }
+}
+
+.mtb-10 {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.m-20 {
+    margin: 0 0px 10px !important;
+}
+
+.pl-0 {
+    padding-left: 0;
+}
+
+.mt-1 {
+    margin-top: 1px;
+}
+
+.p-0 {
+    padding: 0px !important;
+}
+
+.mt-35 {
+    margin-top: 35px;
+}
+
+.m-l-4 {
+    margin-left: 4px;
+}
+
+.m-l-5 {
+    margin-left: 5px;
+}
+
+.skill-margin {
+    margin: 10px 20px !important;
+}
+
+.padding-20 {
+    padding: 0 20px;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.color-red {
+    color: red;
+}
+
+::ng-deep .tagWrapper svg {
+    padding: 0px !important;
+}
+
+.pt-30 {
+    padding-top: 30px !important;
+}
+
+.pt-38 {
+    padding-top: 38px !important;
+}
+
+.m-r-20 {
+    margin-right: 20px;
+}
+
+.m-l-4 {
+    margin-left: 4px;
+}
+
+.d-i-flex {
+    display: inline-flex;
+    margin-top: 10px;
+}
+
+.pt-26 {
+    padding-top: 26px;
+}
+
+.pl-18 {
+    padding-left: 18px;
+}
+
+.mt-6 {
+    margin-top: 6px
+}
+
+.mt-3 {
+    margin-top: 3px !important;
+}
+
+.test-purpose {
+    text-overflow: ellipsis;
+}
+
+.table-role-analysis {
+    thead tr {
+        th:first-child {
+            width: 15%;
+        }
+
+        th:nth-child(2) {
+            width: 20%;
+        }
+
+        th:last-child {
+            width: 7%;
+        }
+    }
+
+    thead th {
+        font-weight: small !important;
+    }
+
+    tbody tr {
+        td:first-child {
+            min-width: 10rem;
+        }
+
+        td:nth-child(2) {
+            min-width: 12rem;
+        }
+    }
+}
+
+.p-l-6 {
+    padding-left: 6rem;
+}
+
+.b-c-red {
+    border-color: #f62d51;
+}
+
+.overflow-x {
+    overflow-x: auto;
+}
+
+.p-l-3 {
+    padding-left: 3px !important;
+}

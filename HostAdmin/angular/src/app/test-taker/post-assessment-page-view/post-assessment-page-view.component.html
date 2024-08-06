@@ -1,0 +1,833 @@
+<div *ngIf="!isABInBev" [ngClass]="isCustomThemeEnabled ? 'post-assessment custom-tenant':'post-assessment'"
+    class="p-30 d-flex justify-content-center flex-column" id="contentToConvert" appDisableCopy appDisablePaste
+    appDisableSelect>
+    <div class="d-flex w-100 flex-column align-items-center justify-content-center" *ngIf="postAssessmentResult">
+        <div class="w-100 text-center logo custom-tenant-logo" *ngIf="isTenantLogoLoaded">
+            <img [src]="logoUrl" alt="logo">
+        </div>
+        <h4 class="m-b-30 w-75 text-center text-white">{{constants.youHaveCompleted}}</h4>
+        <h3 class="m-b-30 w-75 text-center text-white assessment-label" style="word-break: break-word;"><span
+                *ngIf="campaignName">{{campaignName}}
+                : </span>
+            {{postAssessmentResult?.assessmentTitle}}</h3>
+        <div class="w-75 d-flex questions-section m-b-10">
+            <div class="text-white text-center">
+                <small class="text-muted text-center m-r-10">{{constants.firstName}}</small>
+                <strong>{{userName}}</strong>
+            </div>
+            <div class="text-white text-center m-l-30">
+                <small class="text-muted text-center m-r-10">{{constants.lastName}}</small>
+                <strong>{{surName}}</strong>
+            </div>
+        </div>
+        <div class="w-75 d-flex justify-content-between questions-section m-b-10">
+            <div class="text-white text-center">
+                <small class="text-muted text-center m-r-10">{{constants.email}}</small>
+                <strong class="email-text-wrap">{{emailAddress}}</strong>
+            </div>
+        </div>
+        <ng-container>
+            <div class="w-75" *ngIf="!showAdaptive">
+                <div class="card" *ngIf="!showLeaderBoardOnly">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between">
+                            <div [ngClass]="postAssessmentResult?.hideResultStatus ? 'w-50 border-right p-r-40':'time-info'"
+                                class="d-flex flex-row flex-wrap flex-md-column justify-content-between">
+                                <div
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40 m-t-40' :'d-flex align-items-center m-b-20'">
+                                    <i class="fas fa-hourglass-end m-r-10"></i>
+                                    <div>
+                                        <h3 class="m-0">
+                                            {{userAssessmentDuration}}
+                                        </h3>
+                                        <small>{{constants.timeUtilized}}</small>
+                                    </div>
+                                </div>
+                                <div
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40' :'d-flex align-items-center m-b-20'">
+                                    <i class="fas fa-hourglass-end m-r-10"></i>
+                                    <div>
+                                        <h3 class="m-0">{{averageQuestionDuration}}</h3>
+                                        <small>{{constants.averageTimePerQuestion}}</small>
+                                    </div>
+                                </div>
+                                <div
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40' :'d-flex align-items-center m-b-20'">
+                                    <i class="fas fa-question m-r-10"></i>
+                                    <div>
+                                        <h3 class="m-0">
+                                            {{postAssessmentResult?.totalCorrect}} /
+                                            {{postAssessmentResult?.assessmentTotalQuestions}}
+                                        </h3>
+                                        <small>{{constants.totalCorrectAnswers}}</small>
+                                    </div>
+                                </div>
+                                <div *ngIf="!postAssessmentResult?.isMFAAssessment"
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40' :'d-flex align-items-center'">
+                                    <i class="fas fa-exclamation m-r-15"></i>
+                                    <div>
+                                        <h3 class="m-0">
+                                            {{postAssessmentResult?.totalIncorrect ?
+                                            postAssessmentResult?.totalIncorrect : constants.zero}} /
+                                            {{postAssessmentResult?.assessmentTotalQuestions}}
+                                        </h3>
+                                        <small>{{constants.totalIncorrectAnswers}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div [ngClass]="postAssessmentResult?.hideResultStatus ? 'w-50':''"
+                                id="apex-chart-container">
+                                <apx-chart [series]="assessmentResultChartOptions?.series"
+                                    [plotOptions]="assessmentResultChartOptions?.plotOptions"
+                                    [chart]="assessmentResultChartOptions?.chart"
+                                    [labels]="assessmentResultChartOptions?.labels"
+                                    [fill]="assessmentResultChartOptions?.fill">
+                                </apx-chart>
+                                <div class="m-t-20 text-center"
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'text-success' : isUserPassed ? 'text-success' : 'text-danger'">
+                                    {{postAssessmentResult?.hideResultStatus ?
+                                    constants.completedAssessment: isUserPassed ? constants.clearedAssessment :
+                                    constants.notClearedAssessment}}
+                                </div>
+                            </div>
+                            <div class="question-level d-flex flex-row flex-md-column">
+                                <div class="m-b-20" *ngIf="postAssessmentResult?.totalBeginnerQuestions > 0">
+                                    <h3 class="m-0">
+                                        {{postAssessmentResult?.correctBeginnerQuestions}} /
+                                        {{postAssessmentResult?.totalBeginnerQuestions}}
+                                    </h3>
+                                    <small>{{constants.beginnerQuestions}}</small>
+                                </div>
+                                <div class="m-b-20" *ngIf="postAssessmentResult?.totalIntermediateQuestions > 0">
+                                    <h3 class="m-0">
+                                        {{postAssessmentResult?.correctIntermediateQuestions}} /
+                                        {{postAssessmentResult?.totalIntermediateQuestions}}
+                                    </h3>
+                                    <small>{{constants.intermediateQuestions}}</small>
+                                </div>
+                                <div class="m-b-20" *ngIf="postAssessmentResult?.totalAdvancedQuestions > 0">
+                                    <h3 class="m-0">
+                                        {{postAssessmentResult?.correctAdvancedQuestions}} /
+                                        {{postAssessmentResult?.totalAdvancedQuestions}}
+                                    </h3>
+                                    <small>{{constants.advancedQuestions}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap flex-md-nowrap justify-content-between questions-section"
+                    *ngIf="!showLeaderBoardOnly">
+                    <div class="m-r-20 card">
+                        <div class="card-body">
+                            <h3 class="m-0 text-info">
+                                {{postAssessmentResult?.totalAnswered}}/{{postAssessmentResult?.assessmentTotalQuestions}}
+                            </h3>
+                            <small>{{constants.questionsAttempted}}</small>
+                        </div>
+                    </div>
+                    <div class="question-card card" *ngIf="!postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-danger">{{postAssessmentResult?.questionsSkipped}}</h3>
+                            <small>{{constants.questionsSkipped}}</small>
+                        </div>
+                    </div>
+                    <div class="m-r-20 card" *ngIf="postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-danger">{{postAssessmentResult?.totalTestCases}}</h3>
+                            <small>{{constants.totalTestCases}}</small>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="!postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-warning">{{postAssessmentResult?.totalMarkedForReview}}</h3>
+                            <small>{{constants.questionsMarkedforReview}}</small>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-warning">{{postAssessmentResult?.testCasesPassed}}</h3>
+                            <small>{{constants.testCasesPassed}}</small>
+                        </div>
+                    </div>
+                    <div class="m-l-20 card">
+                        <div class="card-body">
+                            <h3 class="m-0 text-warning">{{remainingAttempts}}</h3>
+                            <small>{{constants.remainingAttempts}}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" *ngIf="!showLeaderBoardOnly">
+                    <div class="card-body">
+                        <h4 class="text-center m-b-30">{{constants.sectionBaseScore}}</h4>
+                        <div class="scores d-flex border-left">
+                            <ng-container *ngFor="let section of sections">
+                                <div class="score-data border-right d-flex flex-column justify-content-between"
+                                    [ngStyle]="{'width': section.SectionPercentage+'%'}">
+                                    <div class="sections tenant m-t-20 w-100">
+                                        <span class="section-name" [ngbTooltip]="section.SectionName"
+                                            [ngStyle]="{'max-width':'calc(100% - ' + section.SectionPercentage + 'px)'}">{{section.SectionName}}</span>
+                                        <span class="section-score">{{section.TotalScore}}</span>
+                                    </div>
+                                    <div class="user-score tenant m-b-20"
+                                        [ngStyle]="{'width': section.EarnedScorePercentage+'%'}">
+                                        <span class="section-score">{{section.UserEarnedScore}}</span>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" *ngIf="!showLeaderBoardOnly">
+                    <div class="card-body">
+                        <h4 class="text-center m-b-30">{{constants.skillBaseScore}}</h4>
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <div class="w-40 m-r-30 m-b-30" *ngFor="let skill of skills">
+                                <div
+                                    class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                    <span class="skill-name">{{skill.SkillName}}</span>
+                                    <div class="total">
+                                        <div class="cut-off tenant"
+                                            [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                            <span class="border-left">
+                                                {{skill.EarnedScorePercentage}}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center button-section" *ngIf="!showLeaderBoardOnly">
+                    <div *ngIf="isInfosys === false">
+                        <button class="btn btn-info  tenant" type="button"
+                            (click)="htmltoPDF()">{{constants.downloadReport}}</button>
+                        <button class="btn btn-info  tenant retry-btn" type="button" (click)="navigateToRetryAttempt()"
+                            *ngIf="postAssessmentResult?.remainingAttempts > 0 && !(postAssessmentResult?.isExternalAssessment && postAssessmentResult?.sourceOfSchedule === constants.techademy && (isUserPassed && !postAssessmentResult?.isMockSchedule))">
+                            {{constants.retry}}
+                        </button>
+                    </div>
+                </div>
+                <div class="instruction  d-flex mt-25" *ngIf="showLeaderBoard === constants.trueLabel">
+                    <div class="w-100 p-l-10">
+                        <div class="card">
+                            <div class="card-body skill">
+                                <div class="d-flex align-items-top justify-content-between">
+                                    <h4 class="m-b-10">{{constants.leaderBoard}}</h4>
+                                </div>
+                                <div class="d-flex align-items-top justify-content-between">
+                                    <div class="w-100 hackathon-table">
+                                        <table class="table table-striped border mt-4">
+                                            <thead>
+                                                <tr>
+                                                    <th class="font-weight-bold">{{constants.rank}}</th>
+                                                    <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                                    <th class="font-weight-bold">{{constants.timeTaken}}</th>
+                                                    <th class="font-weight-bold">{{constants.points}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                                <tr *ngFor="let userResult of hackathonLeaderBoard.leaderBoardDetails">
+                                                    <td>
+                                                        {{userResult.rank}}
+                                                    </td>
+                                                    <td>
+                                                        {{userResult.firstName}} {{userResult.lastName}}
+                                                    </td>
+                                                    <td>
+                                                        {{userResult.convertedDuration}}
+                                                    </td>
+                                                    <td>
+                                                        {{userResult.score}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length"
+                                            class="text-center">
+                                            {{constants.noDataFound}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- showAdaptive -->
+            <ng-container *ngIf="showAdaptive && postAssessmentResult">
+                <div class="w-75"
+                    *ngFor="let result of postAssessmentResult?.adaptiveAssessmentSectionResults; let i = index">
+                    <div class="card" *ngIf="!showLeaderBoardOnly">
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row justify-content-between">
+                                <div class="d-flex flex-wrap adaptive-time">
+                                    <div class="d-flex align-items-center m-b-20">
+                                        <i class="fas fa-hourglass-end m-r-10"></i>
+                                        <div>
+                                            <h3 class="m-0">
+                                                {{result.TotalSectionDuration}}
+                                            </h3>
+                                            <small>{{constants.timeUtilized}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center m-b-20">
+                                        <i class="fas fa-hourglass-end m-r-10"></i>
+                                        <div>
+                                            <h3 class="m-0">{{result.AverageSectionQuestionDuration}}</h3>
+                                            <small>{{constants.averageTimePerQuestion}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center m-b-20">
+                                        <i class="fas fa-question m-r-10"></i>
+                                        <div>
+                                            <h3 class="m-0">
+                                                {{result?.TotalCorrect}} /
+                                                {{result?.TotalQuestions}}
+                                            </h3>
+                                            <small>{{constants.totalCorrectAnswers}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation m-r-15"></i>
+                                        <div>
+                                            <h3 class="m-0">
+                                                {{result?.TotalIncorrect ? result?.TotalIncorrect : constants.zero}} /
+                                                {{result?.TotalQuestions}}
+                                            </h3>
+                                            <small>{{constants.totalIncorrectAnswers}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="align-self-center m-b-20">
+                                    <div>
+                                        <h1 class="m-0 text-center">{{result.SectionName}}</h1>
+                                        <p class="text-center">{{constants.skillNameLabel}}</p>
+                                    </div>
+                                    <div>
+                                        <h1 class="m-0 text-center">{{result.AchievedProficiencyName ?
+                                            result.AchievedProficiencyName : constants.nil}}</h1>
+                                        <p class="text-center">{{constants.achievedProficiency}}</p>
+                                    </div>
+                                </div>
+                                <div class="adaptive-question-type" *ngIf="result?.SectionProficiencies">
+                                    <div class="m-b-20" *ngFor="let proficiency of result.SectionProficiencies">
+                                        <h3 class="m-0">
+                                            {{proficiency?.TotalCorrect}} /
+                                            {{proficiency?.TotalQuestions}}
+                                        </h3>
+                                        <small>{{proficiency.ProficiencyName}}{{constants.questions}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between questions-section"
+                        *ngIf="!showLeaderBoardOnly">
+                        <div class="adaptive-question-card card">
+                            <div class="card-body">
+                                <h3 class="m-0 text-info">
+                                    {{result?.TotalAnswered}}/{{result?.TotalQuestions}}
+                                </h3>
+                                <small>{{constants.questionsAttempted}}</small>
+                            </div>
+                        </div>
+                        <div class="adaptive-question-card card" *ngIf="!result?.TotalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-danger">{{result.TotalQuestions - result.TotalAnswered}}</h3>
+                                <small>{{constants.questionsSkipped}}</small>
+                            </div>
+                        </div>
+                        <div class="adaptive-question-card card" *ngIf="result?.TotalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-danger">{{result?.TotalTestCases}}</h3>
+                                <small>{{constants.totalTestCases}}</small>
+                            </div>
+                        </div>
+                        <div class="card" *ngIf="!result?.totalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-warning">{{result?.TotalMarkedForReview}}</h3>
+                                <small>{{constants.questionsMarkedforReview}}</small>
+                            </div>
+                        </div>
+                        <div class="card" *ngIf="result?.TotalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-warning">{{result?.TestCasesPassed}}</h3>
+                                <small>{{constants.testCasesPassed}}</small>
+                            </div>
+                        </div>
+                        <div class="m-l-20 card">
+                            <div class="card-body">
+                                <h3 class="m-0 text-warning">{{remainingAttempts}}</h3>
+                                <small>{{constants.remainingAttempts}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style=" height: 600px;">
+                        <div class="card-body" *ngIf="result?.ProficiencyJourney">
+                            <h4 class="text-center m-b-30">{{constants.proficiencyLevelJourney}}</h4>
+                            <div class="scores d-flex border-left" style="width: 100% !important; height: 450px;">
+                                <canvas baseChart width="350" height="150" [datasets]="result?.ResultChartData"
+                                    [labels]="proficiencyChartMetrics?.resultChartLabels"
+                                    [options]="proficiencyChartMetrics?.resultChartOptions" [chartType]="'line'"
+                                    [legend]="proficiencyChartMetrics?.resultChartLegend">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-center m-b-30">{{constants.proficiencyBasedScore}}</h4>
+                            <div class="d-flex justify-content-between flex-wrap">
+                                <div class="w-100 m-r-30 m-b-30" *ngFor="let attempts of result.SectionRecentAttempts">
+                                    <div
+                                        class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                        <span class="skill-name">{{attempts.ProficiencyName}}</span>
+                                        <div class="total">
+                                            <div class="cut-off tenant"
+                                                [ngStyle]="{'width':attempts?.ScorePercentage + '%'}">
+                                                <span class="border-left">
+                                                    {{attempts?.ScorePercentage + '%'}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="isInfosys === false">
+                    <div class="text-center">
+                        <button class="btn btn-info tenant" type="button"
+                            (click)="htmltoPDF()">{{constants.downloadReport}}</button>
+                    </div>
+                </div>
+            </ng-container>
+            <div class="text-center">
+                <button type="button" class="btn btn-info tenant"
+                    style="border-radius: 4px; position:fixed;bottom: 20px;right: 20px;" (click)="feedback()"
+                    *ngIf="feedbackEnabled">{{constants.feedback}}
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<div *ngIf="isABInBev" class="post-assessment-abinbev p-30 d-flex justify-content-center flex-column"
+    id="contentToConvert" appDisableCopy appDisablePaste appDisableSelect>
+    <div class="d-flex w-100 flex-column align-items-center justify-content-center" *ngIf="postAssessmentResult">
+        <div class="w-100 text-center logo custom-tenant-logo" *ngIf="isTenantLogoLoaded">
+            <img [src]="logoUrl" alt="logo">
+        </div>
+        <h4 class="m-b-30 w-75 text-center">{{constants.youHaveCompleted}}</h4>
+        <h3 class="m-b-30 w-75 text-center  assessment-label" style="word-break: break-word;"><span
+                *ngIf="campaignName">{{campaignName}}
+                : </span>
+            {{postAssessmentResult?.assessmentTitle}}</h3>
+        <div class="w-75 d-flex questions-section m-b-10">
+            <div class="text-center">
+                <small class="text-muted text-center m-r-10">{{constants.firstName}}</small>
+                <strong>{{userName}}</strong>
+            </div>
+            <div class="text-center m-l-30">
+                <small class="text-muted text-center m-r-10">{{constants.lastName}}</small>
+                <strong>{{surName}}</strong>
+            </div>
+        </div>
+        <div class="w-75 d-flex justify-content-between questions-section m-b-10">
+            <div class="text-center">
+                <small class="text-muted text-center m-r-10">{{constants.email}}</small>
+                <strong class="email-text-wrap">{{emailAddress}}</strong>
+            </div>
+        </div>
+        <ng-container>
+            <div class="w-75" *ngIf="!showAdaptive">
+                <div class="card" *ngIf="!showLeaderBoardOnly">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between">
+                            <div [ngClass]="postAssessmentResult?.hideResultStatus ? 'w-50 border-right p-r-40':'time-info'"
+                                class="d-flex flex-row flex-wrap flex-md-column justify-content-between">
+                                <div
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40 m-t-40' :'d-flex align-items-center m-b-20'">
+                                    <i class="fas fa-hourglass-end m-r-10"></i>
+                                    <div>
+                                        <h3 class="m-0">
+                                            {{userAssessmentDuration}}
+                                        </h3>
+                                        <small>{{constants.timeUtilized}}</small>
+                                    </div>
+                                </div>
+                                <div
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40' :'d-flex align-items-center m-b-20'">
+                                    <i class="fas fa-hourglass-end m-r-10"></i>
+                                    <div>
+                                        <h3 class="m-0">{{averageQuestionDuration}}</h3>
+                                        <small>{{constants.averageTimePerQuestion}}</small>
+                                    </div>
+                                </div>
+                                <div
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40' :'d-flex align-items-center m-b-20'">
+                                    <i class="fas fa-question m-r-10"></i>
+                                    <div>
+                                        <h3 class="m-0">
+                                            {{postAssessmentResult?.totalCorrect}} /
+                                            {{postAssessmentResult?.assessmentTotalQuestions}}
+                                        </h3>
+                                        <small>{{constants.totalCorrectAnswers}}</small>
+                                    </div>
+                                </div>
+                                <div *ngIf="!postAssessmentResult?.isMFAAssessment"
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'd-flex align-items-center m-b-20 m-l-40' :'d-flex align-items-center'">
+                                    <i class="fas fa-exclamation m-r-15"></i>
+                                    <div>
+                                        <h3 class="m-0">
+                                            {{postAssessmentResult?.totalIncorrect ?
+                                            postAssessmentResult?.totalIncorrect : constants.zero}} /
+                                            {{postAssessmentResult?.assessmentTotalQuestions}}
+                                        </h3>
+                                        <small>{{constants.totalIncorrectAnswers}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div [ngClass]="postAssessmentResult?.hideResultStatus ? 'w-50':''"
+                                id="apex-chart-container">
+                                <apx-chart [series]="assessmentResultChartOptions?.series"
+                                    [plotOptions]="assessmentResultChartOptions?.plotOptions"
+                                    [chart]="assessmentResultChartOptions?.chart"
+                                    [labels]="assessmentResultChartOptions?.labels"
+                                    [fill]="assessmentResultChartOptions?.fill">
+                                </apx-chart>
+                                <div class="m-t-20 text-center"
+                                    [ngClass]="postAssessmentResult?.hideResultStatus ? 'text-success' : isUserPassed ? 'text-success' : 'text-danger'">
+                                    {{postAssessmentResult?.hideResultStatus ?
+                                    constants.completedAssessment: isUserPassed ? constants.clearedAssessment :
+                                    constants.notClearedAssessment}}
+                                </div>
+                            </div>
+                            <div class="question-level d-flex flex-row flex-md-column">
+                                <div class="m-b-20" *ngIf="postAssessmentResult?.totalBeginnerQuestions > 0">
+                                    <h3 class="m-0">
+                                        {{postAssessmentResult?.correctBeginnerQuestions}} /
+                                        {{postAssessmentResult?.totalBeginnerQuestions}}
+                                    </h3>
+                                    <small>{{constants.beginnerQuestions}}</small>
+                                </div>
+                                <div class="m-b-20" *ngIf="postAssessmentResult?.totalIntermediateQuestions > 0">
+                                    <h3 class="m-0">
+                                        {{postAssessmentResult?.correctIntermediateQuestions}} /
+                                        {{postAssessmentResult?.totalIntermediateQuestions}}
+                                    </h3>
+                                    <small>{{constants.intermediateQuestions}}</small>
+                                </div>
+                                <div class="m-b-20" *ngIf="postAssessmentResult?.totalAdvancedQuestions > 0">
+                                    <h3 class="m-0">
+                                        {{postAssessmentResult?.correctAdvancedQuestions}} /
+                                        {{postAssessmentResult?.totalAdvancedQuestions}}
+                                    </h3>
+                                    <small>{{constants.advancedQuestions}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap flex-md-nowrap justify-content-between questions-section"
+                    *ngIf="!showLeaderBoardOnly">
+                    <div class="m-r-20 card">
+                        <div class="card-body">
+                            <h3 class="m-0 text-info">
+                                {{postAssessmentResult?.totalAnswered}}/{{postAssessmentResult?.assessmentTotalQuestions}}
+                            </h3>
+                            <small>{{constants.questionsAttempted}}</small>
+                        </div>
+                    </div>
+                    <div class="question-card card" *ngIf="!postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-danger">{{postAssessmentResult?.questionsSkipped}}</h3>
+                            <small>{{constants.questionsSkipped}}</small>
+                        </div>
+                    </div>
+                    <div class="m-r-20 card" *ngIf="postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-danger">{{postAssessmentResult?.totalTestCases}}</h3>
+                            <small>{{constants.totalTestCases}}</small>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="!postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-warning">{{postAssessmentResult?.totalMarkedForReview}}</h3>
+                            <small>{{constants.questionsMarkedforReview}}</small>
+                        </div>
+                    </div>
+                    <div class="card" *ngIf="postAssessmentResult?.totalTestCases">
+                        <div class="card-body">
+                            <h3 class="m-0 text-warning">{{postAssessmentResult?.testCasesPassed}}</h3>
+                            <small>{{constants.testCasesPassed}}</small>
+                        </div>
+                    </div>
+                    <div class="m-l-20 card">
+                        <div class="card-body">
+                            <h3 class="m-0 text-warning">{{remainingAttempts}}</h3>
+                            <small>{{constants.remainingAttempts}}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" *ngIf="!showLeaderBoardOnly">
+                    <div class="card-body">
+                        <h4 class="text-center m-b-30">{{constants.sectionBaseScore}}</h4>
+                        <div class="scores d-flex border-left">
+                            <ng-container *ngFor="let section of sections">
+                                <div class="score-data border-right d-flex flex-column justify-content-between"
+                                    [ngStyle]="{'width': section.SectionPercentage+'%'}">
+                                    <div class="sections tenant m-t-20 w-100">
+                                        <span class="section-name" [ngbTooltip]="section.SectionName"
+                                            [ngStyle]="{'max-width':'calc(100% - ' + section.SectionPercentage + 'px)'}">{{section.SectionName}}</span>
+                                        <span class="section-score">{{section.TotalScore}}</span>
+                                    </div>
+                                    <div class="user-score tenant m-b-20"
+                                        [ngStyle]="{'width': section.EarnedScorePercentage+'%'}">
+                                        <span class="section-score">{{section.UserEarnedScore}}</span>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" *ngIf="!showLeaderBoardOnly">
+                    <div class="card-body">
+                        <h4 class="text-center m-b-30">{{constants.skillBaseScore}}</h4>
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <div class="w-40 m-r-30 m-b-30" *ngFor="let skill of skills">
+                                <div
+                                    class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                    <span class="skill-name">{{skill.SkillName}}</span>
+                                    <div class="total">
+                                        <div class="cut-off tenant"
+                                            [ngStyle]="{'width': skill.EarnedScorePercentage + '%'}">
+                                            <span class="border-left">
+                                                {{skill.EarnedScorePercentage}}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center button-section" *ngIf="!showLeaderBoardOnly">
+                    <button class="btn custom-btn-color" type="button"
+                        (click)="htmltoPDF()">{{constants.downloadReport}}</button>
+                    <button class="btn custom-btn-color retry-btn" type="button" (click)="navigateToRetryAttempt()"
+                        *ngIf="postAssessmentResult?.remainingAttempts > 0 && !(postAssessmentResult?.isExternalAssessment && postAssessmentResult?.sourceOfSchedule === constants.techademy && (isUserPassed && !postAssessmentResult?.isMockSchedule))">
+                        {{constants.retry}}
+                    </button>
+                </div>
+                <div class="instruction d-flex mt-25" *ngIf="showLeaderBoard === constants.trueLabel">
+                    <div class="w-100 p-l-10">
+                        <div class="card">
+                            <div class="card-body skill">
+                                <div class="d-flex align-items-top justify-content-between">
+                                    <h4 class="m-b-10">{{constants.leaderBoard}}</h4>
+                                </div>
+                                <div class="d-flex align-items-top justify-content-between">
+                                    <div class="w-100">
+                                        <table class="table table-striped border mt-4">
+                                            <thead>
+                                                <tr>
+                                                    <th class="font-weight-bold">{{constants.rank}}</th>
+                                                    <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                                    <th class="font-weight-bold">{{constants.timeTaken}}</th>
+                                                    <th class="font-weight-bold">{{constants.points}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                                <tr *ngFor="let userResult of hackathonLeaderBoard.leaderBoardDetails">
+                                                    <td>
+                                                        {{userResult.rank}}
+                                                    </td>
+                                                    <td>
+                                                        {{userResult.firstName}} {{userResult.lastName}}
+                                                    </td>
+                                                    <td>
+                                                        {{userResult.convertedDuration}}
+                                                    </td>
+                                                    <td>
+                                                        {{userResult.score}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length"
+                                            class="text-center">
+                                            {{constants.noDataFound}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- showAdaptive -->
+            <ng-container *ngIf="showAdaptive && postAssessmentResult">
+                <div class="w-75"
+                    *ngFor="let result of postAssessmentResult?.adaptiveAssessmentSectionResults; let i = index">
+                    <div class="card" *ngIf="!showLeaderBoardOnly">
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row justify-content-between">
+                                <div class="d-flex flex-wrap adaptive-time">
+                                    <div class="d-flex align-items-center m-b-20">
+                                        <i class="fas fa-hourglass-end m-r-10"></i>
+                                        <div>
+                                            <h3 class="m-0">
+                                                {{result.TotalSectionDuration}}
+                                            </h3>
+                                            <small>{{constants.timeUtilized}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center m-b-20">
+                                        <i class="fas fa-hourglass-end m-r-10"></i>
+                                        <div>
+                                            <h3 class="m-0">{{result.AverageSectionQuestionDuration}}</h3>
+                                            <small>{{constants.averageTimePerQuestion}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center m-b-20">
+                                        <i class="fas fa-question m-r-10"></i>
+                                        <div>
+                                            <h3 class="m-0">
+                                                {{result?.TotalCorrect}} /
+                                                {{result?.TotalQuestions}}
+                                            </h3>
+                                            <small>{{constants.totalCorrectAnswers}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation m-r-15"></i>
+                                        <div>
+                                            <h3 class="m-0">
+                                                {{result?.TotalIncorrect ? result?.TotalIncorrect : constants.zero}} /
+                                                {{result?.TotalQuestions}}
+                                            </h3>
+                                            <small>{{constants.totalIncorrectAnswers}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="align-self-center m-b-20">
+                                    <div>
+                                        <h1 class="m-0 text-center">{{result.SectionName}}</h1>
+                                        <p class="text-center">{{constants.skillNameLabel}}</p>
+                                    </div>
+                                    <div>
+                                        <h1 class="m-0 text-center">{{result.AchievedProficiencyName ?
+                                            result.AchievedProficiencyName : constants.nil}}</h1>
+                                        <p class="text-center">{{constants.achievedProficiency}}</p>
+                                    </div>
+                                </div>
+                                <div class="adaptive-question-type" *ngIf="result?.SectionProficiencies">
+                                    <div class="m-b-20" *ngFor="let proficiency of result.SectionProficiencies">
+                                        <h3 class="m-0">
+                                            {{proficiency?.TotalCorrect}} /
+                                            {{proficiency?.TotalQuestions}}
+                                        </h3>
+                                        <small>{{proficiency.ProficiencyName}}{{constants.questions}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between questions-section"
+                        *ngIf="!showLeaderBoardOnly">
+                        <div class="adaptive-question-card card">
+                            <div class="card-body">
+                                <h3 class="m-0 text-info">
+                                    {{result?.TotalAnswered}}/{{result?.TotalQuestions}}
+                                </h3>
+                                <small>{{constants.questionsAttempted}}</small>
+                            </div>
+                        </div>
+                        <div class="adaptive-question-card card" *ngIf="!result?.TotalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-danger">{{result.TotalQuestions - result.TotalAnswered}}</h3>
+                                <small>{{constants.questionsSkipped}}</small>
+                            </div>
+                        </div>
+                        <div class="adaptive-question-card card" *ngIf="result?.TotalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-danger">{{result?.TotalTestCases}}</h3>
+                                <small>{{constants.totalTestCases}}</small>
+                            </div>
+                        </div>
+                        <div class="card" *ngIf="!result?.totalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-warning">{{result?.TotalMarkedForReview}}</h3>
+                                <small>{{constants.questionsMarkedforReview}}</small>
+                            </div>
+                        </div>
+                        <div class="card" *ngIf="result?.TotalTestCases">
+                            <div class="card-body">
+                                <h3 class="m-0 text-warning">{{result?.TestCasesPassed}}</h3>
+                                <small>{{constants.testCasesPassed}}</small>
+                            </div>
+                        </div>
+                        <div class="m-l-20 card">
+                            <div class="card-body">
+                                <h3 class="m-0 text-warning">{{remainingAttempts}}</h3>
+                                <small>{{constants.remainingAttempts}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style=" height: 600px;">
+                        <div class="card-body" *ngIf="result?.ProficiencyJourney">
+                            <h4 class="text-center m-b-30">{{constants.proficiencyLevelJourney}}</h4>
+                            <div class="scores d-flex border-left" style="width: 100% !important; height: 450px;">
+                                <canvas baseChart width="350" height="150" [datasets]="result?.ResultChartData"
+                                    [labels]="proficiencyChartMetrics?.resultChartLabels"
+                                    [options]="proficiencyChartMetrics?.resultChartOptions" [chartType]="'line'"
+                                    [legend]="proficiencyChartMetrics?.resultChartLegend">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="text-center m-b-30">{{constants.proficiencyBasedScore}}</h4>
+                            <div class="d-flex justify-content-between flex-wrap">
+                                <div class="w-100 m-r-30 m-b-30" *ngFor="let attempts of result.SectionRecentAttempts">
+                                    <div
+                                        class="score-bar border-left border-right d-flex justify-content-center w-100 flex-column">
+                                        <span class="skill-name">{{attempts.ProficiencyName}}</span>
+                                        <div class="total">
+                                            <div class="cut-off tenant"
+                                                [ngStyle]="{'width':attempts?.ScorePercentage + '%'}">
+                                                <span class="border-left">
+                                                    {{attempts?.ScorePercentage + '%'}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="custom-btn-color" type="button"
+                        (click)="htmltoPDF()">{{constants.downloadReport}}</button>
+                </div>
+            </ng-container>
+            <div class="text-center">
+                <button type="button" class="btn custom-btn-color"
+                    style="border-radius: 4px; position:fixed;bottom: 20px;right: 20px;" (click)="feedback()"
+                    *ngIf="feedbackEnabled">{{constants.feedback}}
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</div>

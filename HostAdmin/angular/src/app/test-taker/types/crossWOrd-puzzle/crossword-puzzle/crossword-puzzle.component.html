@@ -1,0 +1,13 @@
+<ng-container [formGroup]="group">
+    <div class="card">
+        <div class="card-body indentaion" [innerHTML]="questionText | safeHtml">
+        </div>
+    </div>
+    <h4 class="m-b-20 text-center">{{constants.puzzle}}</h4>
+    <div class="card">
+        <div class="card-body puzzle-container">
+            <input type="text" *ngIf="formControlName" [formControlName]="formControlName" hidden>
+            <div id="test-taker-puzzle-wrapper"><!-- crossword puzzle appended here --></div>
+        </div>
+    </div>
+</ng-container>

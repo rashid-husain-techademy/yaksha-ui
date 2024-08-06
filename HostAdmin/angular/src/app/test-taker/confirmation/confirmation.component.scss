@@ -1,0 +1,51 @@
+.questions-status {
+    margin: 20px;
+
+    @media only screen and (max-width:767px) {
+        margin: 10px;
+    }
+
+    @media only screen and (max-width:360px) {
+        margin: 5px;
+    }
+
+    .confirmation-border {
+        border-radius: 50%;
+        position: relative;
+        width: 35px;
+        height: 35px;
+
+        span {
+            position: absolute;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+
+            &.outline-secondary {
+                color: #868e96;
+            }
+        }
+
+        &.success {
+            background-color: #39c449;
+        }
+
+        &.warning {
+            background-color: #ffbc34;
+        }
+
+        &.danger {
+            background-color: #f62d51;
+        }
+
+        &.outline-secondary {
+            border: 1px solid #868e96;
+        }
+    }
+}
+
+.final_confiramtion_text_color {
+    color: red;
+}

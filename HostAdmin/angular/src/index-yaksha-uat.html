@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Assessment Platform</title>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=Muli:100,300,400,600,700" rel="stylesheet" />
+  <link id="aeyeStyleSheet" rel="stylesheet" href="https://uat.aeye.pro/apps/static/css/aeye.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <div id="root">
+    <script src="https://uat.aeye.pro/apps/static/js/bundle.js"></script>
+  </div>
+</head>
+
+<body>
+  <app-root></app-root>
+
+  <script>
+    var udetail = undefined;
+    function initializeUdetail(ud) {
+      udetail = ud;
+    }
+    // response from wheebox
+    function responseOfProcessedImages(internetstatus, facecheck, objectcheck, mtoff, noface) {
+      var str = internetstatus + "-" + facecheck + "-" + objectcheck + "-" + mtoff + "-" + noface;
+      var event = new CustomEvent("wheebox.proctor",
+        {
+          detail: str,
+          bubbles: true,
+          cancelable: true
+        }
+      );
+      window.dispatchEvent(event);
+    }
+    function stopSharingViolation(userDetail) {
+      if (userDetail.student_unique_id === udetail.student_unique_id) {
+        var event = new CustomEvent("wheebox.stopSharing",
+          {
+            detail: "stopSharing",
+            bubbles: true,
+            cancelable: true
+          }
+        );
+        window.dispatchEvent(event);
+      }
+    }
+    function entireScreenShare(userDetail) {
+      if (userDetail.student_unique_id === udetail.student_unique_id) {
+        var event = new CustomEvent("wheebox.onNotSharingEntireScreen",
+          {
+            detail: "onNotSharingEntireScreen",
+            bubbles: true,
+            cancelable: true
+          }
+        );
+        window.dispatchEvent(event);
+      }
+    }
+  </script>
+</body>
+
+</html>

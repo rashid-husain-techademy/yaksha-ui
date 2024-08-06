@@ -1,0 +1,18 @@
+.indentaion {
+    white-space: pre-wrap;
+}
+
+.draggable-choices {
+    display: flex;
+    align-items: flex-start;
+    margin: 10px 0;
+    flex-direction: column;
+}
+
+::ng-deep p .indentaion img {
+    width: auto  !important;
+}
+
+::ng-deep div .indentaion img {
+    width: auto  !important;
+}

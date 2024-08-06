@@ -1,0 +1,102 @@
+/*
+Template Name: Admin Template
+Author: Niravjoshi / Wrappixel
+File: scss
+*/
+
+//(Required file)
+@import "variable";
+
+//Theme colors
+@import "theme-colors/dark-theme";
+
+// Import Bootstrap source files (Required file)
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+//This is for the components (Required file)
+@import "components";
+
+//This is for the pages (if you are not using some pages you can remove that style from pages folder)
+@import "pages";
+
+//This is for the widgets (Required file)
+@import "widgets/widgets";
+
+//This is for the horizontal version if you are not using horizontal version you can remove this
+@import "horizontal/horizontal";
+
+//This is for the responsive (Required file)
+@import "responsive";
+
+//In This scss you can write your scss
+@import "custom";
+
+//This is for the icons (Required file)
+@import "icons/font-awesome/css/fontawesome-all.css";
+@import "icons/simple-line-icons/css/simple-line-icons.css";
+@import "icons/weather-icons/css/weather-icons.min.css";
+@import "icons/themify-icons/themify-icons.css";
+@import "icons/flag-icon-css/flag-icon.min.css";
+@import "icons/material-design-iconic-font/css/materialdesignicons.min.css";
+@import "icons/crypto-icons/cryptocoins.css";
+
+// this is for the perfect scrollbar
+@import "~perfect-scrollbar/css/perfect-scrollbar.css";
+
+.multiselect-dropdown {
+    .disabled {
+        .dropdown-btn {
+            background-color: #f0f2f4;
+            color: #b1bbc5;
+        }
+    }
+
+    .dropdown-btn {
+        border: 1px solid #e9ecef !important;
+        border-radius: 0;
+
+        .dropdown-down {
+            position: relative !important;
+            top: -2px !important;
+            border-top: 4px solid #adadad !important;
+            border-left: 4px solid transparent !important;
+            border-right: 4px solid transparent !important;
+        }
+
+        .dropdown-up {
+            position: relative !important;
+            top: -2px !important;
+            border-bottom: 4px solid #adadad !important;
+            border-left: 4px solid transparent !important;
+            border-right: 4px solid transparent !important;
+        }
+
+        .selected-item {
+            color: #fff;
+            background-color: #009efb !important;
+            border-color: #009efb !important;
+        }
+
+        .selected-item a {
+            color: #009efb !important;
+        }
+    }
+}
+
+.multiselect-item-checkbox input[type="checkbox"]+div {
+    &::before {
+        border: 2px solid #009efb !important;
+        color: #009efb !important;
+    }
+}
+
+.multiselect-item-checkbox input[type="checkbox"]:checked+div {
+    &::before {
+        background: #009efb !important;
+    }
+}
+
+span.selected-item {
+    max-width: unset !important;
+    width: auto !important;
+}

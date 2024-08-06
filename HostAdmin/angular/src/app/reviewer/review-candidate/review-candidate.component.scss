@@ -1,0 +1,95 @@
+.field-required {
+    color: rgb(225, 16, 16) !important
+}
+
+.score {
+    width: 240px !important;
+}
+
+.footer {
+    height: 80px;
+    padding: 0px 20px;
+}
+
+.btntop {
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.checkboxretrytop {
+    margin-top: 35px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.text-area-subjective {
+    height: 250px;
+    width: 100%;
+    overflow-y: scroll;
+    resize: none;
+}
+
+.label {
+    color: cornflowerblue;
+    font-size: medium;
+}
+
+a {
+    cursor: pointer;
+}
+
+.h-120 {
+    height: 120px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+label.border {
+    cursor: pointer;
+    background-color: #f4f4f4 !important;
+}
+
+.file {
+    color: white;
+    font-size: small;
+}
+
+.disabled {
+    position: relative;
+
+    .disable-overlay {
+        position: absolute;
+        background-color: rgba($color: #fff, $alpha: 0.1);
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        display: block;
+    }
+}
+
+.indentaion {
+    white-space: pre-wrap;
+
+    @media screen and(max-width:650px) {
+        padding: 1.9rem;
+    }
+}
+.question-content{
+    ::ng-deep p{
+        img{
+            max-width: 100% !important;
+        }
+    }
+}

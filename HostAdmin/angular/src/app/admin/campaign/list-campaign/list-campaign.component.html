@@ -1,0 +1,138 @@
+<div class="campaign-page d-flex align-items-center justify-content-between m-b-20">
+    <h3 class="page-title m-0">{{constants.drivesCatalog}}</h3>
+    <div class="d-flex justify-content-right">
+        <div *ngIf="userRole === userRoles[1]">
+            <ng-multiselect-dropdown (onSelect)="tenantSelection($event)" (onDeSelect)="reset()"
+                [(ngModel)]="tenantDetails" [placeholder]="constants.selectTenant" [settings]="singleDropdownSettings"
+                [data]="tenants" [ngModelOptions]="{standalone: true}">
+            </ng-multiselect-dropdown>
+        </div>
+        <button class="btn btn-info m-l-20 m-r-20" (click)="createCampaign()">{{constants.createDrive}}</button>
+    </div>
+</div>
+<div class="card filter-div">
+    <div class="card-body">
+        <form class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center category-custom ">
+                <div class="input-group col-sm-12">
+                    <input type="text" placeholder="Search by name" class="form-control" [(ngModel)]="searchString"
+                        name="searchString" (keyup)="onKey($event)" (keyup.enter)="getCampaignsBySearchString()"
+                        autocomplete="off">
+                    <button type="button" class="btn btn-info m-l-35" (click)="getCampaignsBySearchString()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="btn btn-secondary m-l-5" type="button" (click)="reset()">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div class="d-flex align-items-center">
+                    <span class="m-r-10">{{constants.filterBy}}:</span>
+                    <div class="btn-group m-r-10">
+                        <button type="button" class="btn" (click)="getCampaignsByStatus(0)"
+                            [ngClass]="!status ? 'btn-info' : 'btn-outline-secondary'">{{constants.all}}</button>
+                        <button type="button" class="btn"
+                            (click)="getCampaignsByStatus(assessmentStatus.Published, true)"
+                            [ngClass]="isScheduled ? 'btn-info' : 'btn-outline-secondary'">{{constants.scheduled}}</button>
+                        <button type="button" class="btn" (click)="getCampaignsByStatus(assessmentStatus.Published)"
+                            [ngClass]="status === assessmentStatus.Published && !isScheduled ? 'btn-info' : 'btn-outline-secondary'">{{constants.published}}</button>
+                        <button type="button" class="btn" (click)="getCampaignsByStatus(assessmentStatus.Draft)"
+                            [ngClass]="status === assessmentStatus.Draft ? 'btn-info' : 'btn-outline-secondary'">{{constants.drafts}}</button>
+                    </div>
+                    <i class="pointer" [ngClass]="isGridView ? 'fas fa-list-ul' : 'fas fa-th-large'"
+                        (click)="toggleView()"></i>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="result-count">
+    <hr>
+    <strong class="result">{{viewCount}} {{constants.of}} {{allTotalCount}}</strong>
+    <strong class="result" *ngIf="isScheduled">{{viewCount}} {{constants.of}} {{scheduledTotalCount}}</strong>
+    <strong class="result" *ngIf="status === assessmentStatus.Published && !isScheduled">{{viewCount}} {{constants.of}}
+        {{publishedTotalCount}}</strong>
+    <strong class="result" *ngIf="status === assessmentStatus.Draft">{{viewCount}} {{constants.of}}
+        {{draftTotalCount}}</strong>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="noCampaignsFound">
+    <h4>{{constants.noDrivesFound}}</h4>
+</div>
+
+<div class="d-flex flex-wrap assessments" *ngIf="!noCampaignsFound" [ngClass]="isGridView ? 'grid-view' : 'list-view'">
+    <div class="card m-b-20" *ngFor="let campaign of campaigns">
+        <div *ngIf="!status" (click)="viewCampaign(campaign.id)">
+            <div *ngIf="campaign.status === assessmentStatus.Draft"
+                [ngClass]="campaign.status === assessmentStatus.Draft ? 'drafts' : ''" class="ribbon ribbon-top-left">
+                <span>{{constants.draft}}</span>
+            </div>
+            <div *ngIf="campaign.status === assessmentStatus.Published"
+                [ngClass]="campaign.status === assessmentStatus.Published ? 'published' : ''"
+                class="ribbon ribbon-top-left">
+                <span>{{constants.published}}</span>
+            </div>
+            <div *ngIf="campaign.status === assessmentStatus.Published && campaign.hasActiveSchedules"
+                [ngClass]="campaign.status === assessmentStatus.Published && campaign.hasActiveSchedules ? 'scheduled' : ''"
+                class="ribbon ribbon-top-left scheduled">
+                <span>{{constants.scheduled}}</span>
+            </div>
+        </div>
+        <div ngbDropdown class="admin-tasks">
+            <button class="btn" id="dropdownBasic4" *ngIf="hideEllipses(campaign)" ngbDropdownToggle>
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic4">
+                <button class="dropdown-item" *ngIf="campaign.status === assessmentStatus.Published"
+                    [disabled]="isScheduleActive" (click)="getCampaignDetail(campaign)">
+                    {{constants.schedule}}</button>
+                <button class="dropdown-item" *ngIf="campaign.isOwned && campaign.status === assessmentStatus.Draft"
+                    (click)="updateStatus(campaign,assessmentStatus.Published)">{{constants.publish}}</button>
+                <button class="dropdown-item" *ngIf="campaign.isOwned && campaign.status === assessmentStatus.Published"
+                    (click)="updateStatus(campaign,assessmentStatus.Draft)">{{constants.moveToDraft}}</button>
+                <button class="dropdown-item" *ngIf="campaign.isOwned && campaign.status === assessmentStatus.Draft"
+                    (click)="editCampaign(campaign.id)">{{constants.edit}}</button>
+                <button class="dropdown-item" *ngIf="campaign.isOwned && campaign.status === assessmentStatus.Draft"
+                    (click)="deleteCamapign(campaign)">{{constants.delete}}</button>
+            </div>
+        </div>
+        <div class="card-body d-flex"
+            [ngClass]="isGridView ? 'flex-column' : 'flex-row justify-content-between align-items-center'">
+            <div class="d-flex page-title align-items-center" [ngClass]="isGridView ? '' : 'm-0'">
+                <div>
+                    <h4 class="pointer m-r-40 m-b-0 assessment-label" (click)="viewCampaign(campaign.id)">
+                        {{campaign.name}}</h4>
+                </div>
+            </div>
+            <div class="keywords d-flex" [ngClass]="isGridView ? 'm-t-20' : 'mr-70'">
+                <div class="m-r-40">
+                    <h5 class="text-info m-0">{{campaign.assessments}}</h5>
+                    <span class="text-muted">{{constants.assessments}}</span>
+                </div>
+                <div class="m-r-40">
+                    <h5 class="text-info m-0">{{campaign.virtutors}}</h5>
+                    <span class="text-muted">{{constants.virtutor}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center" *ngIf="!noCampaignsFound">
+    <ngb-pagination *ngIf="isScheduled" [collectionSize]="scheduledTotalCount" [pageSize]="pageSize"
+        [(page)]="scheduledPageIndex" class="d-flex justify-content-center" (pageChange)="changePage()"
+        [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+    </ngb-pagination>
+    <ngb-pagination *ngIf="status === assessmentStatus.Published && !isScheduled" [collectionSize]="publishedTotalCount"
+        [pageSize]="pageSize" [(page)]="publishedPageIndex" class="d-flex justify-content-center"
+        (pageChange)="changePage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+    </ngb-pagination>
+    <ngb-pagination *ngIf="status === assessmentStatus.Draft" [collectionSize]="draftTotalCount" [pageSize]="pageSize"
+        [(page)]="draftPageIndex" class="d-flex justify-content-center" (pageChange)="changePage()" [maxSize]="maxSize"
+        [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+    </ngb-pagination>
+    <ngb-pagination *ngIf="!status" [collectionSize]="allTotalCount" [pageSize]="pageSize" [(page)]="allPageIndex"
+        class="d-flex justify-content-center" (pageChange)="changePage()" [maxSize]="maxSize" [rotate]="true"
+        [ellipses]="false" [boundaryLinks]="true">
+    </ngb-pagination>
+</div>

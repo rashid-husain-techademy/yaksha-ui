@@ -1,0 +1,43 @@
+.display-none {
+    display: none;
+}
+
+.chatHeader {
+    cursor: pointer;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.chatHistory {
+    font-size: 10px;
+    color: gray
+}
+
+.msg-area-lineheight {
+    line-height: 1.30;
+}
+
+.msg-area {
+    width: 100%;
+    height: 60px
+}
+
+.streaming-width {
+    width: 270px;
+}
+
+.streaming-box-hyphen {
+    font-weight: bold;
+}
+
+.video-container {
+    text-decoration: none;
+}
+
+.room-style {
+    text-align: center;
+    display: none;
+    background: #F1EDED;
+    border: 1px solid rgb(189, 189, 189);
+    border-left: 0;
+    border-right: 0;
+}

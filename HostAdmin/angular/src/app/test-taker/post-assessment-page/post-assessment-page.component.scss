@@ -1,0 +1,196 @@
+::ng-deep .container-fluid {
+    padding: 0 !important;
+}
+.post-assessment {
+    background: #004c80 !important;
+    height: calc(100vh);
+
+    .score-bar {
+        position: relative;
+        height: 80px;
+        font-size: 0.8em;
+
+        &::before {
+            content: '0';
+            position: absolute;
+            top: 0;
+            left: -11px;
+            z-index: 1;
+        }
+
+        &::after {
+            content: '100%';
+            position: absolute;
+            top: 0;
+            right: -40px;
+            z-index: 1;
+        }
+
+        .total {
+            height: 8px;
+            background-color: #90a2ae;
+            position: relative;
+
+            .cut-off {
+                height: 8px;
+                background-color: #009efb;
+                position: relative;
+
+                span {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    right: 0;
+                    height: 70px;
+                    padding-right: 6px;
+
+                    &::after {
+                        content: '-CutOff';
+                        position: absolute;
+                        top: 0;
+                        right: -50px;
+                    }
+                }
+            }
+
+            .user-score {
+                position: absolute;
+                height: 8px;
+                z-index: 2;
+                top: 50%;
+                transform: translateY(-50%);
+
+                span {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    height: 70px;
+                    padding-right: 6px;
+
+                    &::after {
+                        content: 'Achieved';
+                        position: absolute;
+                        top: 0;
+                        right: -60px;
+                    }
+                }
+            }
+        }
+    }
+
+    &.custom-tenant {
+        background: #414042 !important;
+
+        .custom-tenant-logo img {
+            max-width: 200px !important;
+        }
+
+        .scores .sections.tenant {
+            background-color: #a7a9ac !important;
+        }
+
+        .scores .user-score.tenant {
+            background-color: #efb41c !important;
+        }
+
+        .score-bar .total .cut-off.tenant {
+            background-color: #efb41c !important;
+        }
+
+        .btn.btn-info.tenant {
+            color: #fff;
+            background-color: #a7a9ac !important;
+            border-color: #a7a9ac !important;
+        }
+
+    }
+}
+
+.post-assessment-abinbev {
+    background: #ffe100 !important;
+    height: calc(100vh);
+
+    .score-bar {
+        position: relative;
+        height: 80px;
+        font-size: 0.8em;
+
+        &::before {
+            content: '0';
+            position: absolute;
+            top: 0;
+            left: -11px;
+            z-index: 1;
+        }
+
+        &::after {
+            content: '100%';
+            position: absolute;
+            top: 0;
+            right: -40px;
+            z-index: 1;
+        }
+
+        .total {
+            height: 8px;
+            background-color: #FFA500;
+            position: relative;
+            color: black;
+
+            .cut-off {
+                height: 8px;
+                background-color: #FFA500;
+                position: relative;
+                color: black;
+
+                span {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    right: 0;
+                    height: 70px;
+                    padding-right: 6px;
+
+                    &::after {
+                        content: '-CutOff';
+                        position: absolute;
+                        top: 0;
+                        right: -50px;
+                    }
+                }
+            }
+
+            .user-score {
+                position: absolute;
+                height: 8px;
+                z-index: 2;
+                top: 50%;
+                transform: translateY(-50%);
+
+                span {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    height: 70px;
+                    padding-right: 6px;
+
+                    &::after {
+                        content: 'Achieved';
+                        position: absolute;
+                        top: 0;
+                        right: -60px;
+                    }
+                }
+            }
+        }
+    }
+    .custom-btn-color{
+        background-color: #FFA500;
+        color:#000000
+    }
+    
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}

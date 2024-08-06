@@ -1,0 +1,188 @@
+<ng-container>
+    <div class="d-flex justify-content-between">
+        <div class="card w-30 question-height">
+            <div class="card-body indentation">
+                <div [innerHTML]="questionText | safeHtml"></div>
+                <br />
+                <div>{{constants.problemAreaCovered}}: {{field.codeBasedSubSkill}}</div>
+            </div>
+        </div>
+        <div class="w-70 p-l-20">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-info btn-sm m-r-20" [ngClass]="isLightTheme?'light':'dark'"
+                        (click)="toggleTheme()" [disabled]="field.isCodeSubmitted">
+                        {{theme}}
+                    </button>
+                    <div class="d-flex justify-content-end align-items-center">
+                        <span class="m-r-10">{{constants.selectLanguage}}</span>
+                        <select class="form-control form-width-200" id="selectLanguage" [(ngModel)]="selectedLanguageId"
+                            (change)="getCode($event.target.value)" [disabled]="field.isCodeSubmitted">
+                            <option *ngFor="let coding of questionDetails.codingAssessment" [value]="coding.languageId">
+                                {{coding.language}}
+                            </option>
+                        </select>
+                        <button class="text-info btn" ngbTooltip="{{constants.reset}}"
+                            (click)="resetToDefaultTemplate()" [disabled]="field.isCodeSubmitted">
+                            <i class="fa fa-undo"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <ngx-monaco-editor #editor [options]="editorOptions" [(ngModel)]="code"
+                        (ngModelChange)="updateCode($event)" (onInit)="onInitEditor($event)"
+                        [disabled]="field.isCodeSubmitted">
+                    </ngx-monaco-editor>
+                    <!-- Input / Output -->
+                    <div *ngIf="!isHtmlCss">
+                        <div class="d-flex justify-content-between p-l-10 p-r-10"><!--need to exclude-->
+                            <div class="w-50 p-r-10" *ngIf="!isSqlQuestion">
+                                <div class="form-group">
+                                    <label class="font-weight-bold m-0">{{constants.input}}</label>
+                                    <textarea rows="3" id="interactiveBox" class="form-control"
+                                        [formControl]="input"></textarea>
+                                </div>
+                            </div>
+                            <div [ngClass]=" isSqlQuestion ? 'w-100' : 'w-50 p-l-10'">
+                                <div class="form-group">
+                                    <label class="font-weight-bold m-0">{{constants.output}}</label>
+                                    <textarea rows="3" class="form-control" [formControl]="output"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-l-10 p-r-10" *ngIf="hasWarningOrErrors">
+                            <div [ngClass]="">
+                                <div class="form-group">
+                                    <label class="font-weight-bold m-0">{{constants.ErrorWarning}}</label>
+                                    <textarea rows="3" class="form-control"
+                                        [formControl]="errorWarningLines"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="custom-font" *ngIf="questionDetails.givencount">{{constants.compilationAvailed}} /
+                            {{constants.totalCompilation}} :<span> {{ field.executionCount }} /
+                                {{field.givencount}}</span>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-center mt-2 mb-2">
+                            <button type="button" class="btn btn-info btn-sm m-r-20" (click)="compileAndRun()"
+                                [disabled]="field.isCodeSubmitted || field.countExceed || isPreview">
+                                {{constants.compileAndRun}}
+                            </button>
+                            <button type="button" class="btn btn-info btn-sm" (click)="submitCode()"
+                                [disabled]="field.isCodeSubmitted || isPreview">
+                                {{constants.submit}}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="align-items-center justify-content-center" *ngIf="isHtmlCss">
+                        <div class="card-footer d-flex align-items-center justify-content-center mt-2 mb-2">
+                            <button type="button" class="btn btn-info btn-sm m-r-20" (click)="compileHtml()"
+                                [disabled]="field.isCodeSubmitted">
+                                {{constants.compileAndRun}}
+                            </button>
+                            <button type="button" class="btn btn-info btn-sm" (click)="submitCode()"
+                                [disabled]="field.isCodeSubmitted || isPreview">
+                                {{constants.submit}}
+                            </button>
+                        </div>
+                        <div>{{constants.output}}:</div>
+                        <div class="iframeCode" class="iframeCode" id="myDIV"></div>
+                        <!--<iframe #iframe class="iframeCode" id="htmlcode" [src]="htmlcodeUrl | safeurl"></iframe>-->
+                        <!-- <div [innerHTML]="htmlstring | safeHtml"></div>-->
+                    </div>
+                    <!-- Test Cases -->
+                    <div class="d-flex flex-column p-l-10 p-r-10 mt-3 test-cases"
+                        *ngIf="field.enableSFATestcase && !isHtmlCss">
+                        <div class="row justify-content-between title">
+                            <h5 class="card-title font-weight-bold my-auto m-0">{{constants.testCases}}</h5>
+                            <button type="button" class="btn btn-outline-info btn-sm m-r-20"
+                                (click)="executeTestCase(true,null) ; acc.expandAll()"
+                                [disabled]="field.isCodeSubmitted || field.countExceed || isPreview"
+                                [hidden]="testCaseCount <=1">
+                                {{constants.executeAll}}
+                            </button>
+                        </div>
+                        <ngb-accordion #acc="ngbAccordion">
+                            <ng-container *ngFor="let test of testCaseDetails; let i= index">
+                                <ngb-panel id="panel-{{i}}">
+                                    <ng-template ngbPanelHeader let-opened="opened">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h5 class="m-0">{{test.testCaseTitle}}</h5>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <button type="button" class="btn btn-outline-info btn-sm m-r-20"
+                                                    [disabled]="field.isCodeSubmitted || field.countExceed || isPreview"
+                                                    (click)=" expandTestCase(acc,i,false,test.id)">
+                                                    {{constants.execute}}
+                                                </button>
+                                                <ng-container *ngIf="test.isTestcaseExecuted">
+                                                    <ng-container *ngIf="test.actualOutput === testcasestatus.Pass">
+                                                        <i class="mdi mdi-octagram success"></i>
+                                                        <span class="ml-2 success">{{constants.pass}}</span>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="test.actualOutput === testcasestatus.Fail">
+                                                        <i class="mdi mdi-octagram danger"></i>
+                                                        <span class="ml-2 danger">{{constants.fail}}</span>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <button ngbPanelToggle class="btn btn-link p-0 ml-4">
+                                                    <i class="fas fa-angle-down"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="row content">
+                                            <table class="table table-borderless">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" class="box-width">
+                                                            {{constants.input}}</th>
+                                                        <td class="indentation">{{test.standardInput}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" class="box-width">
+                                                            {{constants.output}}</th>
+                                                        <td class="indentation">{{test.expectedOutput}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-borderless"
+                                                *ngIf="test.maxCpuTime || test.maxMemoryPermitted">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col">{{constants.maximum}}</th>
+                                                        <th scope="col">{{constants.actual}}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngIf="test.maxCpuTime">
+                                                        <th scope="row" class="box-width">
+                                                            {{constants.cpu}}({{constants.s}})</th>
+                                                        <td class="box-width">{{test.maxCpuTime}}</td>
+                                                        <td>{{test.actualmaxCpuTime ? test.actualmaxCpuTime :
+                                                            test.actualmaxCpuTime === 0 &&
+                                                            test.actualmaxMemoryPermitted
+                                                            ? constants.lessThan1 : "-"}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr *ngIf="test.maxMemoryPermitted">
+                                                        <th scope="row" class="box-width">
+                                                            {{constants.memory}}({{constants.kb}})</th>
+                                                        <td class="box-width">{{test.maxMemoryPermitted}}</td>
+                                                        <td>{{test.actualmaxMemoryPermitted ?
+                                                            test.actualmaxMemoryPermitted : "-"}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </ng-template>
+                                </ngb-panel>
+                            </ng-container>
+                        </ngb-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

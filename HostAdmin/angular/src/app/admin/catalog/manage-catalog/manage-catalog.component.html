@@ -1,0 +1,61 @@
+<div class="d-flex align-items-center justify-content-between m-b-20 m-t-50">
+    <h3 class="page-title m-0">{{constants.manageCatalogs}}</h3>
+    <button type="button" class="btn btn-info" (click)="createCatalog()">{{constants.createNewCatalog}}</button>
+</div>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped border mt-4">
+            <thead>
+                <tr>
+                    <th>{{constants.catalogName}}</th>
+                    <th>{{constants.totalAssessments}}</th>
+                    <th>{{constants.assignedTo}}</th>
+                    <th>{{constants.status}}</th>
+                    <th>{{constants.actions}}</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="catalogList?.catalogDetails">
+                <tr *ngFor="let catalog of catalogList.catalogDetails">
+                    <td>{{catalog.catalogName}}</td>
+                    <td>{{catalog.totalAssessments}} {{constants.assessments}}</td>
+                    <td>{{catalog.assignedTenantName}}</td>
+                    <td>
+                        <mat-slide-toggle class="inputField" [checked]="catalog.catalogStatus">
+                            <label for="" class="label-active">{{constants.active}}</label>
+                        </mat-slide-toggle>
+                    </td>
+                    <td>
+                        <button mat-icon-button type="button" class="m-r-10" *ngIf="catalog.catalogScope===30"
+                            (click)="assignUsers(catalog)" ngbTooltip="{{constants.assignedToUsers}}">
+                            <i class="ti-sharethis"></i>
+                        </button>
+                        <button mat-icon-button type="button" class="m-r-10" *ngIf="catalog.catalogScope===20"
+                            (click)="viewGroupUser(catalog.catalogId,catalog.assignedScopeId,catalog.assignedTenantId)"
+                            ngbTooltip={{constants.viewAssignedusers}}>
+                            <i class="ti-eye"></i>
+                        </button>
+                        <button mat-icon-button type="button" class="m-r-10" (click)="editCatalog(catalog)"
+                            ngbTooltip={{constants.editCatalog}}>
+                            <i class="ti-pencil text-info"></i>
+                        </button>
+                        <button mat-icon-button type="button" (click)="deleteCatalog(catalog)"
+                            ngbTooltip={{constants.deleteCatalog}}>
+                            <i class="ti-trash text-danger"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-between p-2" *ngIf="catalogList?.totalCount">
+            <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="catalogList?.totalCount"
+                (pageChange)="getCatalogList()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                [boundaryLinks]="true">
+            </ngb-pagination>
+            <select class="custom-select" style="width: auto" (change)="changePageSize()" [(ngModel)]="pageSize">
+                <option [ngValue]="catalogPageSize" *ngFor="let catalogPageSize of catalogPageSizes">
+                    {{catalogPageSize}}
+                    {{constants.itemsPerPage}}</option>
+            </select>
+        </div>
+    </div>
+</div>

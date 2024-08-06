@@ -1,0 +1,173 @@
+<div class="d-flex align-items-center justify-content-between m-b-20">
+    <h3 class="page-title m-0">{{constants.manageTags}}</h3>
+    <div>
+        <button type="button" class="btn btn-info" (click)="openAddOrEditCategory(editCategoryModal, modalOption)">
+            {{constants.createNewCategory}}
+        </button>
+        <button type="button" class="btn btn-info m-l-20" (click)="openAddOrEditSkill(editModal, 'skill')">
+            {{constants.createNewSkill}}
+        </button>
+    </div>
+</div>
+<div class="m-b-20 d-flex">
+    <a (click)="skillTags('Category')" class="p-10 p-l-20 p-r-20 border white-bg pointer">
+        {{constants.category}}
+    </a>
+    <a (click)="skillTags('{{constants.skill}}')" class="p-10 p-l-20 p-r-20 border white-bg pointer">
+        {{constants.skills}}
+    </a>
+</div>
+<div id="categories" *ngIf="toggleTag">
+    <mat-accordion>
+        <mat-expansion-panel class="card" *ngFor="let category of categoryDetails">
+            <mat-expansion-panel-header class="col-lg-12">
+                <mat-panel-title class="col-lg-8">
+                    {{category.name}}
+                </mat-panel-title>
+                <mat-panel-description>
+                    <div class="d-flex justify-content-between w-100 m-r-20">
+                        <span *ngIf='category.skillCount>1'>
+                            <small>{{category.skillCount}} {{constants.skills}}</small>
+                        </span>
+                        <span *ngIf='category.skillCount===1'>
+                            <small>{{category.skillCount}} skill</small>
+                        </span>
+                    </div>
+                </mat-panel-description>
+                <div class="col-lg-1">
+                    <a href="javascript:void(0)" class="m-l-20"
+                        (click)="openAddOrEditCategory(editCategoryModal, category.id)">
+                        <i class="ti-pencil text-info"></i>
+                    </a>
+                </div>
+            </mat-expansion-panel-header>
+            <div class="d-flex flex-wrap m-t-20">
+                <div *ngFor="let skill of category.skillNames" class="d-flex justify-content-between keyword">
+                    <small>{{skill}}</small>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+
+<div id="skills" *ngIf="!toggleTag">
+    <div class="card m-b-10 p-20">
+        <label for="" class="font-weight-bold">{{constants.searchSkills}}</label>
+        <div class="input-group">
+            <input type="text" placeholder="{{constants.search}}" class="form-control" [(ngModel)]="searchValue"
+                (keyup)="search()">
+            <button type="button" class="btn btn-info m-l-15">
+                <i class="fas fa-search" (click)="search()"></i>
+            </button>
+            <button class="btn btn-secondary m-l-5" type=reset (click)="reset()">
+                <i class="fas fa-undo"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card p-20">
+        <div class="d-flex flex-wrap">
+            <div class="d-flex justify-content-between keyword" *ngFor="
+            let skill of skillsList?.skills">
+                <small class="m-r-20">{{skill.name}}</small>
+                <a href="javascript:void(0)"
+                    (click)="openAddOrEditSkill(editModal, '{{constants.skill}}',skill.name,skill.id)">
+                    <i class="ti-pencil text-info"> </i>
+                </a>
+            </div>
+            <div class="d-flex justify-content-between p-2" *ngIf="skillsList?.totalCount">
+                <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="skillsList?.totalCount"
+                    (pageChange)="getSkillDetails()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false"
+                    [boundaryLinks]="true">
+                </ngb-pagination>
+                <select class="custom-select" style="width: auto" (change)="changePageSize()" [(ngModel)]="pageSize">
+                    <option [ngValue]="skillPageSize" *ngFor="let skillPageSize of skillPageSizes">
+                        {{skillPageSize}}
+                        {{constants.itemsPerPage}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #editModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{editAddLabel}} {{constants.skill}}</h5>
+        <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="skillForm" novalidate autocomplete="off">
+            <div class="m-b-10 autocomplete">
+                <label for="" class="font-weight-bold">{{constants.skillNameLabel}}<span
+                        class="text-danger">*</span></label>
+                <input
+                    [ngClass]="(isFormValid('selectedSkillName') || skillForm.get('selectedSkillName').errors?.pattern )? '':'input-error'"
+                    type="text" class="form-control" formControlName="selectedSkillName" id="selectedSkillName">
+                <small class="form-text text-danger" *ngIf="!isFormValid('selectedSkillName')">
+                    {{constants.pleaseEnterSkillName}}
+                </small>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary m-r-20"
+            (click)="closeBtnClick()">{{constants.cancel}}</button>
+        <button type="button" class="btn btn-info" (click)="save()">{{isEdit ? constants.update :
+            constants.save}}</button>
+    </div>
+</ng-template>
+
+<ng-template #editCategoryModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{editAddLabel}} {{constants.category}}</h5>
+        <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="categories" [formGroup]="manageTagForm" novalidate>
+            <div class="form-group m-b-10 autocomplete">
+                <input type="hidden" formControlName="id" id="id" class="form-control">
+                <label for="" class="font-weight-bold">{{constants.categoryName}}<span
+                        class="text-danger">*</span></label>
+                <input type="text"
+                    [ngClass]="(isCategoryFormValid('categoryName') || manageTagForm.get('categoryName').errors?.pattern )? '':'input-error'"
+                    formControlName="categoryName" id="categoryName" class="form-control" maxlength="150">
+                <small class="form-text text-danger" *ngIf="!isCategoryFormValid('categoryName')">
+                    {{constants.pleaseEnterCategoryName}}
+                </small>
+                <small class="form-text text-danger" *ngIf="manageTagForm.get('categoryName').errors?.maxlength">
+                    {{constants.pleaseEnterValidCategoryName}}
+                </small>
+                <small class="form-text text-danger" *ngIf="manageTagForm.get('categoryName').errors?.pattern">
+                    {{constants.pleaseEnterValidCategoryName}}
+                </small>
+            </div>
+            <div class="form-group m-b-10 autocomplete skill-custom">
+                <label for="" class="font-weight-bold">{{constants.assignSkills}}<span
+                        class="text-danger"></span></label>
+                <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="allSkills"
+                    [formControl]="manageTagForm.controls['skillName']">
+                </ng-multiselect-dropdown>
+                <small class="form-text text-danger" *ngIf="!isCategoryFormValid('skillName')">
+                    {{constants.pleaseSelectSkill}}
+                </small>
+            </div>
+            <div class="text-center p-20 font-weight-bold" *ngIf="isEdit">
+                {{constants.assignedSkills}}
+            </div>
+            <div class="assigned-skills d-flex flex-wrap" *ngIf="isEdit">
+                <div *ngFor="let skill of selectedSkills" class="d-flex justify-content-between keyword">
+                    <small>{{skill.name}}</small>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary m-r-20"
+            (click)="closeBtnClick()">{{constants.cancel}}</button>
+        <button type="button" class="btn btn-info" (click)="saveCategory(manageTagForm.value)">
+            {{constants.save}}</button>
+    </div>
+</ng-template>

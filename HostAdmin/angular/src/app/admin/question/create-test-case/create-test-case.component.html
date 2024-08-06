@@ -1,0 +1,109 @@
+<form [formGroup]="testCaseForm">
+    <div class="modal-header">
+        <h4 class="modal-title">{{constants.addTestCase}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="closeBtnClick()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="m-b-20">
+            <label>{{constants.testCaseName}} <span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control" formControlName="name">
+            <small class="field-required" *ngIf="!isFormValid('name')">
+                {{testcaseValidation.name}}</small>
+        </div>
+        <div class="m-b-20"
+            *ngIf="testCaseData.isInputRequired && !testCaseData.isHtmlCssSelected && !testCaseData.isCloud">
+            <label>{{constants.input}} <span class="text-danger">*</span></label>
+            <textarea type="text" class="form-control" rows="5" formControlName="input"></textarea>
+            <small class="field-required" *ngIf="!isFormValid('input')">
+                {{testcaseValidation.input}}</small>
+        </div>
+        <ng-container *ngIf="!testCaseData.isHtmlCssSelected">
+            <div class="m-b-20">
+                <label>{{constants.output}} <span class="text-danger">*</span></label>
+                <textarea type="text" class="form-control" rows="5" formControlName="output"></textarea>
+                <small class="field-required" *ngIf="!isFormValid('output')">
+                    {{testcaseValidation.output}}</small>
+            </div>
+            <div class="m-b-20" *ngIf="!testCaseData.isCloud">
+                <label>{{constants.maximumMemoryPermitted}}({{constants.optional}})</label>
+                <input type="number" min=0 max=1000000 class="form-control" rows="5"
+                formControlName="maxMemoryPermitted"  (keypress)="preventE($event)">
+            </div>
+            <div class="m-b-20" *ngIf="!testCaseData.isCloud">
+                <label>{{constants.maximumCpuTime}}({{constants.optional}})</label>
+                <input type="number" min=0 max=100000 class="form-control" rows="5" formControlName="maxCpuTime" (keypress)="preventE($event)">
+            </div>
+            <div class="m-b-20" *ngIf="testCaseData.isSortOrderEnabled">
+                <label>{{constants.sortOrder}}<span class="text-danger">*</span></label>
+                <input type="number" class="form-control" rows="5" formControlName="sortOrder"
+                    (input)="removeSortOrderValidation($event.target.value)" disabled>
+                <small class="field-required"
+                    *ngIf="testCaseForm.controls['sortOrder'].hasError('min') && isFormValid('sortOrder')">
+                    {{constants.minimumValueShouldBeOne}}
+                </small>
+                <small class="field-required"
+                    *ngIf="!testCaseForm.controls['sortOrder'].hasError('min') && !isFormValid('sortOrder')">
+                    {{testcaseValidation.sortOrder}}</small>
+                <small class="field-required"
+                    *ngIf="sortOrderExist && !testCaseForm.controls['sortOrder'].hasError('min') && isFormValid('sortOrder')">
+                    {{constants.sortOrderAlreadyExist}}
+                </small>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="testCaseData.isHtmlCssSelected">
+            <div class="m-b-20">
+                <label>{{constants.elementName}}<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="elementName" placeholder="Eg: input">
+                <small class="field-required" *ngIf="!isFormValid('elementName')">
+                    {{testcaseValidation.elementName}}</small>
+            </div>
+            <div class="m-b-20">
+                <label>{{constants.elementId}}<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="elementId" placeholder="Eg: firstname">
+                <small class="field-required" *ngIf="!isFormValid('elementId')">
+                    {{testcaseValidation.elementId}}</small>
+            </div>
+            <div class="m-b-20 text-right">
+                <button type="button" class="btn btn-secondary"
+                    (click)="addConstraints()">{{constants.addAttribute}}</button>
+            </div>
+            <div class="m-b-20" formArrayName="testCaseConstraints">
+                <div [formGroupName]="i" *ngFor="let testCaseConstraint of testCaseConstraints.controls; let i=index">
+                    <div class="row mb-2">
+                        <div class="col-md-5">
+                            <label>{{constants.attributeName}}<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" formControlName="attributeName"
+                                [placeholder]="constants.examplePlaceHolder">
+                            <small class="field-required" *ngIf="testCaseConstraint.controls.attributeName.errors?.required
+                                && (testCaseConstraint.controls.attributeName.touched || isFormSubmitTriggered)
+                                || testCaseConstraint.controls.attributeName.errors?.whitespace
+                                && (testCaseConstraint.controls.attributeName.touched || isFormSubmitTriggered)">
+                                {{testcaseValidation.attributeName}}</small>
+                        </div>
+                        <div class="col-md-5">
+                            <label>{{constants.attributeValue}}</label>
+                            <input type="text" class="form-control" formControlName="attributeValue"
+                                [placeholder]="constants.exampleEnterYourFirstName">
+                        </div>
+                        <div class="col-md-2 mt-4">
+                            <button type="button" class="btn btn-rounded text-danger m-0"
+                                (click)="deleteConstraints(i)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeBtnClick()">{{constants.cancel}}</button>
+        <button type="button" *ngIf="!isEdit" class="btn btn-info" (click)="save()">{{constants.add}}</button>
+        <button type="button" *ngIf="isEdit" class="btn btn-info" (click)="save()">{{constants.update}}</button>
+    </div>
+</form>

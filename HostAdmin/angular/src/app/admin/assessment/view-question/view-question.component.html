@@ -1,0 +1,39 @@
+<form class="invitation-form" id="view-questionform" appDisableCopy appDisableRightClick appDisableSelect
+    appDisableDrag>
+    <div class="modal-header">
+        <h4 class="modal-title"><b>{{constants.question}}</b></h4>
+    </div>
+    <div class="modal-body">
+        <div>
+            <h5>
+                Category  :   <span [innerHTML]="category"></span><br>  
+                Skill     :   <span [innerHTML]="skill"></span>            
+            </h5>
+        </div>
+        <div class="d-flex align-items-center">
+            <div>
+                <h4>
+                    <div [innerHTML]="questionText" class="name"></div>
+                </h4>
+            </div>
+        </div>
+        <div class="w-40 p-l-10" *ngIf="isMcq && choices.length > 0">
+            <div class="card h-100">
+                <div class="card-body p-0">
+                    <label class="font-weight-bold">{{constants.options}}</label>
+                    <div *ngFor="let choice of choices;let i = index">
+                        <div class="input-group m-b-10">
+                            <span class="input-group-text">{{i+1}}</span>
+                            <div [disabled]="true" type="text" class="form-control option"
+                                [innerHTML]="choice | safeHtml">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="close()">{{constants.close}}</button>
+    </div>
+</form>

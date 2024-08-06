@@ -1,0 +1,118 @@
+<div class="d-flex justify-content-between align-items-center m-b-20">
+    <h4 class="page-title m-0">{{constants.questionBankOperation}}</h4>
+    <button type="button" class="btn btn-info" *ngIf="isSuperAdmin"
+        (click)="createNewQuestionBank()">{{constants.createNew}}</button>
+</div>
+<div class="card">
+    <div class="card-body d-flex align-items-center">
+        <i *ngIf="isSuperAdmin" class="fas fa-filter text-info m-r-20"></i>
+        <div *ngIf="isSuperAdmin" class="m-r-15 w-25">
+            <ng-multiselect-dropdown class="qbcustom" [(ngModel)]="tenantDetails" (onSelect)="selectTenant($event)"
+                (onDeSelect)="onDeSelectTenant()" [placeholder]="constants.selectTenant"
+                [settings]="singleDropdownSettings" [data]="tenantDetailsList">
+            </ng-multiselect-dropdown>
+        </div>
+        <div class="input-group w-50">
+            <input type="text" class="form-control" [(ngModel)]="searchString" placeholder="{{constants.search}}"
+                (change)="search($event)" aria-label="" aria-describedby="basic-addon1">
+            <div class="input-group-append">
+                <button class="btn btn-info m-l-15" (click)="searchQuestionBank()" type="button"><i
+                        class="fas fa-search"></i></button>
+                <div>
+                    <button class="btn btn-secondary m-l-5" type="button" (click)="reset()">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped border m-b-20">
+            <thead>
+                <tr>
+                    <th class="font-weight-bold w-25">{{constants.nameLabel}}</th>
+                    <th class="font-weight-bold text-center">{{constants.createdDate}}</th>
+                    <th class="font-weight-bold text-center">{{constants.skillCount}}</th>
+                    <th class="font-weight-bold text-center">{{constants.questionCount}}</th>
+                    <th class="font-weight-bold text-center">{{constants.actions}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let questionBank of questionBankList?.questionBanks">
+                    <td class="w-25">
+                        <a href="javascript:void(0);" (click)="viewQuestionBank(questionBank.questionBankId)"
+                            ngbPopover="View Question Bank Skills" triggers="mouseenter:mouseleave">
+                            {{questionBank.name | titlecase}}
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        {{helper.convertUTCDateToLocalDate(questionBank.createdDate) | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td class="text-center">
+                        {{questionBank.skillCount}}
+                    </td>
+                    <td class="text-center">
+                        <div>
+                            <small class="m-r-10">{{constants.mcqTitle}}:</small>
+                            <strong>{{questionBank.mcqCount}}</strong>
+                        </div>
+                        <div>
+                            <small class="m-r-10">{{constants.coding}}:</small>
+                            <strong>{{questionBank.codingCount}}</strong>
+                        </div>
+                        <div>
+                            <small class="m-r-10">{{constants.stack}}:</small>
+                            <strong>{{questionBank.stackCount}}</strong>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span
+                            *ngIf="(isSuperAdmin && questionBank.scope!==0) || ((isTenantAdmin || isDynamicUser) && questionBank.scope===3)">
+                            <label class="m-r-10">
+                                <input type="checkbox" [checked]="questionBank.isVisible" class="cB" />
+                                <div class="cB-outer-div" ngbPopover="Unassign to Tenant" *ngIf="questionBank.isVisible"
+                                    triggers="mouseenter:mouseleave" (click)="updateVisiblity(questionBank)">
+                                    <div class="cB-inner-div"></div>
+                                </div>
+                                <div class="cB-outer-div" ngbPopover="Assign to Tenant" *ngIf="!questionBank.isVisible"
+                                    triggers="mouseenter:mouseleave" (click)="updateVisiblity(questionBank)">
+                                    <div class="cB-inner-div"></div>
+                                </div>
+                            </label>
+                        </span>
+                        <span *ngIf="(isSuperAdmin && questionBank.scope!==0)">
+                            <i class="far fa-edit text-secondary m-r-10" style="cursor: pointer;"
+                                (click)="editQuestionBank(questionBank.questionBankId)" ngbPopover="Edit"
+                                triggers="mouseenter:mouseleave"></i>
+                            <i class="ti-trash text-secondary m-r-10" style="cursor: pointer;"
+                                (click)="deleteQuestionBank(questionBank.questionBankId)" ngbPopover="Delete"
+                                triggers="mouseenter:mouseleave"></i>
+                            <i class="far fa-clone text-secondary m-r-10" style="cursor: pointer;"
+                                (click)="cloneQuestionBank(questionBank.questionBankId)" ngbPopover="Clone"
+                                triggers="mouseenter:mouseleave"></i>
+                        </span>
+                        <i class="fa fa-eye text-secondary m-r-10" style="cursor: pointer;"
+                            (click)="openQuestions(questionBank.questionBankId,questionBank.scope)"
+                            ngbPopover="View Questions" triggers="mouseenter:mouseleave"></i>
+                    </td>
+                </tr>
+                <tr *ngIf="!questionBankList?.totalCount">
+                    <td colspan="5" class="text-center">
+                        <p>{{constants.noQuestionBankFound}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-between align-items-center">
+            <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize" [collectionSize]="questionBankList?.totalCount"
+                (pageChange)="loadPage()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+            <select class="custom-select" style="width: auto" (change)="changePageSize()" [(ngModel)]="pageSize">
+                <option [ngValue]="pageSize" *ngFor="let pageSize of pageSizes">{{pageSize}} {{constants.itemsPerPage}}
+                </option>
+            </select>
+        </div>
+    </div>
+</div>

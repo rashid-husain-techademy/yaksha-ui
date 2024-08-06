@@ -1,0 +1,163 @@
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<div id="main-wrapper" [ngClass]="{'show-sidebar': showMobileMenu}" [dir]="options.dir"
+    [attr.data-theme]="options.theme" [attr.data-layout]="options.layout" [attr.data-sidebartype]="options.sidebartype"
+    [attr.data-sidebar-position]="options.sidebarpos" [attr.data-header-position]="options.headerpos"
+    [attr.data-boxed-layout]="options.boxed" appDisableDrag>
+    <!-- ============================================================== -->
+    <!-- Topbar header - style you can find in topbar.scss -->
+    <!-- ============================================================== -->
+    <header class="topbar" [attr.data-navbarbg]="options.navbarbg" *ngIf="!isFullScreen">
+        <nav class="d-flex top-navbar navbar-expand-lg"
+            [ngClass]="(options.navbarbg==='skin6')?'navbar-light':'navbar-dark'">
+            <div class="navbar-header" [ngClass]="(expandLogo)?'expand-logo':''" [attr.data-logobg]="options.logobg">
+                <!-- This is for the sidebar toggle which is visible on mobile only -->
+                <a (click)="showMobileMenu = !showMobileMenu"
+                    class="nav-toggler waves-effect waves-light d-block d-lg-none" href="javascript:void(0)">
+                    <i [ngClass]="(showMobileMenu)?'ti-close':'ti-menu'"></i>
+                </a>
+                <!-- ============================================================== -->
+                <!-- Logo -->
+                <!-- ============================================================== -->
+                <a class="navbar-brand" href="/">
+                    <!-- Logo text -->
+                    <span class="logo-text" *ngIf="isTenantLogoLoaded">
+                        <!-- dark Logo text -->
+                        <img [src]="logoUrl" alt="homepage" class="dark-logo" />
+                        <!-- Light Logo text -->
+                        <img [src]="logoUrl" [ngClass]="isCustomThemeEnabled ? 'light-logo custom-logo': 'light-logo'"
+                            alt="homepage" />
+                    </span>
+                </a>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Toggle which is visible on mobile only -->
+                <!-- ============================================================== -->
+                <a class="topbartoggler d-block d-lg-none waves-effect waves-light" href="javascript:void(0)"
+                    (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent">
+                    <i class="ti-more"></i>
+                </a>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Logo -->
+            <!-- ============================================================== -->
+            <div class="navbar-collapse collapse" id="navbarSupportedContent" [ngbCollapse]="!isCollapsed"
+                [attr.data-navbarbg]="options.navbarbg">
+                <!-- Horizontal Header -->
+                <div *ngIf="options.layout==='horizontal' else vheader" class="w-100">
+                    <app-horizontal-navigation class="w-100 d-flex align-items-center">
+                    </app-horizontal-navigation>
+                </div>
+
+                <!-- Vertical Header -->
+                <ng-template #vheader>
+                    <div class="w-100">
+                        <!-- Need to check vertical navigation component -->
+                        <!-- <app-vertical-navigation (toggleSidebar)="toggleSidebarType()">
+                        </app-vertical-navigation> -->
+                    </div>
+                </ng-template>
+            </div>
+        </nav>
+    </header>
+    <!-- ============================================================== -->
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- ============================================================== -->
+    <aside class="left-sidebar" [attr.data-sidebarbg]="options.sidebarbg" (mouseover)="Logo()" (mouseout)="Logo()"
+        *ngIf="!isFullScreen">
+        <!-- Sidebar scroll-->
+        <!-- <div *ngIf="options.layout==='horizontal'; else vlayout"> -->
+        <div>
+            <app-horizontal-sidebar [isHsbcTenant]="isHsbcTenant"></app-horizontal-sidebar>
+        </div>
+
+        <!-- Horizontal Header -->
+        <ng-template #vlayout>
+            <!-- Need to check vertical sidebar component -->
+            <!-- <div class="scroll-sidebar" [perfectScrollbar]="config">
+                <app-vertical-sidebar [showClass]='showMobileMenu' (notify)='handleClick($event)'>
+                </app-vertical-sidebar>
+            </div> -->
+        </ng-template>
+        <!-- End Sidebar scroll-->
+    </aside>
+    <!-- ============================================================== -->
+    <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+    <div [ngClass]="isFullScreen ? 'page-wrapper-fs' : 'page-wrapper'">
+        <!-- <app-breadcrumb ></app-breadcrumb> -->
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+            <!-- ============================================================== -->
+            <!-- Start Page Content -->
+            <!-- ============================================================== -->
+            <router-outlet></router-outlet>
+            <!-- ============================================================== -->
+            <!-- End Start Page Content -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- footer -->
+        <!-- ============================================================== -->
+        <footer class="footer text-center" *ngIf="!isFullScreen">
+            <div *ngIf='!isCustomThemeEnabled' class="row justify-content-between footer">
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-auto">
+                            <p> {{constants.support}}: <i class="fas fa-phone mr-1"></i> <span
+                                    class="mr-3">08046808098</span> <i class="fas fa-envelope mr-1"></i> <span
+                                    class="mr-3"><a href="mailto:techademy@iiht.com">techademy@iiht.com</a></span>
+                            </p>
+                        </div>
+                        <div class="col-auto">
+                            <p class="mr-3">
+                                <a (click)="goToPrivacy()">{{constants.privacyPolicy}}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 my-auto">
+                    <p>
+                        {{constants.allRightsReservedByTechademyLearningSolutionsPrivateLimited}}
+                    </p>
+                </div>
+            </div>
+            <div *ngIf='isCustomThemeEnabled' class="row justify-content-between footer">
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-auto">
+                            <p> {{constants.support}}: <i class="fas fa-phone mr-1"></i> <span class="mr-3">+91 22
+                                    42547600</span> <i class="fas fa-envelope mr-1"></i> <span class="mr-3"><a
+                                        href="mailto:edtechsales@nseit.com">edtechsales@nseit.com</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 my-auto">
+                    <p> {{constants.address}}:
+                        {{constants.nseitAddress}}<br>
+                        {{constants.nseitLocation}}
+                    </p>
+                </div>
+            </div>
+        </footer>
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page wrapper  -->
+    <!-- ============================================================== -->
+</div>

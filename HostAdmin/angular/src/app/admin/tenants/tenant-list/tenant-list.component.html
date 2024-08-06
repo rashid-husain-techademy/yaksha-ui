@@ -1,0 +1,147 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body  p-b-48">
+                <h4 class="card-title mb-0"><span class="lstick"></span>{{constants.tenants}} </h4>
+                <div class="d-flex justify-content-between mt-3">
+                    <input type="text" placeholder="{{constants.search}}" class="form-control w-auto"
+                        [formControl]="searchValue" (change)="search()" />
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-info ml-auto"
+                            (click)="openAddOrEditTenant(editModal, null)">
+                            {{constants.addTenant}}</button>
+                    </div>
+                </div>
+                <!-- Sorting and highlight needs to be done -->
+                <table class="table table-striped border mt-4">
+                    <thead>
+                        <tr>
+                            <th sortable="Name">{{constants.nameLabel}}</th>
+                            <th sortable="UserName">{{constants.displayName}}</th>
+                            <th sortable="Csm">{{constants.csm}}</th>
+                            <th sortable="Status">{{constants.status}}</th>
+                            <th>{{constants.action}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let client of tenantDetailsList?.tenants">
+                            <td>
+                                <ngb-highlight [result]="client.tenancyName"></ngb-highlight>
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="client.name"></ngb-highlight>
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="client.managerEmailIds? client.managerEmailIds:'-'"
+                                    [matTooltip]="client.managerEmails.join(',')" data-toggle="tooltip"
+                                    data-placement="top" title="{{client.managerEmails.join(',')}}">
+                                </ngb-highlight>
+                            </td>
+                            <td>
+                                <ngb-highlight [result]="client.isActive=== true? 'Active': 'InActive'"></ngb-highlight>
+                            </td>
+                            <td>
+                                <i class="ti-pencil text-info m-r-10 pointer"
+                                    (click)="openAddOrEditTenant(editModal, client.id)"></i>
+                                <i class="ti-upload text-info m-r-10 pointer" (click)="redirectToCustomize(client.id)"
+                                 [ngbTooltip]="constants.tenantCustomization"></i>
+                                <i class="ti-trash text-danger pointer" (click)="deleteTenant(client)"></i>
+                            </td>
+                        </tr>
+                        <div *ngIf="!tenantDetailsList?.totalCount" class="result pt-4">
+                            <p>{{constants.noTenantsFound}}</p>
+                        </div>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between p-2" *ngIf="tenantDetailsList?.totalCount">
+                    <ngb-pagination [(page)]="pageIndex" [pageSize]="pageSize"
+                        [collectionSize]="tenantDetailsList?.totalCount" (pageChange)="getTenantDetails()" [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                    </ngb-pagination>
+                    <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                        [(ngModel)]="pageSize">
+                        <option [ngValue]="tenantPageSize" *ngFor="let tenantPageSize of tenantPageSizes">
+                            {{tenantPageSize}}
+                            {{constants.itemsPerPage}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Tenant -->
+
+<ng-template #editModal let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title">{{editAddLabel}} {{constants.tenant}}</h5>
+        <button type="button" class="close" (click)="closeBtnClick()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="tenantForm" novalidate autocomplete="off">
+            <div class="form-group row">
+                <label for="tenantName" class="col-sm-4 col-form-label">{{constants.tenantNameLabel}}</label>
+                <div class="col-sm-8">
+                    <input
+                        [ngClass]="(isFormValid('selectedTenant') || tenantForm.get('selectedTenant').errors?.pattern )? '':'input-error'"
+                        type="text" class="form-control" formControlName="selectedTenant" id="selectedTenant"
+                        [readonly]="toggle">
+                    <small class="form-text text-danger" *ngIf="!isFormValid('selectedTenant')">
+                        {{constants.pleaseEnterTenantName}}
+                    </small>
+                    <small class="form-text text-danger" *ngIf="tenantForm.get('selectedTenant').errors?.pattern">
+                        {{constants.pleaseEnterValidTenantName}}
+                    </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="userName" class="col-sm-4 col-form-label">{{constants.displayName}}</label>
+                <div class="col-sm-8">
+                    <input
+                        [ngClass]="(isFormValid('selectedDisplayName')||tenantForm.get('selectedDisplayName').errors?.pattern )? '':'input-error'"
+                        type="text" formControlName="selectedDisplayName" class="form-control" id="displayName"
+                        [readonly]="toggle">
+                    <small class="form-text text-danger" *ngIf="!isFormValid('selectedDisplayName')">
+                        {{constants.pleaseEnterDisplayName}}
+                    </small>
+                    <small class="form-text text-danger" *ngIf="tenantForm.get('selectedDisplayName').errors?.pattern">
+                        {{constants.pleaseEnterValidDisplayName}}
+                    </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="userName" class="col-sm-4 col-form-label">{{constants.csm}}
+                    {{constants.separatedByComma}}</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" formControlName="selectedManager" autocomplete="off">
+                    <span class="optional">{{constants.optional}}</span>
+                </div>
+            </div>
+            <div class="form-group row" *ngIf="toggle">
+                <label for="email" class="col-sm-4 col-form-label">{{constants.status}}</label>
+                <div class="col-sm-8">
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-radio pr-4"
+                            *ngFor="let status of tenantStatus; let i = index;">
+                            <input type="radio" class="custom-control-input" formControlName="isActive" id="radio{{i}}"
+                                name="isActive" [value]=status>
+                            <label class="custom-control-label" for="radio{{i}}">
+                                {{status}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeBtnClick()">{{constants.close}}</button>
+                <button type="button" class="btn btn-info" (click)="save()">{{isEdit ? constants.update :
+                    constants.save}}</button>
+            </div>
+        </form>
+    </div>
+</ng-template>

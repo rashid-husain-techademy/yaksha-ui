@@ -1,0 +1,234 @@
+<div id="reviewer" appDisableCopy appDisablePaste appDisableRightClick>
+    <h3 class="m-b-20">{{constants.reviewAssessments}}</h3>
+    <div class="d-flex flex-wrap justify-content-between quick-info">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="m-b-0">
+                    <i class="mdi mdi-book-multiple-variant text-info"></i>
+                </h2>
+                <h3 class="">{{assessmentsCount?.totalAssessment}}</h3>
+                <h5 class="card-subtitle">{{constants.assignedAssessments}}</h5>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="m-b-0">
+                    <i class="mdi mdi-checkbox-multiple-marked text-success"></i>
+                </h2>
+                <h3 class="">{{assessmentsCount?.totalReviewed}}</h3>
+                <h5 class="card-subtitle">{{constants.reviewedAssessments}}</h5>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="m-b-0">
+                    <i class="mdi mdi-alert-box text-warning"></i>
+                </h2>
+                <h3 class="">{{assessmentsCount?.totalPending}}</h3>
+                <h5 class="card-subtitle">{{constants.unreviewedAssessments}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body p-0">
+            <ul ngbNav #nav="ngbNav" class="nav-tabs">
+                <li [ngbNavItem]="1">
+                    <a ngbNavLink
+                        (click)="getAssessmentsByStatus(reviewerAssessmentStatus.InProgress)">{{constants.inProgress}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-filter text-info m-r-10"></i>
+                                    <div class="input-group w-50">
+                                        <input [(ngModel)]="inProgress_SearchString" (keyup.enter)="search()"
+                                            type="text" placeholder="{{constants.search}}" class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="search()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-outline-secondary" (click)="reset()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap assessments">
+                            <div class="card m-b-20 m-l-10 m-r-10 m-b-20"
+                                *ngFor="let reviewerAssessment of reviewerAssessmentList?.assessmentList">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex  flex-column">
+                                        <h4 class="text-info m-0 assessment-label"
+                                            (click)="viewAssessmentDetail(reviewerAssessment)">
+                                            {{reviewerAssessment.assessmentName}}</h4>
+                                        <small class="text-muted">{{reviewerAssessment.categoryName}}</small>
+                                    </div>
+                                    <div class="m-t-10 keywords d-flex align-items-center">
+                                        <div class="m-r-20">
+                                            <h6 class="m-0">{{reviewerAssessment.startTime | date:'d, MMM y - h:mm a'}}
+                                            </h6>
+                                            <small class="text-muted">{{constants.startDate}}</small>
+                                        </div>
+                                        <div class="m-r-30">
+                                            <h6 class="m-0">{{reviewerAssessment.endTime | date:'d, MMM y - h:mm a'}}
+                                            </h6>
+                                            <small class="text-muted">{{constants.endDate}}</small>
+                                        </div>
+                                        <div class="m-r-20">
+                                            <h6 class="m-0">{{reviewerAssessment.totalReviwed}}</h6>
+                                            <small class="text-muted">{{constants.reviewed}}</small>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">{{reviewerAssessment.totalSubmissions}}</h6>
+                                            <small class="text-muted">{{constants.submissions}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-2" *ngIf="reviewerAssessmentList?.totalCount">
+                            <ngb-pagination [(page)]="inProgress_PageIndex" [pageSize]="inProgress_PageSize"
+                                [collectionSize]="reviewerAssessmentList?.totalCount" (pageChange)="loadPage()"
+                                [maxSize]="inProgress_MaxSize" [rotate]="true" [ellipses]="false"
+                                [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                                [(ngModel)]="inProgress_PageSize">
+                                <option [ngValue]="pageSize" *ngFor="let pageSize of inProgress_PageSizes">{{pageSize}}
+                                    {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                    <a ngbNavLink
+                        (click)="getAssessmentsByStatus(reviewerAssessmentStatus.Upcoming)">{{constants.upComing}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-filter text-info m-r-10"></i>
+                                    <div class="input-group w-50">
+                                        <input [(ngModel)]="upcoming_SearchString" (keyup.enter)="search()" type="text"
+                                            placeholder="{{constants.search}}" class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="search()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-outline-secondary" (click)="reset()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap assessments">
+                            <div class="card m-b-20 m-l-10 m-r-10 m-b-20"
+                                *ngFor="let reviewerAssessment of reviewerAssessmentList?.assessmentList">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex  flex-column">
+                                        <h4 class="text-info m-0 assessment-label"
+                                            (click)="viewAssessmentDetail(reviewerAssessment)">
+                                            {{reviewerAssessment.assessmentName}}</h4>
+                                        <small class="text-muted">{{reviewerAssessment.categoryName}}</small>
+                                    </div>
+                                    <div class="m-t-10 keywords d-flex align-items-center">
+                                        <div class="m-r-20">
+                                            <h6 class="m-0">{{reviewerAssessment.startTime | date:'d, MMM y - h:mm a'}}
+                                            </h6>
+                                            <small class="text-muted">{{constants.startDate}}</small>
+                                        </div>
+                                        <div class="m-r-30">
+                                            <h6 class="m-0">{{reviewerAssessment.endTime | date:'d, MMM y - h:mm a'}}
+                                            </h6>
+                                            <small class="text-muted">{{constants.endDate}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-2" *ngIf="reviewerAssessmentList?.totalCount">
+                            <ngb-pagination [(page)]="upcoming_PageIndex" [pageSize]="upcoming_PageSize"
+                                [collectionSize]="reviewerAssessmentList?.totalCount" (pageChange)="loadPage()"
+                                [maxSize]="upcoming_MaxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                                [(ngModel)]="upcoming_PageSize">
+                                <option [ngValue]="pageSize" *ngFor="let pageSize of upcoming_PageSizes">{{pageSize}}
+                                    {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="3">
+                    <a ngbNavLink
+                        (click)="getAssessmentsByStatus(reviewerAssessmentStatus.Completed)">{{constants.completed}}</a>
+                    <ng-template ngbNavContent>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-filter text-info m-r-10"></i>
+                                    <div class="input-group w-50">
+                                        <input [(ngModel)]="completed_SearchString" (keyup.enter)="search()" type="text"
+                                            placeholder="{{constants.search}}" class="form-control m-r-20">
+                                        <button class="btn btn-info" (click)="search()" type="button"><i
+                                                class="fas fa-search"></i></button>
+                                        <button class="btn btn-outline-secondary" (click)="reset()" type="button">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap assessments">
+                            <div class="card m-b-20 m-l-10 m-r-10 m-b-20"
+                                *ngFor="let reviewerAssessment of reviewerAssessmentList?.assessmentList">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex  flex-column">
+                                        <h4 class="text-info m-0 assessment-label"
+                                            (click)="viewAssessmentDetail(reviewerAssessment)">
+                                            {{reviewerAssessment.assessmentName}}</h4>
+                                        <small class="text-muted">{{reviewerAssessment.categoryName}}</small>
+                                    </div>
+                                    <div class="m-t-10 keywords d-flex align-items-center">
+                                        <div class="m-r-20">
+                                            <h6 class="m-0">{{reviewerAssessment.startTime | date:'d, MMM y - h:mm a'}}
+                                            </h6>
+                                            <small class="text-muted">{{constants.startDate}}</small>
+                                        </div>
+                                        <div class="m-r-30">
+                                            <h6 class="m-0">{{reviewerAssessment.endTime | date:'d, MMM y - h:mm a'}}
+                                            </h6>
+                                            <small class="text-muted">{{constants.endDate}}</small>
+                                        </div>
+                                        <div class="m-r-20">
+                                            <h6 class="m-0">{{reviewerAssessment.totalReviwed}}</h6>
+                                            <small class="text-muted">{{constants.reviewed}}</small>
+                                        </div>
+                                        <div>
+                                            <h6 class="m-0">{{reviewerAssessment.totalSubmissions}}</h6>
+                                            <small class="text-muted">{{constants.submissions}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-2" *ngIf="reviewerAssessmentList?.totalCount">
+                            <ngb-pagination [(page)]="completed_PageIndex" [pageSize]="completed_PageSize"
+                                [collectionSize]="reviewerAssessmentList?.totalCount" (pageChange)="loadPage()"
+                                [maxSize]="completed_MaxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                            </ngb-pagination>
+                            <select class="custom-select" style="width: auto" (change)="changePageSize()"
+                                [(ngModel)]="completed_PageSize">
+                                <option [ngValue]="pageSize" *ngFor="let pageSize of completed_PageSizes">{{pageSize}}
+                                    {{constants.itemsPerPage}}</option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div [ngbNavOutlet]="nav"></div>
+</div>
+<div class="d-flex justify-content-center" *ngIf="noAssessmentsFound">
+    <h4>{{constants.noAssessmentsFound}}</h4>
+</div>

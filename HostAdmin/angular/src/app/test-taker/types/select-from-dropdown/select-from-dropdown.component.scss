@@ -1,0 +1,11 @@
+.indentaion {
+    white-space: pre-wrap;
+}
+
+::ng-deep p .indentaion img {
+    width: auto  !important;
+}
+
+::ng-deep div .indentaion img {
+    width: auto  !important;
+}

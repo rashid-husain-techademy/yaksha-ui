@@ -1,0 +1,214 @@
+<div *ngIf="!isABInBev"
+    [ngClass]="isCustomThemeEnabled && !isABInBev ? (hackathonLeaderBoard?.leaderBoardDetails?.length > 10) ? 'post-hackathon-assessment custom-tenant': 'post-assessment custom-tenant' : (hackathonLeaderBoard?.leaderBoardDetails?.length > 10) ? 'post-hackathon-assessment': 'post-assessment' "
+    class="p-30 text-white d-flex justify-content-center flex-column" appDisableCopy appDisablePaste
+    appDisableRightClick appDisableSelect>
+    <div class="w-100 text-center logo custom-tenant-logo" *ngIf="isTenantLogoLoaded">
+        <img [src]="logoUrl" alt="logo" class="yaksha">
+    </div>
+    <h4 class="m-b-40 text-center">{{constants.thankYou}} <span class="font-bold">{{userName}} {{surName}}</span>
+        {{constants.forAttempting}}
+        <span class="font-bold assessment-label" style="word-break: break-word;"> <span
+                *ngIf="campaignName">{{campaignName}}
+                : </span>{{assessmentTitle}}</span>
+        {{constants.onOurPlatformPleaseCheckYourAssessmentSummaryBelow}}
+    </h4>
+
+    <div class="d-flex w-100 justify-content-center m-b-40">
+        <div class="d-flex w-75 justify-content-center">
+            <div class="d-flex flex-column mr-4">
+                <strong class="text-center">{{userName}}</strong>
+                <small class="text-muted text-center">{{constants.firstName}}</small>
+            </div>
+            <div class="d-flex flex-column mr-4">
+                <strong class="text-center">{{surName}}</strong>
+                <small class="text-muted text-center">{{constants.lastName}}</small>
+            </div>
+            <div class="d-flex flex-column mr-4">
+                <strong class="text-center email-text-wrap">{{emailAddress}}</strong>
+                <small class="text-muted text-center">{{constants.email}}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex w-100 justify-content-center m-b-40" *ngIf="!showLeaderBoardOnly">
+        <table class="w-40" style="text-align:center;">
+            <tr>
+                <th>{{constants.timeUtilization}}</th>
+                <td>{{timeUtilized}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.questionsAttempted}}</th>
+                <td>{{attempted}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.questionsSkipped}}</th>
+                <td>{{skipped}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.questionsMarkedforReview}}</th>
+                <td>{{markedForReview}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.remainingAttempts}}</th>
+                <td>{{remainingAttempts}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="instruction d-flex w-100 justify-content-center mt-25" *ngIf="showLeaderBoard === constants.trueLabel">
+        <div class="w-75 p-l-10 justify-content-center">
+            <div class="card">
+                <div class="card-body skill">
+                    <div class="d-flex align-items-top justify-content-between">
+                        <h4 class="m-b-10 title">{{constants.leaderBoard}}</h4>
+                    </div>
+                    <div class="d-flex align-items-top justify-content-between">
+                        <div class="w-100">
+                            <table class="table table-striped border mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold">{{constants.rank}}</th>
+                                        <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                        <th class="font-weight-bold">{{constants.timeTaken}}</th>
+                                        <th class="font-weight-bold">{{constants.points}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                    <tr *ngFor="let userResult of hackathonLeaderBoard.leaderBoardDetails">
+                                        <td>
+                                            {{userResult.rank}}
+                                        </td>
+                                        <td>
+                                            {{userResult.firstName}} {{userResult.lastName}}
+                                        </td>
+                                        <td>
+                                            {{userResult.convertedDuration}}
+                                        </td>
+                                        <td>
+                                            {{userResult.score}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length" class="text-center title">
+                                {{constants.noDataFound}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="button" class="btn btn-info tenant"
+            style="border-radius: 4px; position:fixed;bottom: 20px;right: 20px;" (click)="feedback()"
+            *ngIf="feedbackEnabled">{{constants.feedback}}
+        </button>
+    </div>
+    <h5 class="text-center">{{constants.reportsWillBeSharedWithYouByTheAdministrator}}</h5>
+</div>
+<div *ngIf="isABInBev" class="p-30 post-assessment-abinbev   d-flex justify-content-center flex-column" appDisableCopy
+    appDisablePaste appDisableRightClick appDisableSelect>
+    <div class="w-100 text-center logo custom-tenant-logo" *ngIf="isTenantLogoLoaded">
+        <img [src]="logoUrl" alt="logo" class="yaksha">
+    </div>
+    <h4 class="m-b-40 text-center">{{constants.thankYou}} <span class="font-bold">{{userName}} {{surName}}</span>
+        {{constants.forAttempting}}
+        <span class="font-bold assessment-label" style="word-break: break-word;"> <span
+                *ngIf="campaignName">{{campaignName}}
+                : </span>{{assessmentTitle}}</span>
+        {{constants.onOurPlatformPleaseCheckYourAssessmentSummaryBelow}}
+    </h4>
+
+    <div class="d-flex w-100 justify-content-center m-b-40">
+        <div class="d-flex w-75 justify-content-center">
+            <div class="d-flex flex-column mr-4">
+                <strong class="text-center">{{userName}}</strong>
+                <small class="text-muted text-center">{{constants.firstName}}</small>
+            </div>
+            <div class="d-flex flex-column mr-4">
+                <strong class="text-center">{{surName}}</strong>
+                <small class="text-muted text-center">{{constants.lastName}}</small>
+            </div>
+            <div class="d-flex flex-column mr-4">
+                <strong class="text-center email-text-wrap">{{emailAddress}}</strong>
+                <small class="text-muted text-center">{{constants.email}}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex w-100 justify-content-center m-b-40" *ngIf="!showLeaderBoardOnly">
+        <table class="w-40" style="text-align:center;">
+            <tr>
+                <th>{{constants.timeUtilization}}</th>
+                <td>{{timeUtilized}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.questionsAttempted}}</th>
+                <td>{{attempted}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.questionsSkipped}}</th>
+                <td>{{skipped}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.questionsMarkedforReview}}</th>
+                <td>{{markedForReview}}</td>
+            </tr>
+            <tr>
+                <th>{{constants.remainingAttempts}}</th>
+                <td>{{remainingAttempts}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="instruction d-flex w-100 justify-content-center mt-25" *ngIf="showLeaderBoard === constants.trueLabel">
+        <div class="w-75 p-l-10 justify-content-center">
+            <div class="card">
+                <div class="card-body skill">
+                    <div class="d-flex align-items-top justify-content-between">
+                        <h4 class="m-b-10 title">{{constants.leaderBoard}}</h4>
+                    </div>
+                    <div class="d-flex align-items-top justify-content-between">
+                        <div class="w-100">
+                            <table class="table table-striped border mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="font-weight-bold">{{constants.rank}}</th>
+                                        <th class="font-weight-bold">{{constants.candidateName}}</th>
+                                        <th class="font-weight-bold">{{constants.timeTaken}}</th>
+                                        <th class="font-weight-bold">{{constants.points}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="hackathonLeaderBoard?.leaderBoardDetails?.length">
+                                    <tr *ngFor="let userResult of hackathonLeaderBoard.leaderBoardDetails">
+                                        <td>
+                                            {{userResult.rank}}
+                                        </td>
+                                        <td>
+                                            {{userResult.firstName}} {{userResult.lastName}}
+                                        </td>
+                                        <td>
+                                            {{userResult.convertedDuration}}
+                                        </td>
+                                        <td>
+                                            {{userResult.score}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="!hackathonLeaderBoard?.leaderBoardDetails?.length" class="text-center title">
+                                {{constants.noDataFound}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="button" class="btn custom-btn-color"
+            style="border-radius: 4px; position:fixed;bottom: 20px;right: 20px;" (click)="feedback()"
+            *ngIf="feedbackEnabled">{{constants.feedback}}
+        </button>
+    </div>
+    <h5 class="text-center">{{constants.reportsWillBeSharedWithYouByTheAdministrator}}</h5>
+</div>

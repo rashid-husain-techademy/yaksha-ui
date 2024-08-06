@@ -1,0 +1,277 @@
+<div class="d-flex m-b-20">
+    <h3 class="page-title m-0" *ngIf="!isEdit">{{constants.createAdaptiveAssessment}}</h3>
+    <h3 class="page-title m-0" *ngIf="isEdit">{{constants.editAdaptiveAssessment}}</h3>
+</div>
+
+<mat-stepper linear>
+    <mat-step [stepControl]="addAdaptiveAssessmentForm">
+        <ng-template matStepLabel>{{constants.adaptiveAssessmentBasicInfo}}</ng-template>
+        <form [formGroup]="addAdaptiveAssessmentForm">
+            <div class="card p-20">
+                <div class="d-flex flex-wrap justify-content-start m-b-20">
+                    <div class="w-75 p-r-10 align-items-center">
+                        <label for="" class="font-weight-bold">
+                            {{constants.assessmentTitle}} <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" [placeholder]="constants.assessmentTitle"
+                            [readonly]="isEdit" formControlName="name">
+                        <small class="form-text text-danger"
+                            *ngIf="addAdaptiveAssessmentForm.get('name').hasError('maxlength')">
+                            {{addAdaptiveAssessmentFormValidationMessages.name.maxLength}}
+                        </small>
+                        <small class="form-text text-danger" *ngIf="!isFormValid('name',addAdaptiveAssessmentForm)">
+                            {{addAdaptiveAssessmentFormValidationMessages.name.required}}
+                        </small>
+                    </div>
+                    <div class="w-10 mt-35">
+                        <div class="d-flex align-items-center m-r-40">
+                            <input type="radio" name="skillType" formControlName="skillType" id="inlineRadio1"
+                                value="single" class="m-0" (click)="toggleAssessment('single')">
+                            <label for="inlineRadio1"
+                                class="font-weight-bold m-0 p-l-10">{{constants.singleSkillLabel}}</label>
+                        </div>
+                    </div>
+                    <div class="w-20 p-r-10 mt-35">
+                        <div class="d-flex align-items-center">
+                            <input type="radio" name="skillType" formControlName="skillType" id="inlineRadio2"
+                                value="multi" class="m-0" (click)="toggleAssessment('multi')">
+                            <label for="inlineRadio2"
+                                class="font-weight-bold m-0 p-l-10">{{constants.multiSkillLabel}}</label>
+                        </div>
+                    </div>
+                    <small class="form-text text-danger" *ngIf="!isFormValid('skillType',addAdaptiveAssessmentForm)">
+                        {{addAdaptiveAssessmentFormValidationMessages.skillType.required}}
+                    </small>
+                </div>
+                <div class="align-category-field">
+                    <label class="font-weight-bold">{{constants.selectCategory}} <span
+                            class="text-danger">*</span></label>
+                    <ng-multiselect-dropdown [settings]="categoryDropdownSettings" [disabled]="isEdit"
+                        [data]="categories" [placeholder]="constants.selectCategory" formControlName="category"
+                        (onSelect)="onCategorySelect($event)" (onDeSelect)="onCategoryDeselect($event)"
+                        (onSelectAll)="onAllCategorySelect()" (onDeSelectAll)="onAllCategoryDeSelect()">
+                    </ng-multiselect-dropdown>
+                    <small class="field-required" *ngIf="!isFormValid('category', addAdaptiveAssessmentForm)">
+                        {{saveAdaptiveAssessmentFormValidationMessages.categoryId}}
+                    </small>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between m-b-40">
+                    <div class="w-50 p-r-10">
+                        <label for="" class="font-weight-bold">{{constants.description}}</label>
+                        <quill-editor [styles]="{height: '200px'}" formControlName="description"
+                            [placeholder]="constants.description"></quill-editor>
+                    </div>
+                    <div class="w-50 p-l-10">
+                        <label for="" class="font-weight-bold">{{constants.instructions}}</label>
+                        <quill-editor [styles]="{height: '200px'}" formControlName="instructions"
+                            [placeholder]="constants.instructions"></quill-editor>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <button mat-button matStepperNext class="btn btn-info" #nextbtn (click)="addAdaptiveAssessmentDetails()"
+                    [disabled]="addAdaptiveAssessmentForm.invalid">{{constants.next}}</button>
+            </div>
+        </form>
+    </mat-step>
+
+    <mat-step>
+        <ng-template matStepLabel>{{constants.addQuestions}}</ng-template>
+        <form [formGroup]="saveAdaptiveAssessmentForm">
+            <div formArrayName="formSkillLists" class="card border">
+                <div class="d-content d-flex" *ngIf="!isSuperAdmin">
+                    <div class="p-10">
+                        <input type="radio" id="inlineRadio1" [(ngModel)]="questionBank" [disabled]="isEdit"
+                            value={{constants.yakshaQuestions}} (change)="onQBChange(constants.yakshaQuestions)"
+                            [ngModelOptions]="{standalone: true}">
+                        <label class="form-check-label m-l-10"
+                            for="inlineRadio1"><strong>{{constants.yakshaQuestions}}</strong></label>
+                    </div>
+                    <div class="p-10">
+                        <input type="radio" id="inlineRadio2" [(ngModel)]="questionBank" [disabled]="isEdit"
+                            value={{constants.myQuestions}} (change)="onQBChange(constants.myQuestions)"
+                            [ngModelOptions]="{standalone: true}">
+                        <label class="form-check-label m-l-10"
+                            for="inlineRadio2"><strong>{{constants.myQuestions}}</strong></label>
+                    </div>
+                </div>
+                <div *ngFor="let formSkill of saveAdaptiveAssessmentForm['controls'].formSkillLists['controls']; let i = index"
+                    [formGroupName]="i">
+                    <div [formGroup]="formSkill">
+                        <div class="card-header d-flex flex-wrap category-custom">
+                            <div class="w-25 p-10">
+                                <label class="font-weight-bold">{{constants.selectSkill}} <span
+                                        class="text-danger">*</span></label>
+                                <ng-multiselect-dropdown [settings]="singleDropdownSettings"
+                                    [disabled]="formSkill.get('assessmentSectionSkillId').value !== 0"
+                                    [data]="categoryBasedSkillsForSingle" [placeholder]="constants.selectSkill"
+                                    formControlName="skillId" (onSelect)="onSkillSelect($event, i)"
+                                    (onDeSelect)="clearSkillData($event, i)">
+                                </ng-multiselect-dropdown>
+                                <small class="field-required" *ngIf="!isFormValid('skillId',formSkill)">
+                                    {{saveAdaptiveAssessmentFormValidationMessages.skillId}}
+                                </small>
+                            </div>
+                            <div *ngIf="isMultiSkillType" class="w-25 d-flex justify-content-end align-items-center">
+                                <button *ngIf="i>0" type="button" class="btn add-del-btn text-danger"
+                                    (click)="deleteAdaptiveAssessmentLevel(null, i)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <button type="button"
+                                    *ngIf="(saveAdaptiveAssessmentForm['controls'].formSkillLists['controls'].length - 1) === i"
+                                    class="btn add-del-btn text-info" (click)="generateLevel()">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <!-- beginner -->
+                            <div class="border-bottom d-flex flex-wrap m-b-20 p-20">
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.proficiencyLevel}}</label>
+                                    <input type="text" class="form-control" disabled
+                                        formControlName="beginnerProficiencyLevelId">
+                                </div>
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.totalMcq}} <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" [placeholder]="constants.mcqCount"
+                                        formControlName="beginnerMcqCount"
+                                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="1">
+                                    <small class="field-required"
+                                        *ngIf="formSkill.get('beginnerMcqCount').hasError('max') || formSkill.get('beginnerMcqCount').hasError('min')">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.questionMessage}}
+                                    </small>
+                                    <small class="field-required" *ngIf="!isFormValid('beginnerMcqCount',formSkill)">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.mcqCount.required}}
+                                    </small>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <div class="h6 m-0 font-weight-bold">
+                                                {{formSkill.value.beginnerTotalQuestions}}
+                                            </div>
+                                            <small>{{constants.totalQuestions}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.passPercentage}} <span
+                                            class="text-danger">*</span> </label>
+                                    <input type="number" class="form-control" [placeholder]="constants.passPercentage"
+                                        formControlName="beginnerPassPercentage"
+                                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="1">
+                                    <small class="field-required"
+                                        *ngIf="formSkill.get('beginnerPassPercentage').hasError('max') || formSkill.get('beginnerPassPercentage').hasError('min')">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.questionMessage}}
+                                    </small>
+                                    <small class="field-required"
+                                        *ngIf="!isFormValid('beginnerPassPercentage',formSkill)">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.passPercentage.required}}
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- intermediate -->
+                            <div class="border-bottom d-flex flex-wrap m-b-20 p-20">
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.proficiencyLevel}}</label>
+                                    <input type="text" class="form-control" disabled
+                                        formControlName="intermediateProficiencyLevelId">
+                                </div>
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.totalMcq}} <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" [placeholder]="constants.mcqCount"
+                                        formControlName="intermediateMcqCount"
+                                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="1">
+                                    <small class="field-required"
+                                        *ngIf="formSkill.get('intermediateMcqCount').hasError('max') || formSkill.get('intermediateMcqCount').hasError('min')">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.questionMessage}}
+                                    </small>
+                                    <small class="field-required"
+                                        *ngIf="!isFormValid('intermediateMcqCount',formSkill)">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.mcqCount.required}}
+                                    </small>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <div class="h6 m-0 font-weight-bold">
+                                                {{formSkill.value.intermediateTotalQuestions}}
+                                            </div>
+                                            <small>{{constants.totalQuestions}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.passPercentage}} <span
+                                            class="text-danger">*</span> </label>
+                                    <input type="number" class="form-control" [placeholder]="constants.passPercentage"
+                                        formControlName="intermediatePassPercentage"
+                                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="1">
+                                    <small class="field-required"
+                                        *ngIf="formSkill.get('intermediatePassPercentage').hasError('max') || formSkill.get('intermediatePassPercentage').hasError('min')">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.questionMessage}}
+                                    </small>
+                                    <small class="field-required"
+                                        *ngIf="!isFormValid('intermediatePassPercentage',formSkill)">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.passPercentage.required}}
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- advanced -->
+                            <div class="border-bottom d-flex flex-wrap m-b-20 p-20">
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.proficiencyLevel}}</label>
+                                    <input type="text" class="form-control" disabled
+                                        formControlName="advancedProficiencyLevelId">
+                                </div>
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.totalMcq}} <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" [placeholder]="constants.mcqCount"
+                                        formControlName="advancedMcqCount"
+                                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="1">
+                                    <small class="field-required"
+                                        *ngIf="formSkill.get('advancedMcqCount').hasError('max') || formSkill.get('advancedMcqCount').hasError('min')">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.questionMessage}}
+                                    </small>
+                                    <small class="field-required" *ngIf="!isFormValid('advancedMcqCount',formSkill)">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.mcqCount.required}}
+                                    </small>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <div class="h6 m-0 font-weight-bold">
+                                                {{formSkill.value.advancedTotalQuestions}}
+                                            </div>
+                                            <small>{{constants.totalQuestions}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-25 p-r-20">
+                                    <label for="" class="font-weight-bold">{{constants.passPercentage}} <span
+                                            class="text-danger">*</span> </label>
+                                    <input type="number" class="form-control" [placeholder]="constants.passPercentage"
+                                        formControlName="advancedPassPercentage"
+                                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' step="1">
+                                    <small class="field-required"
+                                        *ngIf="formSkill.get('advancedPassPercentage').hasError('max') || formSkill.get('advancedPassPercentage').hasError('min')">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.questionMessage}}
+                                    </small>
+                                    <small class="field-required"
+                                        *ngIf="!isFormValid('advancedPassPercentage',formSkill)">
+                                        {{saveAdaptiveAssessmentFormValidationMessages.passPercentage.required}}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button mat-button matStepperPrevious type="button"
+                    class="btn btn-secondary">{{constants.back}}</button>
+                <button mat-button matStepperNext [disabled]="disableSave()" type="button" class="btn btn-info"
+                    (click)="saveAdaptiveAssessment()">{{isEdit ? constants.update : constants.save}}</button>
+            </div>
+        </form>
+    </mat-step>
+
+</mat-stepper>

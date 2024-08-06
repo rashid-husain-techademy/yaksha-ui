@@ -1,0 +1,40 @@
+<div *ngIf="isShowModal">
+    <div class="title">
+        {{embedData.name}}
+    </div>
+    <div *ngIf="!isUserDashboard">
+        <div class="dashboard" *ngIf="!nochartsAvailable" id="{{constants.powerBi}}"></div>
+        <div class="noChartFound" *ngIf="nochartsAvailable">{{constants.noChartsFound}}</div>
+    </div>
+    <div class="dashboard" *ngIf="isUserDashboard">
+        <mat-tab-group [selectedIndex]="0" (selectedTabChange)="tabChanged($event)">
+            <mat-tab label="User Profile">
+                <div class="noChartFound" *ngIf="nochartsAvailable">{{constants.noChartsFound}}</div>
+                <div class="dashboard" id="YakshaUserProfile"></div>
+            </mat-tab>
+
+            <mat-tab label="Standard Assessments">
+                <div class="noChartFound" *ngIf="nochartsAvailable">{{constants.noChartsFound}}</div>
+                <div class="dashboard" id="StandardAssessment"></div>
+            </mat-tab>
+
+            <mat-tab label="Coding Assessments">
+                <div class="noChartFound" *ngIf="nochartsAvailable">{{constants.noChartsFound}}</div>
+                <div class="dashboard" id="CodingAssessment"></div>
+            </mat-tab>
+
+            <mat-tab label="Project Assessments">
+                <div class="noChartFound" *ngIf="nochartsAvailable">{{constants.noChartsFound}}</div>
+                <div class="dashboard" id="ProjectAssessment"></div>
+            </mat-tab>
+
+            <mat-tab label="Report">
+                <div class="noChartFound" *ngIf="nochartsAvailable">{{constants.noChartsFound}}</div>
+                <div class="dashboard" id="Report"></div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">{{constants.close}}</button>
+</div>

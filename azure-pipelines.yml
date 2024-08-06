@@ -1,0 +1,34 @@
+# Angular build
+
+trigger:
+- develop
+
+pool:
+  name: IIHT
+  demands: npm
+
+steps:
+- task: Npm@1
+  displayName: 'angular-cli'
+  inputs:
+    workingDir: HostAdmin/angular
+    verbose: false
+
+- task: Npm@1
+  displayName: 'ng build'
+  inputs:
+    command: custom
+    workingDir: HostAdmin/angular
+    verbose: false
+    customCommand: 'run deployment'
+
+- task: ArchiveFiles@2
+  displayName: 'Archive HostAdmin/angular/dist'
+  inputs:
+    rootFolderOrFile: HostAdmin/angular/dist
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    ArtifactName: drop

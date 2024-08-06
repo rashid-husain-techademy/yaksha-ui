@@ -1,0 +1,79 @@
+::ng-deep .container-fluid {
+    padding: 0 !important;
+}
+
+.post-assessment {
+    background: #004c80;
+    height: calc(100vh);
+}
+
+.post-hackathon-assessment {
+    background: #004c80;
+}
+
+.logo {
+    margin-bottom: 30px;
+
+    img {
+        max-width: 115px;
+        height:45px;
+    }
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.yaksha {
+    top: 20px;
+    position: absolute;
+    right: 20px;
+    display: block;
+    width: 100% !important;
+}
+
+th {
+    text-align: left;
+}
+
+.title {
+    color: #3e5569;
+}
+
+.email-text-wrap {
+    overflow-wrap: break-word !important;
+}
+
+.assessment-label {
+    white-space: pre-wrap;
+}
+
+.btn.btn-info.tenant {
+    color: #fff;
+    background-color: #a7a9ac !important;
+    border-color: #a7a9ac !important;
+}
+
+.post-assessment.custom-tenant,
+.post-hackathon-assessment.custom-tenant {
+    background: #414042 !important;
+
+    .custom-tenant-logo img {
+        max-width: 200px !important;
+    }
+}
+
+.post-assessment-abinbev {
+    background: #ffe100;
+    height: calc(100vh);
+    .custom-tenant-logo img {
+        max-width: 200px !important;
+    }
+    .textColor{
+        color:#000000;
+    }
+    .custom-btn-color{
+        background-color: #FFA500;
+        color:#000000
+    }
+}
